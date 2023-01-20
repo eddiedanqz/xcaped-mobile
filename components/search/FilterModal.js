@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef ,useContext} from "react";
 import {
   View,
   TouchableOpacity,
@@ -12,33 +12,33 @@ import {
 import { Icon } from "react-native-elements";
 import tw from "tailwind-react-native-classnames";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import * as SecureStore from "expo-secure-store";
 
+import { BASEURL } from "@env";
 import TwoPointSlider from "./TwoPointSlider";
-import TextButton from "../TextButton";
+import TextButton from "../buttons/TextButton";
+import Section from "../content/Section";
+import {FilterContext} from '../../context/filterContext';
 
-const Section = ({ containerStyle, title, children }) => {
-  return (
-    <View style={[tw`my-3`, containerStyle]}>
-      <Text style={tw`font-bold text-lg`}>{title}</Text>
-      {children}
-    </View>
-  );
-};
+// const Section = ({ containerStyle, title, children }) => {
+//   return (
+//     <View style={[tw`my-3`, containerStyle]}>
+//       <Text style={tw`font-bold text-lg`}>{title}</Text>
+//       {children}
+//     </View>
+//   );
+// };
 
-const FilterModal = ({ isVisible, onClose }) => {
+const FilterModal = ({ isVisible, onClose,filterData,categories }) => {
+  const {filters,addFilters,clearFilters} = useContext(FilterContext)
   const modalAnimatedValue = useRef(new Animated.Value(0)).current;
   const [showFilterModal, setShowFilterModal] = useState(isVisible);
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
-  const [dateValue, setDateValue] = useState('Select Date');
-  const [category, setCategory] = useState("");
-  const [categories, setCategories] = useState([
-    { id: 1, title: "Dinner" },
-    { id: 2, title: "Conference" },
-    { id: 3, title: "Party" },
-    { id: 4, title: "Live Music" },
-  ]);
+  const [dateValue, setDateValue] = useState('');
+  const [category, setCategory] = useState('');
+  const [venue, setVenue] = useState('');
   const [reactions, setReactions] = useState([
     {id:3,reaction:require("../../assets/bored.png"),rating:'15%'},
     {id:1,reaction:require("../../assets/cool.png"),rating:'55%'},
@@ -58,7 +58,7 @@ const FilterModal = ({ isVisible, onClose }) => {
     setDate(currentDate);
 
     let tempDate = new Date(currentDate);
-    let dateValue = tempDate.toDateString();
+    let dateValue = tempDate.toISOString().split('T')[0]
     setDateValue(dateValue)
  
     
@@ -66,14 +66,14 @@ const FilterModal = ({ isVisible, onClose }) => {
   
   function renderDate() {
     return (
-    <Section title="Date">
+    <Section title="Date" titleStyle={tw`text-lg text-gray-700`}>
       {/*Date & Time*/}
-      <View style={tw`p-3 flex-row justify-center`}>
-        <View style={tw`flex-row items-center bg-gray-200 rounded-lg w-full p-2`}>
-        <Text style={tw`flex-1 text-lg text-gray-800`}>{dateValue}</Text>
-        <TouchableOpacity   onPress={DatePicker}>
+      <View style={tw`p-2 flex-row items-center`}>
+        <View style={tw`flex-1 flex-row items-center bg-gray-200 rounded-lg py-2 px-2`}>
+        <TouchableOpacity style={tw`mr-2`} onPress={DatePicker}>
           <Icon name='calendar' type='font-awesome-5' size={20}/>
         </TouchableOpacity>
+        <Text style={tw`text-base text-gray-800`}>{dateValue ? dateValue : "Select Date"}</Text>
         </View>
 
          {/*Picker*/}
@@ -96,7 +96,7 @@ const FilterModal = ({ isVisible, onClose }) => {
 
   function renderDistance() {
     return (
-      <Section title="Distance">
+      <Section title="Distance" titleStyle={tw`text-lg text-gray-700`}>
         <View style={tw`items-center p-2`}>
           <TwoPointSlider
             values={[3, 10]}
@@ -113,7 +113,7 @@ const FilterModal = ({ isVisible, onClose }) => {
   function renderReactions() {
     return(
 
-    <Section title="Reactions">
+    <Section title="Reactions" titleStyle={tw`text-lg text-gray-700`}>
       <View style={tw`flex-row justify-center p-2`}>
       {reactions.map((reaction) => (
           <TouchableOpacity key={reaction.id} style={tw`flex-row items-center mx-4 
@@ -133,15 +133,16 @@ const FilterModal = ({ isVisible, onClose }) => {
 
   function renderCategory() {
     return (
-      <Section title="Category">
+      <Section title="Category" titleStyle={tw`text-lg text-gray-700`}>
         <View style={tw`flex-row flex-wrap`}>
           {categories.map((item, index) => {
             return (
               <TextButton
-                key={`cat-${index}`}
-                label={item.title}
-                labelStyle={{color:item.id == category ? "#fdcc97" : "#6b7280" }}
-                buttonContainerStyle={[tw`h-12 items-center m-3 p-2 rounded-lg`,
+                key={item.id}
+                label={item.name}
+                labelStyle={[{color:item.id == category ? "#ffff" : "#6b7280" }
+               ,tw`text-base`]}
+                buttonContainerStyle={[tw`h-11 items-center m-2 p-2 rounded-lg`,
                 {backgroundColor:item.id == category ? "#151618" : "#e5e7eb" }
               ]}
                  
@@ -155,18 +156,43 @@ const FilterModal = ({ isVisible, onClose }) => {
   }
 
   function renderLocation() {
-    return <Section title="Near">
-       <View style={tw`flex-row items-center bg-gray-200 mx-2 my-1 p-2 rounded-lg`} >
+    return (<Section title="Near" titleStyle={tw`text-lg text-gray-700`}>
+       <View style={tw`flex-row items-center bg-gray-200 mx-2 my-1 py-1.5 px-2 rounded-lg`} >
         <TouchableOpacity>
-          <Icon name='map-marker-alt' type='font-awesome-5' size={20}/>
+          <Icon name='map-pin' type='feather' size={20}/>
         </TouchableOpacity>
 
-        <TextInput  style={tw`flex-1 text-lg mx-3`} placeholder='Cantoments,Accra'/>
+        <TextInput  style={tw`flex-1 text-lg mx-3`} placeholder='Venue'
+         placeholderTextColor='gray'
+         onChangeText={(val) => setVenue(val)}
+         defaultValue={venue}
+          />
       </View>
-      </Section>;
+      </Section>
+  )}
+
+  let values =  {
+    venue,
+    category,
+    date:dateValue
   }
 
+  const cleard = () => {
+    setCategory('')
+    setVenue('')
+    clearFilters({
+      venue:'',
+      category:'',
+      date:'Select Date'
+    })
+  }
+ 
+
   useEffect(() => {
+    setVenue(filters.venue)
+    setCategory(filters.category)
+    setDateValue(filters.date)
+
     if (showFilterModal) {
       Animated.timing(modalAnimatedValue, {
         toValue: 1,
@@ -180,6 +206,7 @@ const FilterModal = ({ isVisible, onClose }) => {
         useNativeDriver: false,
       }).start(() => onClose());
     }
+
   }, [showFilterModal]);
 
   const modalY = modalAnimatedValue.interpolate({
@@ -208,13 +235,19 @@ const FilterModal = ({ isVisible, onClose }) => {
         }}
       >
         {/**Header */}
-        <View style={tw`flex-row items-center pb-5`}>
-          <Text style={tw`flex-1 font-bold text-xl`}>Filter Search</Text>
+        <View style={tw`flex-row justify-between items-center pb-3`}>
+          <TouchableOpacity
+            style={tw`rounded-lg`}
+            onPress={() => cleard()}
+          >
+          <Text style={[tw`font-bold text-base`,{ color:'#ff8552' }]}>Reset</Text>
+          </TouchableOpacity>
+          <Text style={tw`font-bold text-base text-gray-700`}>Filter Search</Text>
           <TouchableOpacity
             style={tw`rounded-lg`}
             onPress={() => setShowFilterModal(false)}
           >
-            <Icon type="font-awesome-5" name="times" size={20} color="gray" />
+            <Icon type="feather" name="x" size={20} color="gray" />
           </TouchableOpacity>
         </View>
         {/** */}
@@ -225,8 +258,8 @@ const FilterModal = ({ isVisible, onClose }) => {
           {/**Date */}
           {renderDate()}
 
-          {/**Reactions */}
-          {renderReactions()}
+          {/* *Reactions
+          {renderReactions()} */}
 
           {/**Distance */}
           {renderDistance()}
@@ -236,8 +269,12 @@ const FilterModal = ({ isVisible, onClose }) => {
         </ScrollView>
 
         {/**Button */}
-        <View style={tw`absolute h-24 bottom-20 left-0 right-0 p-5 bg-white`}>
-      <TextButton label='Apply' buttonContainerStyle={tw`h-12 rounded`} />
+        <View style={tw`absolute h-24 bottom-20 left-0 right-0 p-3 bg-white`}>
+      <TextButton label='Apply' buttonContainerStyle={tw`h-11 rounded`} onPress={() => {
+         addFilters(values)
+        filterData()
+      }
+        }/>
         </View>
       </Animated.View>
     </Modal>

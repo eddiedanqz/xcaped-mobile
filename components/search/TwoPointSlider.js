@@ -15,14 +15,14 @@ const TwoPointSlider = ({values,min,max,prefix,postfix,onValuesChange}) => {
          max={max}
          step={1}
          markerOffsetY={20}
-         selectedStyle={{ backgroundColor:'#fdcc97' }}
+         selectedStyle={{ backgroundColor:'#ff8552' }}
          trackStyle={tw`h-3 rounded-md bg-gray-200`}
          minMarkerOverlapDistance={50}
          customMarker={(e) => {
               return (
                    <View style={tw`h-16 items-center justify-center`}>
                         <View style={[tw`h-6 w-6 rounded-xl border-4 border-white shadow-xl`,
-                        {backgroundColor:'#fdcc97'}]}/>
+                        {backgroundColor:'#ff8552'}]}/>
                         <Text style={tw`mt-1 text-base text-gray-600`}>{prefix} {e.currentValue} {postfix} </Text>
                    </View>
               )

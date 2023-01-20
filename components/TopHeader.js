@@ -6,10 +6,10 @@ import {LinearGradient} from 'expo-linear-gradient';
 
 const TopHeader = ({ leftIcon, rightIcon, title }) => {
   return (
-    <View style={[tw`flex-row w-full h-16 items-center justify-center`,
-    {backgroundColor:'#fdcc97'}
+    <View style={[tw`flex-row w-full h-16 items-center justify-center px-3 pt-2`,
+    {backgroundColor:'#ff8552'}
     ]}>
-      <TouchableOpacity style={tw`justify-center pl-1.5`}>
+      <TouchableOpacity style={tw`justify-center ml-2`}>
         {leftIcon}
       </TouchableOpacity>
 
@@ -19,7 +19,7 @@ const TopHeader = ({ leftIcon, rightIcon, title }) => {
         </Text>
       </View>
 
-      <TouchableOpacity style={tw`justify-center pr-1.5`}>
+      <TouchableOpacity style={tw`justify-center mr-2`}>
         {rightIcon}
       </TouchableOpacity>
     </View>

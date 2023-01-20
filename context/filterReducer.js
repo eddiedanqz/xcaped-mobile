@@ -1,17 +1,16 @@
-import { UPDATE_CURRENT_STEP, SET_STEPS } from './types';
 export default (state, action) => {
   switch (action.type) {
-    case SET_STEPS: {
+    case 'ADD_FILTERS': {
       return {
         ...state,
-        steps: action.payload,
+        filters: action.payload,
       };
     }
 
-    case UPDATE_CURRENT_STEP: {
+    case 'CLEAR_FILTERS': {
       return {
         ...state,
-        currentStepIndex: action.payload,
+        filters: action.payload,
       };
     }
 

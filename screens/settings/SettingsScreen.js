@@ -1,5 +1,5 @@
 import React from 'react'
-import { View,TouchableOpacity,ScrollView,Text} from 'react-native'
+import { View,TouchableOpacity,ScrollView,SafeAreaView,Text} from 'react-native'
 import { Button,Icon} from "react-native-elements";
 import tw from "tailwind-react-native-classnames";
 
@@ -19,18 +19,19 @@ const SettingsScreen = ({ navigation }) => {
     const { signOut } = React.useContext(AuthContext);
 
     return (
-        <View style={tw `flex-1 bg-white mt-6`}>
+        <SafeAreaView style={tw`flex-1`}>
+           <View style={tw`overflow-hidden`}>
           <TopHeader title="Settings"
         leftIcon={
           <Icon type='font-awesome-5' name="arrow-left" size={20} color="white"
           onPress={() => navigation.goBack() } />
         }
         
-      />
+      /></View>
       <ScrollView showsVerticalScrollIndicator={false} style={tw `p-5`}>
-      <List title='Edit profile' icon='edit'/>
-      <List title='Accout' icon='key'/>
-      <List title='Privacy & Security' icon='shield-alt'/>
+      <List title='Edit profile' icon='edit' onPress={() => navigation.navigate('Edit Profile')}/>
+      {/* <List title='Accout' icon='key'/> */}
+      <List title='Password' icon='shield-alt'/>
       <List title='Notifications' icon='bell'/>
       <List title='About' icon='info-circle'/>
       <List title='Help' icon='question-circle'/>
@@ -41,7 +42,7 @@ const SettingsScreen = ({ navigation }) => {
       </View>
       </ScrollView>
 
-        </View>
+        </SafeAreaView>
     )
 }
 

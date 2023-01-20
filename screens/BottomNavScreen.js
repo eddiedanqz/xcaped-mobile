@@ -1,46 +1,84 @@
-import React from 'react'
+import React,{useContext} from 'react'
 import {Icon} from "react-native-elements";
 import { createBottomTabNavigator  } from '@react-navigation/bottom-tabs';
+import { createStackNavigator  } from '@react-navigation/stack';
 
-import ProfileScreen from './profile/ProfileScreen';
 import HomeScreen from './HomeScreen';
-import ListingScreen from './event/ListingScreen';
+import ExploreScreen from './event/ExploreScreen';
 import NotificationScreen from './notification/NotificationScreen'
 import CreateScreen from './event/CreateScreen'
+import TicketScreen from './ticket/TicketScreen'
 import SearchScreen from './search/SearchScreen';
+import ListingScreen from './event/ListingScreen'
+import ProfileScreen from './profile/ProfileScreen';
+import UserProfileScreen from './profile/UserProfileScreen'
+
+import {AuthContext} from '../context/AuthContext';
 
 const Tabs = createBottomTabNavigator();
+const Stack = createStackNavigator()
+
+const HomeStack = () => {
+  return (
+  <Stack.Navigator screenOptions={{ headerShown:false}}>
+   <Stack.Screen name="Explore" component={ExploreScreen}/>
+   <Stack.Screen name="Create" component={CreateScreen}/>
+   <Stack.Screen name="Listing" component={ListingScreen}/>
+  </Stack.Navigator>
+  )
+}
+
+const ProfileStack = () => {
+  return (
+  <Stack.Navigator screenOptions={{ headerShown:false}}>
+   <Stack.Screen name="Profile" component={ProfileScreen}/>
+   <Stack.Screen name="User Profile" component={UserProfileScreen}/>
+  </Stack.Navigator>
+  )
+}
 
 const BottomNavScreen = () => {
+  const {count} = useContext(AuthContext)
+
     return (
-        <Tabs.Navigator screenOptions={{ headerShown:false,tabBarActiveTintColor:'#fdcc97',
+        <Tabs.Navigator screenOptions={{ headerShown:false,tabBarActiveTintColor:'#ff8552',
         tabBarInactiveTintColor:'#151618'}} initialRouteName='Explore'>
            {/*  <Tabs.Screen name="Home" component={HomeScreen}  options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
         }}/>*/}
-               <Tabs.Screen name="Explore" component={ListingScreen}   options={{
+               <Tabs.Screen name="Explore" component={HomeStack}   options={{
                   tabBarIcon: ({ color, size }) => (
                    <Icon type='font-awesome-5' name="compass" color={color} size={20} />
                  ),
                  tabBarLabel:() => {return null}
-               }}/>
+               }}
+               />
              <Tabs.Screen name="Search" component={SearchScreen}  options={{
                tabBarIcon: ({ color, size }) => (
                  <Icon type='font-awesome-5' name="search" color={color} size={20} />
                  ),
                  tabBarLabel:() => {return null}
-                }}/>
+                }} initialParams={{link:''}}/>
             <Tabs.Screen name="Notification" component={NotificationScreen}   options={{
                 tabBarIcon: ({ color, size }) => (
                   <Icon type='font-awesome-5' name="bell" color={color} size={20} />
                 ),
-                tabBarBadge: 3,
-                tabBarBadgeStyle:{ color:'#fdcc97',backgroundColor:'#151618' },
+                tabBarBadge: count,
+                tabBarBadgeStyle:{ color:'white',backgroundColor:'#151618' },
                 tabBarLabel:() => {return null}
               }}/>
-        <Tabs.Screen name="Profile" component={ProfileScreen}   options={{
+        <Tabs.Screen name="Tickets" component={TicketScreen} 
+         options={{
+              tabBarIcon: ({ color, size }) => (
+                <Icon type='font-awesome' name="ticket" color={color} size={20} />
+              ),
+              tabBarLabel:() => {return null}
+            }}/>
+        <Tabs.Screen name="Profile" component={ProfileStack}
+          
+        options={{
               tabBarIcon: ({ color, size }) => (
                 <Icon type='font-awesome-5' name="user" color={color} size={20} />
               ),

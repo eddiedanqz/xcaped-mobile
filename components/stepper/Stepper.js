@@ -26,7 +26,7 @@ const Stepper = () => {
       {/**Stepper */}
       <StepHeader steps={steps} currentStep={currentStep} />
 
-      <View style={tw`mt-5`}>
+      <View style={tw`mt-3`}>
         {currentStep == 0 && (
           <View style={tw`h-80 self-center`}>
             <Text style={tw`text-lg`}>val 1</Text>

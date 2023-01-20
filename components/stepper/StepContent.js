@@ -19,7 +19,7 @@ const StepContent = ({steps,currentStep}) => {
         steps.map((val,i) => 
           <View key={i}  style={tw`mt-5`}>
             {currentStep == i &&
-              <View style={tw`h-80 self-center`}>
+              <View style={tw`h-80 w-full self-center`}>
                 <Text style={tw`text-lg`}>{val} {i+1}</Text>
                 <Step/>
               </View>

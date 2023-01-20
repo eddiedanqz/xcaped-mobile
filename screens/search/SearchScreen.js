@@ -1,131 +1,210 @@
-import React,{useState} from 'react'
-import {StyleSheet,View,TextInput,Image,Text,ScrollView,
-       TouchableWithoutFeedback , TouchableOpacity,
-       FlatList,} from "react-native";
-import {Icon} from "react-native-elements";
+import React, { useState, useEffect,useContext } from "react";
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Image,
+  Text,
+  ScrollView,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import { Icon } from "react-native-elements";
 import tw from "tailwind-react-native-classnames";
+import { SafeAreaView } from "react-native-safe-area-context";
+import * as SecureStore from "expo-secure-store";
 
+import { BASEURL } from "@env";
 import FilterModal from "../../components/search/FilterModal";
+import HorizontalCard from "../../components/cards/HorizontalCard";
+import ListCard from "../../components/cards/ListCard";
+import {FilterContext} from '../../context/filterContext';
 
 
-const SearchScreen = ({navigation}) => {
-const [showFilterModal, setShowFilterModal] = useState(false)
-const [events, setEvents] = useState([
-  {
-    id: 1,
-    banner: require("../../assets/sosket.jpg"),
-    title: "Event 11 Pool Party",
-    category: "party",
-    location: "Mirage Hotel, East Legon",
-    startDate:'May 11 2021',startTime:'04:00',
-    endDate:'May 12 2021',endTime:'06:00',
-    desription:''
-  },
-  {
-    id: 2,
-    banner: require("../../assets/awards.jpg"),
-    title: "VG Music Awarrds",
-    category: "award",
-    location: "Amasaman, Accra",
-    startDate:'Feb 8 2022',startTime:'05:59',
-    endDate:'', endTime:'12:00',
-    desription:''
-  },
-  {
-    id: 3,
-    banner: require("../../assets/picture.jpg"),
-    title: "Code Arena",
-    category: "live music",
-    location: "Accra, Ghana",
-    startDate:'Feb 8 2021',startTime:'05:59',
-    endDate:'Feb 9 202',endTime:'12:00',
-    desription:''
-  },
-  {
-    id: 4,
-    banner: require("../../assets/salaFest.jpg"),
-    title: "Street Festival",
-    category: "carnival",
-    location: "Poolside Hotel,Accra,Ghana",
-    startDate:'Jan 8 2022',startTime:'08:30',
-    endDate:'Jan 31 2022',endTime:'12:00',
-    desription:''
-  },
-]);
+const SearchScreen = ({ navigation, route }) => {
+  const {filters} = useContext(FilterContext)
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [results, setResults] = useState([]);
+  const [offset, setOffset] = useState(2);
+  const [title, setTitle] = useState("");
+  const [venue, setVenue] = useState("");
+  const [category, setCategory] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [date, setDate] = useState('');
 
- // 
-const renderItem = ({item}) => (
-  <TouchableOpacity style={tw`bg-white mb-3 mx-4 p-2 rounded-md shadow-lg`} onPress={() => navigation.navigate("Event",{item})}>
-          <View style={tw`flex-row  h-32  items-center  border-b border-gray-300`}>
-        <Image
-            source={item.banner}
-            resizeMode="cover"
-            style={tw`w-28 h-28 rounded`}
-          />
-            <View style={tw`flex-1 justify-center ml-2 `}>
-          {/**Title */}
-              <Text style={tw`text-lg font-bold`}> {item.title} </Text>
-              {/**Location */}
-              <Text style={tw`text-base text-gray-600`}> {item.location} </Text>
+  const filterData = () => {
+    //
+    handleSubmit()
+    setShowFilterModal(false)
+  };
+  //
+  const loadMore = () => {
+    //param0
+    SecureStore.getItemAsync("mytoken").then((token) => {
+      fetch(
+        `${BASEURL}/api/search?title=${title}&venue=${venue}&category=${category}
+        &date=${date}&page=${offset}`,
+        {
+          method: "GET",
+          headers: new Headers({
+            Accept: "application/json",
+            Authorization: `Bearer ${JSON.parse(token)}`,
+          }),
+        }
+      )
+        .then((response) => response.json())
+        .then((res) => {
+          let { data } = res;
+          setResults((results) => [...results, ...data]);
+          setOffset(offset + 1);
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    });
+  };
 
-              </View>
-          </View>
-          {/**Extra Content */}
-            <View style={tw`flex-row justify-between p-1`}>
-               {/**Category */}
-              <Text style={[tw`text-base font-semibold rounded-lg px-2`,
-              {backgroundColor:'#fdcc97',color:'#151618'}]}>
-                {item.category}
-              </Text>
-               {/**Date */}
-              <Text style={[tw`text-base font-semibold`,{color:'#151618'}]}>
-                {item.startDate}
-              </Text>
-            </View>
-        </TouchableOpacity>
-
-)
-
+  const renderData = () => {
+    //
+    const renderItem = ({ item }) => (
+      <HorizontalCard
+        item={item}
+        onPress={() => navigation.navigate("Event", { id:item.id })}
+      />
+    );
 
     return (
-      <View style={tw`flex-1 mt-6 bg-white`}>
-        {/**Search */}
-        <View style={tw`overflow-hidden pb-1`}>
-        <View style={[tw`flex-row items-center justify-center px-5`,
-        {backgroundColor: '#fff',
-        shadowColor: '#000',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 1,}]}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-           <Icon type='font-awesome-5' name='arrow-left' size={20} />
-        </TouchableOpacity>
-     
-      <View style={tw`flex-row items-center bg-gray-300 ml-3 my-1 p-2 rounded-lg`} >
-        <TextInput  style={tw`flex-1 text-lg`} placeholder='Search...'/>
+      <FlatList
+        data={results}
+        keyExtractor={(item) => `${item.id}`}
+        renderItem={renderItem}
+        contentContainerStyle={tw`py-5`}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.1}
+      />
+    );
+  };
 
-        <TouchableOpacity onPress={() => setShowFilterModal(true)}>
-          <Icon name='sliders-h' type='font-awesome-5' size={20}/>
-        </TouchableOpacity>
-      </View>
+  const handleSubmit = () => {
+    if (title == "") {
+      setResults([]);
+      return;
+    }
+   
+    SecureStore.getItemAsync("mytoken").then((token) => {
+      fetch(`${BASEURL}/api/search?title=${title}&venue=${venue}&category=${category}
+      &date=${date}`, {
+        method: "GET",
+        headers: new Headers({
+          'Accept': "application/json",
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        }),
+      })
+        .then((response) => response.json())
+        .then((res) => {
+          console.log(res.meta);
+          setResults(res.data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    });
+  };
 
-      </View>
+  const getCategories = () => {
+    SecureStore.getItemAsync("mytoken").then((token) => {
+      fetch(`${BASEURL}/api/categories`, {
+        method: "GET",
+        headers: new Headers({
+          Accept: "application/json",
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        }),
+      })
+        .then((response) => response.json())
+        .then((res) => {
+          //  console.log(res.data);
+          setCategories(res.data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    });
+  };
+
+  useEffect(() => {
+    getCategories()
+  }, [])
+
+  useEffect(() => {
+//  console.log(filters)
+    setVenue(filters.venue)
+    setCategory(filters.category)
+    setDate(filters.date)
+
+    return () => {
+      setResults([]);
+      setOffset(2);
+    };
+
+  }, [filters]);
+ 
+  return (
+    <SafeAreaView style={tw`flex-1 bg-white`}>
+      {/**Search Header*/}
+      <View style={tw`overflow-hidden pb-2 `}>
+        <View
+          style={[
+            tw`flex-row items-center justify-center px-5 mx-auto`,
+            {
+              backgroundColor: "#fff",
+              shadowColor: "#000",
+              shadowOffset: { width: 1, height: 1 },
+              shadowOpacity: 0.2,
+              shadowRadius: 3,
+              elevation: 1,
+            },
+          ]}
+        >
+          {/* <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon type="feather" name="arrow-left" size={20} />
+          </TouchableOpacity> */}
+
+          <View
+            style={tw`flex-row items-center bg-gray-300 ml-3 my-1 p-1.5 rounded-lg`}
+          >
+            <TextInput
+              style={tw`flex-1 text-lg `}
+              placeholderTextColor="black"
+              placeholder="Search..."
+              onChangeText={(val) => setTitle(val)}
+              returnKeyType="search"
+              // onChange={handleSubmit}
+              onSubmitEditing={handleSubmit}
+            />
+
+            <TouchableOpacity onPress={() => setShowFilterModal(true)}>
+              <Icon name="sliders" type="feather" size={20} />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
 
       {/**Filter */}
-      {showFilterModal &&      
-      <FilterModal isVisible={showFilterModal} onClose={() => setShowFilterModal(false)}/>
-      }
-       {/**Search Results */}
-        <FlatList 
-         data={events}
-        keyExtractor={(item) => `${item.id}`}
-        renderItem={renderItem}
-        contentContainerStyle={tw`py-5`}/>
-      </View>
-    )
-}
+      {showFilterModal && (
+        <FilterModal
+          isVisible={showFilterModal}
+          onClose={() => setShowFilterModal(false)}
+          filterData={filterData}
+          categories={categories}
+        />
+      )}
+      {/**Search Results */}
+      <View style={tw`pb-10`}>{renderData()}</View>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   input: {
@@ -133,4 +212,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchScreen
+export default SearchScreen;

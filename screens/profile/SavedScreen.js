@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Image,
@@ -6,79 +6,74 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
-import { Icon, Text } from "react-native-elements";
+import { Icon} from "react-native-elements";
+import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import tw from "tailwind-react-native-classnames";
+import * as SecureStore from "expo-secure-store";
+import axios from "axios";
 
+import ListCard from "../../components/cards/ListCard";
 import TopHeader from "../../components/TopHeader";
+import { BASEURL } from "@env";
 
 const SavedScreen = ({navigation}) => {
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      banner: require("../../assets/sosket.jpg"),
-      title: "Event 11 Pool Party",
-      category: "party",
-      location: "Mirage Hotel, East Legon",
-      startDate: "May 11 2021",
-      startTime: "04:00",
-      endDate: "May 12 2021",
-      endTime: "06:00",
-      desription: "",
-    },
-    {
-      id: 2,
-      banner: require("../../assets/awards.jpg"),
-      title: "VG Music Awarrds",
-      category: "award",
-      location: "Amasaman, Accra",
-      startDate: "Feb 8 2022",
-      startTime: "05:59",
-      endDate: "",
-      endTime: "12:00",
-      desription: "",
-    },
-    {
-      id: 4,
-      banner: require("../../assets/salaFest.jpg"),
-      title: "Street Festival",
-      category: "carnival",
-      location: "Poolside Hotel,Accra,Ghana",
-      startDate: "Jan 8 2022",
-      startTime: "08:30",
-      endDate: "Jan 31 2022",
-      endTime: "12:00",
-      desription: "",
-    },
-  ]);
+  const [events, setEvents] = useState([]);
 
+  const isFocused = useIsFocused();
+
+
+  const renderEvents = () => {
   //
   const renderItem = ({ item }) => (
-    <View style={tw`mx-4 p-2 rounded-md`}>
-      <TouchableOpacity
-        style={tw`flex-row  h-32  items-center`}
-        onPress={() => navigation.navigate("Event", { item })}
-      >
-        <Image
-          source={item.banner}
-          resizeMode="cover"
-          style={tw`w-28 h-28 rounded`}
-        />
-        <View style={tw`flex-1 justify-center ml-2 `}>
-          {/**Title */}
-          <Text style={tw`text-lg font-bold`}> {item.title} </Text>
-          {/**Location */}
-          <Text style={tw`text-base`}> {item.location} </Text>
-        </View>
-      </TouchableOpacity>
-        {/** */}
-        <TouchableOpacity style={tw`absolute right-0 bottom-14`}>
-        <Icon type="font-awesome-5" name="ellipsis-h" size={18} />
-        </TouchableOpacity>
-    </View>
+    <ListCard 
+    item={item}
+    onPress={() => navigation.navigate("Event",{ id:item.id })}
+    />
   );
 
+ return ( 
+ <FlatList
+  data={events}
+  keyExtractor={(item) => `${item.id}`}
+  renderItem={renderItem}
+  contentContainerStyle={tw`py-5 px-3`}
+  />
+  );
+  }
+
+  const getData = () => {
+    SecureStore.getItemAsync("mytoken").then((token) => {
+      let parsed = JSON.parse(token);
+      const config = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${parsed}`,
+        },
+      };
+      axios
+        .get(`${BASEURL}/api/event/saved`, config)
+        .then((res) => {
+          // let { data } = res.data;
+          // console.log(res.data)
+           setEvents(res.data.data);
+        })
+        .catch((err) => {
+          console.log(err.response.data.message);
+        });
+    });
+  };
+
+  useEffect(() => {
+    getData();
+
+    return () => {
+      setEvents([])
+    }
+  }, [isFocused]);
+
   return (
-    <View style={tw`flex-1 bg-white mt-6`}>
+    <SafeAreaView style={tw`flex-1 bg-white`}>
+       <View style={[tw`overflow-hidden pb-1`]}>
       <TopHeader
         title="Saved"
         leftIcon={
@@ -91,15 +86,11 @@ const SavedScreen = ({navigation}) => {
           />
         }
       />
+      </View>
 
       {/**Search Results */}
-      <FlatList
-        data={events}
-        keyExtractor={(item) => `${item.id}`}
-        renderItem={renderItem}
-        contentContainerStyle={tw`py-5`}
-      />
-    </View>
+     {renderEvents()}
+    </SafeAreaView>
   );
 };
 
