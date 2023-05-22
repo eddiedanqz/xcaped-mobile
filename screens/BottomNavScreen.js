@@ -12,6 +12,7 @@ import SearchScreen from './search/SearchScreen';
 import ListingScreen from './event/ListingScreen'
 import ProfileScreen from './profile/ProfileScreen';
 import UserProfileScreen from './profile/UserProfileScreen'
+import MyEventScreen from './profile/MyEventScreen'
 
 import {AuthContext} from '../context/AuthContext';
 
@@ -22,7 +23,7 @@ const HomeStack = () => {
   return (
   <Stack.Navigator screenOptions={{ headerShown:false}}>
    <Stack.Screen name="Explore" component={ExploreScreen}/>
-   <Stack.Screen name="Create" component={CreateScreen}/>
+   {/* <Stack.Screen name="Create" component={CreateScreen}/> */}
    <Stack.Screen name="Listing" component={ListingScreen}/>
   </Stack.Navigator>
   )
@@ -33,6 +34,7 @@ const ProfileStack = () => {
   <Stack.Navigator screenOptions={{ headerShown:false}}>
    <Stack.Screen name="Profile" component={ProfileScreen}/>
    <Stack.Screen name="User Profile" component={UserProfileScreen}/>
+   <Stack.Screen name="My Events" component={MyEventScreen}/>
   </Stack.Navigator>
   )
 }
@@ -48,7 +50,7 @@ const BottomNavScreen = () => {
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
         }}/>*/}
-               <Tabs.Screen name="Explore" component={HomeStack}   options={{
+               <Tabs.Screen name="Home" component={HomeStack}   options={{
                   tabBarIcon: ({ color, size }) => (
                    <Icon type='font-awesome-5' name="compass" color={color} size={20} />
                  ),
@@ -76,7 +78,7 @@ const BottomNavScreen = () => {
               ),
               tabBarLabel:() => {return null}
             }}/>
-        <Tabs.Screen name="Profile" component={ProfileStack}
+        <Tabs.Screen name="Account" component={ProfileStack}
           
         options={{
               tabBarIcon: ({ color, size }) => (

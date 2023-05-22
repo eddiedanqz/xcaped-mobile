@@ -131,12 +131,12 @@ const ExploreScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
       {/*Header*/}
-      <View style={tw`overflow-hidden mt-2`}>
+      <View style={tw`overflow-hidden`}>
         <View
           style={[
-            tw`flex-row w-full h-15 items-center justify-between px-4 pt-2`,
+            tw`flex-row w-full h-15 items-center justify-between px-4`,
             {
-              backgroundColor: "#fff",
+              // backgroundColor: "#fff",
               shadowColor: "#000",
               shadowOffset: { width: 1, height: 1 },
               shadowOpacity: 0.1,
@@ -146,7 +146,7 @@ const ExploreScreen = ({ navigation }) => {
           ]}
         >
           <Text h4 style={tw`text-black `}>
-            xcapedEventz
+            xcaped
           </Text>
 
           <TouchableOpacity

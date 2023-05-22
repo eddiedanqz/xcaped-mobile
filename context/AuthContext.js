@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       .catch((err) => {
             console.log(err.response.data);
             setData(err.response.data)
-            setIsVisible(true)
+            // setIsVisible(true)
            });
 
   //   const params = {
