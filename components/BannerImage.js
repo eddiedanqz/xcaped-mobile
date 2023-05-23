@@ -14,25 +14,22 @@ const uploadIcon = require("../assets/banner-placeholder.png");
 //const { uri: uploadIconUrl } = RNIImage.resolveAssetSource(uploadIcon)
 
 const InputField = ({ url, onPress }) => {
-
   return (
     <Fragment>
       <TouchableOpacity
         activeOpacity={0.7}
         style={[
-          tw`justify-center items-center rounded w-full h-52 
+          tw`justify-center items-center rounded w-full h-48 
       `,
           // { borderStyle: "dashed", borderRadius: 1, borderWidth: 1,borderColor:'gray' },
         ]}
         onPress={onPress}
       >
-        
-          <Image
-            source={(url)? { uri: url } : uploadIcon}
-            resizeMode="stretch"
-            style={tw`w-full h-full rounded-xl`}
-          />
-         
+        <Image
+          source={url ? { uri: url } : uploadIcon}
+          resizeMode="stretch"
+          style={tw`w-full h-full rounded-xl`}
+        />
       </TouchableOpacity>
     </Fragment>
   );

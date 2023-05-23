@@ -18,8 +18,8 @@ import ImageCard from "../../components/cards/ImageCard";
 import FilterModal from "../../components/search/FilterModal";
 import { BASEURL } from "@env";
 
-const PlaceScreen = () => {
-  return <div>PlaceScreen</div>;
+const PlaceScreen = ({ navigation }) => {
+  return <SafeAreaView style={tw`h-full bg-white`}>Add</SafeAreaView>;
 };
 
 export default PlaceScreen;
