@@ -324,7 +324,7 @@ function ProfileScreen({ navigation }) {
         <Section containerStyle={tw`p-2 mb-5`}>
           <View style={tw`w-full flex-row justify-between items-center`}>
             <TouchableOpacity
-              onPress={() => navigation.navigate("Add Place")}
+              onPress={() => navigation.navigate("Place")}
               style={tw`bg-white justify-center items-center w-7/12 h-28 p-4`}
             >
               <Text style={tw`flex-1 font-bold text-gray-600 text-base`}>

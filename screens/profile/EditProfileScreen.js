@@ -201,6 +201,7 @@ const EditProfileScreen = ({ navigation }) => {
           messageStyle={tw`bg-black p-3 rounded-lg bg-opacity-70 self-center`}
         />
       )}
+
       <ScrollView style={tw`pb-5`}>
         <KeyboardAwareScrollView keyboardDismissMode="interactive">
           <Section containerStyle={tw`mb-4 mt-4 p-2 z-0`}>

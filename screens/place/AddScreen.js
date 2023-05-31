@@ -13,7 +13,7 @@ import {
 import { Icon, Input, BottomSheet, ListItem } from "react-native-elements";
 import tw from "tailwind-react-native-classnames";
 import DateTimePicker from "@react-native-community/datetimepicker";
-//import { Picker } from "@react-native-picker/picker";
+import SelectDropdown from "react-native-select-dropdown";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as ImagePicker from "expo-image-picker";
 import base64 from "react-native-base64";
@@ -22,7 +22,6 @@ import axios from "axios";
 
 import { BASEURL } from "@env";
 import TextButton from "../../components/buttons/TextButton";
-import BannerImage from "../../components/BannerImage";
 import MapModal from "../../components/modal/MapModal";
 import { noBanner } from "../../utils/helpers";
 
@@ -34,20 +33,27 @@ const AddScreen = ({ navigation }) => {
   const [categoryId, setCategoryId] = useState(0);
   const [category, setCategories] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
-  const [contact, setContact] = useState("");
+  const [phone, setPhone] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [location, setLocation] = useState("");
   const [address, setAddress] = useState("");
   const [latitude, setLat] = useState("");
   const [longitude, setLon] = useState("");
-  const [startDay, setStartDay] = useState("Choose Day");
+  const [startDay, setStartDay] = useState("");
   const [closeDay, setCloseDay] = useState("");
+  const [show, setShow] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [type, setType] = useState("");
+  const [openTime, setOpenTime] = useState("");
+  const [closeTime, setCloseTime] = useState("");
   const [days, setDays] = useState([
     { day: "Monday", value: "Mon" },
     { day: "Tuseday", value: "Tue" },
     { day: "Wednesday", value: "Wed" },
     { day: "Thursday", value: "Thu" },
     { day: "Friday", value: "Fri" },
+    { day: "Saturday", value: "Sat" },
+    { day: "Sunday", value: "Sun" },
   ]);
 
   //Load Image
@@ -81,47 +87,63 @@ const AddScreen = ({ navigation }) => {
     setCategoryId(c.id);
   };
 
-  const sendGps = (values) => {
-    setAddress(values.address);
-    setLat(values.latitude);
-    setLon(values.longitude);
-    setShowModal(false);
+  //Handle time
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === "ios");
+    setDate(currentDate);
+
+    let tempDate = new Date(currentDate);
+    let timeValue = tempDate.toLocaleTimeString().replace(/(.*)\D\d+/, "$1");
+    //
+    type == "openTime" ? setOpenTime(`${timeValue}`) : "";
+    type == "closeTime" ? setCloseTime(`${timeValue}`) : "";
+    //setShow(false);
+  };
+
+  const showMode = (timeType) => {
+    setShow(!show);
+    setType(timeType);
   };
 
   const renderLogo = () => {
     return (
-      <View style={tw`p-3 mb-5 w-36 h-36`}>
-        <TouchableOpacity onPress={openImagePickerAsync}>
-          <Image
-            source={path ? { uri: path } : noBanner}
-            resizeMode="cover"
-            style={tw`w-full h-full rounded-xl`}
-          />
-        </TouchableOpacity>
-        <Text style={tw`text-sm mt-3 ml-2`}>Add logo</Text>
-        {/**Button */}
-        <View
-          style={tw`bg-transparent w-10 h-10 absolute -bottom-5 -right-2 items-center justify-end`}
-        >
-          {path && (
-            <TextButton
-              buttonContainerStyle={tw`w-12 h-12 p-3 rounded-full shadow-lg mb-3`}
-              iconName="trash"
-              size={13}
-              iconColor="white"
-              onPress={removeImage}
+      <View style={tw`p-3 mb-4`}>
+        <View style={tw`w-36 h-36 mb-2`}>
+          <TouchableOpacity onPress={openImagePickerAsync}>
+            <Image
+              source={path ? { uri: path } : noBanner}
+              resizeMode="cover"
+              style={tw`w-full h-full rounded-full`}
             />
-          )}
+          </TouchableOpacity>
+          {/**Button */}
+          <View
+            style={tw`bg-transparent w-10 h-10 absolute -bottom-5 -right-2 items-center justify-end`}
+          >
+            {path && (
+              <TextButton
+                buttonContainerStyle={tw`w-12 h-12 p-3 rounded-full shadow-lg mb-3`}
+                iconName="trash"
+                size={13}
+                iconColor="white"
+                onPress={removeImage}
+              />
+            )}
+          </View>
         </View>
+        <Text style={tw`text-lg text-gray-600 mt-2 ml-2`}>
+          Add business logo
+        </Text>
       </View>
     );
   };
 
   const renderName = () => {
     return (
-      <View style={tw`p-1 flex-row items-center justify-center`}>
+      <View style={tw`flex-row items-center justify-center p-1`}>
         <Input
-          placeholder="Name "
+          placeholder="Business Name"
           textContentType="none"
           leftIcon={<Icon type="feather" name="type" size={20} color="gray" />}
           onChangeText={(newText) => setName(newText)}
@@ -132,7 +154,7 @@ const AddScreen = ({ navigation }) => {
 
   const renderType = () => {
     return (
-      <View style={tw`flex-row items-center mb-2 ml-2 p-1 `}>
+      <View style={tw`flex-row items-center mb-3 ml-2 p-1 `}>
         <Icon type="feather" name="tag" size={20} color="gray" />
         <TouchableOpacity onPress={() => setIsVisible(true)}>
           <Text style={tw`mx-2 text-lg text-gray-600`}>
@@ -165,28 +187,92 @@ const AddScreen = ({ navigation }) => {
 
   const renderOpenDays = () => {
     return (
-      <View style={tw`flex-row ml-2 p-1`}>
+      <View style={tw`flex-row ml-2 p-1 mb-2`}>
         <Icon type="feather" name="clock" size={20} color="gray" />
-        <View style={tw`flex-1`}>
-          <View style={tw`flex-row justify-between mx-4`}>
-            {/* <Picker
-              testID="picker"
-              selectedValue={startDay}
-              onValueChange={(itemValue, itemIndex) => setStartDay(itemValue)}
-              mode="dropdown"
-            >
-              {days.map((ele, i) => {
-                <Picker.Item key={i} label={ele.label} value={ele.value} />;
-              })}
-            </Picker> */}
-
-            <Text>FRi</Text>
+        <View style={tw`flex-1 mx-1 w-full`}>
+          <View style={tw`flex-row justify-between`}>
+            <SelectDropdown
+              data={days}
+              onSelect={(selectedItem) => {
+                setStartDay(selectedItem.value);
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return selectedItem.day;
+              }}
+              rowTextForSelection={(item, index) => {
+                return item.value;
+              }}
+              defaultButtonText="Opening Day"
+              buttonStyle={tw`bg-white w-40 h-10 items-start m-0 p-1`}
+              buttonTextStyle={tw`text-left m-0 text-gray-600`}
+              rowStyle={tw`border-gray-200`}
+              renderDropdownIcon={() => (
+                <Icon
+                  type="feather"
+                  name="chevron-down"
+                  size={20}
+                  color="gray"
+                />
+              )}
+            />
+            <SelectDropdown
+              data={days}
+              onSelect={(selectedItem) => {
+                setCloseDay(selectedItem.value);
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return selectedItem.day;
+              }}
+              rowTextForSelection={(item, index) => {
+                return item.value;
+              }}
+              defaultButtonText="Closing Day"
+              buttonStyle={tw`bg-white w-40 h-10 items-start p-0`}
+              buttonTextStyle={tw`text-gray-600`}
+              rowStyle={tw`border-gray-200`}
+              renderDropdownIcon={() => (
+                <Icon
+                  type="feather"
+                  name="chevron-down"
+                  size={20}
+                  color="gray"
+                />
+              )}
+            />
           </View>
-          <Text>oiuhgiuh</Text>
+
+          <View style={tw`flex-row justify-between ml-1 my-2`}>
+            <Text
+              style={tw`text-base text-gray-600`}
+              onPress={() => showMode("openTime")}
+            >
+              {openTime ? openTime : "00:00"}
+            </Text>
+            <Text
+              style={tw`text-base text-gray-600`}
+              onPress={() => showMode("closeTime")}
+            >
+              {closeTime ? closeTime : "00:00"}
+            </Text>
+          </View>
+          {/*Picker*/}
+          <View>
+            {show && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode="time"
+                is24Hour={false}
+                display="default"
+                onChange={onChange}
+              />
+            )}
+          </View>
         </View>
       </View>
     );
   };
+
   const renderLocation = () => {
     return (
       <View>
@@ -203,7 +289,7 @@ const AddScreen = ({ navigation }) => {
           />
           </View>*/}
         {/*Address*/}
-        <View style={tw`py-2 px-1 flex-row items-center justify-center`}>
+        <View style={tw`px-1 flex-row items-center justify-center`}>
           <Input
             placeholder="Address"
             textContentType="none"
@@ -225,20 +311,64 @@ const AddScreen = ({ navigation }) => {
           placeholder="Phone no."
           textContentType="telephoneNumber"
           leftIcon={<Icon type="feather" name="phone" size={20} color="gray" />}
-          onChangeText={(newText) => setContact(newText)}
+          onChangeText={(newText) => setPhone(newText)}
         />
       </View>
     );
   };
 
+  const sendGps = (values) => {
+    setAddress(values.address);
+    setLat(values.latitude);
+    setLon(values.longitude);
+    setShowModal(false);
+  };
+
+  const sendData = () => {
+    const params = {
+      name,
+      path,
+      typeId: categoryId,
+      address,
+      latitude,
+      longitude,
+      phone,
+      startDay,
+      closeDay,
+      openTime,
+      closeTime,
+    };
+
+    console.log(params);
+
+    SecureStore.getItemAsync("mytoken").then((token) => {
+      let parsed = JSON.parse(token);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${parsed}`,
+          "Content-Type": "multipart/form-data",
+        },
+      };
+      axios
+        .post(`${BASEURL}/api/place`, params, config)
+        .then((res) => {
+          if (res.data) {
+            // console.log(res.data)
+            navigation.navigate("Profile");
+          }
+        })
+        .catch((err) => {
+          console.log(err.response.data.message);
+        });
+    });
+  };
+
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
       {/*Header*/}
-      <View style={tw`overflow-hidden pb-1 mt-1`}>
+      <View style={tw`overflow-hidden border-b border-gray-200`}>
         <View
-          style={[
-            tw`flex-row w-full h-16 items-center justify-between px-3 shadow `,
-          ]}
+          style={[tw`flex-row w-full h-16 items-center justify-between px-3`]}
         >
           <TouchableOpacity
             style={tw`justify-center ml-2`}
@@ -250,7 +380,7 @@ const AddScreen = ({ navigation }) => {
       </View>
 
       <KeyboardAwareScrollView>
-        <View style={tw`p-2 mt-0`}>
+        <View style={tw`p-2 mt-1 mb-5`}>
           {renderLogo()}
           {renderName()}
           {renderType()}
@@ -258,7 +388,19 @@ const AddScreen = ({ navigation }) => {
           {renderLocation()}
           {renderContact()}
         </View>
+
+        {/**Button */}
+        <View
+          style={tw`bg-white h-24 bottom-3 left-0 right-0 p-3 justify-center items-center`}
+        >
+          <TextButton
+            label="Done"
+            buttonContainerStyle={tw`h-12 w-64 rounded`}
+            onPress={() => sendData()}
+          />
+        </View>
       </KeyboardAwareScrollView>
+
       {/**Filter */}
       {showModal && (
         <MapModal

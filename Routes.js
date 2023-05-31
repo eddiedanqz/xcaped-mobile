@@ -27,7 +27,9 @@ import OrderCompleteScreen from "./screens/ticket/OrderCompleteScreen";
 import AttendeeScreen from "./screens/report/AttendeeScreen";
 import ReportScreen from "./screens/report/ReportScreen";
 import QrScannerScreen from "./screens/report/QrScannerScreen";
-import AddPlacScreen from "./screens/place/AddScreen";
+import AddPlaceScreen from "./screens/place/AddScreen";
+import EditPlaceScreen from "./screens/place/EditPlaceScreen";
+import PlaceScreen from "./screens/place/PlaceScreen";
 
 const Stack = createStackNavigator();
 const NavStack = createStackNavigator();
@@ -76,7 +78,9 @@ export default function App() {
             <NavStack.Screen name="Report" component={ReportScreen} />
             <NavStack.Screen name="Attendee" component={AttendeeScreen} />
             <NavStack.Screen name="Scanner" component={QrScannerScreen} />
-            <NavStack.Screen name="Add Place" component={AddPlacScreen} />
+            <NavStack.Screen name="Add Place" component={AddPlaceScreen} />
+            <NavStack.Screen name="Edit Place" component={EditPlaceScreen} />
+            <NavStack.Screen name="Place" component={PlaceScreen} />
           </NavStack.Navigator>
         ) : (
           <Stack.Navigator screenOptions={{ headerShown: false }}>
