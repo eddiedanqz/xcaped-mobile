@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -19,24 +19,23 @@ import { BASEURL } from "@env";
 import FilterModal from "../../components/search/FilterModal";
 import HorizontalCard from "../../components/cards/HorizontalCard";
 import ListCard from "../../components/cards/ListCard";
-import {FilterContext} from '../../context/filterContext';
-
+import { FilterContext } from "../../context/filterContext";
 
 const SearchScreen = ({ navigation, route }) => {
-  const {filters} = useContext(FilterContext)
+  const { filters } = useContext(FilterContext);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [results, setResults] = useState([]);
   const [offset, setOffset] = useState(2);
   const [title, setTitle] = useState("");
   const [venue, setVenue] = useState("");
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState("");
 
   const filterData = () => {
     //
-    handleSubmit()
-    setShowFilterModal(false)
+    handleSubmit();
+    setShowFilterModal(false);
   };
   //
   const loadMore = () => {
@@ -71,7 +70,7 @@ const SearchScreen = ({ navigation, route }) => {
     const renderItem = ({ item }) => (
       <HorizontalCard
         item={item}
-        onPress={() => navigation.navigate("Event", { id:item.id })}
+        onPress={() => navigation.navigate("Event", { id: item.id })}
       />
     );
 
@@ -92,16 +91,19 @@ const SearchScreen = ({ navigation, route }) => {
       setResults([]);
       return;
     }
-   
+
     SecureStore.getItemAsync("mytoken").then((token) => {
-      fetch(`${BASEURL}/api/search?title=${title}&venue=${venue}&category=${category}
-      &date=${date}`, {
-        method: "GET",
-        headers: new Headers({
-          'Accept': "application/json",
-          Authorization: `Bearer ${JSON.parse(token)}`,
-        }),
-      })
+      fetch(
+        `${BASEURL}/api/search?title=${title}&venue=${venue}&category=${category}
+      &date=${date}`,
+        {
+          method: "GET",
+          headers: new Headers({
+            Accept: "application/json",
+            Authorization: `Bearer ${JSON.parse(token)}`,
+          }),
+        }
+      )
         .then((response) => response.json())
         .then((res) => {
           console.log(res.meta);
@@ -134,22 +136,21 @@ const SearchScreen = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    getCategories()
-  }, [])
+    getCategories();
+  }, []);
 
   useEffect(() => {
-//  console.log(filters)
-    setVenue(filters.venue)
-    setCategory(filters.category)
-    setDate(filters.date)
+    //  console.log(filters)
+    setVenue(filters.venue);
+    setCategory(filters.category);
+    setDate(filters.date);
 
     return () => {
       setResults([]);
       setOffset(2);
     };
-
   }, [filters]);
- 
+
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
       {/**Search Header*/}
@@ -205,11 +206,5 @@ const SearchScreen = ({ navigation, route }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    padding: 10,
-  },
-});
 
 export default SearchScreen;
