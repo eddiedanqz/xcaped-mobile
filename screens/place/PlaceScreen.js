@@ -354,7 +354,7 @@ const PlaceScreen = ({ navigation }) => {
       <Modal
         visible={showModal}
         presentationStyle="pageSheet"
-        animationType="fade"
+        animationType="slide"
       >
         {/**Header */}
         <View

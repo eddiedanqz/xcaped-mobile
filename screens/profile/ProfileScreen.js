@@ -317,7 +317,11 @@ function ProfileScreen({ navigation }) {
                 </View>
               </BottomSheet>
             </View>
-          ))}
+          )) && (
+            <View style={tw`h-36 justify-center items-center`}>
+              <Text style={tw`text-xl text-gray-400`}>No Events</Text>
+            </View>
+          )}
         </Section>
 
         {/** Business Page*/}
@@ -327,8 +331,11 @@ function ProfileScreen({ navigation }) {
               onPress={() => navigation.navigate("Place")}
               style={tw`bg-white justify-center items-center w-7/12 h-28 p-4`}
             >
-              <Text style={tw`flex-1 font-bold text-gray-600 text-base`}>
+              <Text style={tw`font-bold text-gray-600 text-base`}>
                 Add a Place
+              </Text>
+              <Text style={tw`font-bold text-gray-400 text-sm`}>
+                This is a description
               </Text>
             </TouchableOpacity>
 

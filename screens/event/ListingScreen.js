@@ -22,32 +22,31 @@ const ListingScreen = ({ navigation }) => {
   useDeviceContext(tw);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [events, setEvents] = useState([]);
-  const [offset, setOffset] = useState(1)
+  const [offset, setOffset] = useState(1);
 
- //
- const loadMore = () => {
-  //param
+  //
+  const loadMore = () => {
+    //param
     SecureStore.getItemAsync("mytoken").then((token) => {
-        fetch(`${BASEURL}/api/events?page=${offset}`, {
-          method: "GET",
-          headers: new Headers({
-            "Accept": "application/json",
-           Authorization: `Bearer ${JSON.parse(token)}`,
-          }),
+      fetch(`${BASEURL}/api/events?page=${offset}`, {
+        method: "GET",
+        headers: new Headers({
+          Accept: "application/json",
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        }),
+      })
+        .then((response) => response.json())
+        .then((res) => {
+          let { data } = res;
+          console.log(res.meta);
+          setEvents((events) => [...events, ...data]);
+          setOffset(offset + 1);
         })
-          .then((response) => response.json())
-          .then((res) => {
-              let {data} = res
-               console.log(res.meta);
-             setEvents( events => [...events, ...data]);
-             setOffset( offset + 1)
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
-      });
-
- }
+        .catch((err) => {
+          console.log(err.message);
+        });
+    });
+  };
 
   const renderEvents = () => {
     //
@@ -66,41 +65,40 @@ const ListingScreen = ({ navigation }) => {
         renderItem={renderItem}
         contentContainerStyle={tw`py-5`}
         onEndReached={loadMore}
-        onEndReachedThreshold ={0.1}
+        onEndReachedThreshold={0.1}
       />
     );
   };
-  
- const getEvents = () => {
-  SecureStore.getItemAsync("mytoken").then((token) => {
+
+  const getEvents = () => {
+    SecureStore.getItemAsync("mytoken").then((token) => {
       fetch(`${BASEURL}/api/events`, {
         method: "GET",
         headers: new Headers({
           Accept: "application/json",
-         Authorization: `Bearer ${JSON.parse(token)}`,
+          Authorization: `Bearer ${JSON.parse(token)}`,
         }),
       })
         .then((response) => response.json())
         .then((res) => {
           // console.log(res.data);
           setEvents(res.data);
-          setOffset( offset + 1)
+          setOffset(offset + 1);
         })
         .catch((err) => {
           console.log(err.message);
         });
     });
- }
- 
+  };
+
   useEffect(() => {
-    getEvents()
+    getEvents();
 
     return () => {
-        setEvents([])
-        setOffset(1)
-      }
-  },[]);
-
+      setEvents([]);
+      setOffset(1);
+    };
+  }, []);
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
@@ -119,20 +117,18 @@ const ListingScreen = ({ navigation }) => {
             },
           ]}
         >
-        <TouchableOpacity style={tw`justify-center`}  onPress={() => navigation.goBack()}>
-          <Icon type="feather" name="arrow-left" size={20}  color='#151618'/>
-        </TouchableOpacity>
-        
+          <TouchableOpacity
+            style={tw`justify-center`}
+            onPress={() => navigation.goBack()}
+          >
+            <Icon type="feather" name="arrow-left" size={20} color="#151618" />
+          </TouchableOpacity>
+
           <TouchableOpacity
             style={tw`justify-center`}
             onPress={() => navigation.navigate("Search")}
           >
-            <Icon
-              type="feather"
-              name="search"
-              size={20}
-              color="#151618"
-            />
+            <Icon type="feather" name="search" size={20} color="#151618" />
           </TouchableOpacity>
         </View>
       </View>
