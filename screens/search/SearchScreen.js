@@ -10,32 +10,39 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon, Tab, TabView } from "@rneui/themed";
+
 import tw from "tailwind-react-native-classnames";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as SecureStore from "expo-secure-store";
+import { useIsFocused } from "@react-navigation/native";
 
 import { BASEURL } from "@env";
+
 import FilterModal from "../../components/search/FilterModal";
-import HorizontalCard from "../../components/cards/HorizontalCard";
-import ListCard from "../../components/cards/ListCard";
 import { FilterContext } from "../../context/filterContext";
+import { noImage, noBanner } from "../../utils/helpers";
 
 const SearchScreen = ({ navigation, route }) => {
   const { filters } = useContext(FilterContext);
   const [showFilterModal, setShowFilterModal] = useState(false);
-  const [results, setResults] = useState([]);
-  const [offset, setOffset] = useState(2);
-  const [title, setTitle] = useState("");
+  const [showFilterIcon, setShowFilterIcon] = useState(true);
+  const [index, setIndex] = useState(0);
+  const [query, setQuery] = useState("");
   const [venue, setVenue] = useState("");
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [date, setDate] = useState("");
+  const [results, setResults] = useState({});
+
+  const isFocused = useIsFocused();
 
   const filterData = () => {
     //
-    handleSubmit();
-    setShowFilterModal(false);
+    // handleSubmit();
+    // setShowFilterModal(false);
+    // setShowFilterIcon(false);
+    console.log(showFilterIcon);
   };
   //
   const loadMore = () => {
@@ -55,8 +62,8 @@ const SearchScreen = ({ navigation, route }) => {
         .then((response) => response.json())
         .then((res) => {
           let { data } = res;
-          setResults((results) => [...results, ...data]);
-          setOffset(offset + 1);
+          // setResults((results) => [...results, ...data]);
+          // setOffset(offset + 1);
           console.log(res);
         })
         .catch((err) => {
@@ -65,37 +72,128 @@ const SearchScreen = ({ navigation, route }) => {
     });
   };
 
-  const renderData = () => {
+  const renderEvents = () => {
     //
     const renderItem = ({ item }) => (
-      <HorizontalCard
-        item={item}
-        onPress={() => navigation.navigate("Event", { id: item.id })}
-      />
+      <TouchableOpacity
+        style={[tw`bg-white mb-4 mx-4 rounded-md shadow-md`]}
+        onPress={() => navigation.navigate("Event", { id: item.searchable.id })}
+      >
+        <View style={tw`flex-row items-center border-b border-gray-300 p-1`}>
+          <Image
+            source={
+              item.searchable.banner
+                ? {
+                    uri: `${BASEURL}/storage/images/uploads/${item.searchable.banner}`,
+                  }
+                : noBanner
+            }
+            resizeMode="stretch"
+            style={tw`w-20 h-20 rounded`}
+          />
+          <View style={tw`flex-1 justify-center ml-2 `}>
+            {/**Title */}
+            <Text style={tw`text-lg font-bold`}> {item.searchable.title} </Text>
+            {/**Location */}
+            <View style={tw`flex-row items-center`}>
+              <Icon type="feather" name="map-pin" color="#4b5563db" size={16} />
+              <Text style={tw`text-base text-gray-600`}>
+                {" "}
+                {item.searchable.venue}{" "}
+              </Text>
+            </View>
+          </View>
+        </View>
+        {/**Extra Content */}
+        <View style={tw`flex-row justify-between items-center p-1`}>
+          {/**Category */}
+          <View
+            style={[
+              tw`rounded-xl px-2 py-1 items-center`,
+              { backgroundColor: "#ff8552", color: "white" },
+            ]}
+          >
+            <Text
+              style={[
+                tw`text-sm font-semibold`,
+                { backgroundColor: "#ff8552", color: "white" },
+              ]}
+            >
+              {item.searchable.category?.name}
+            </Text>
+          </View>
+          <View style={tw`flex-row items-center`}>
+            <Text style={[tw`text-base font-semibold`, { color: "#151618" }]}>
+              {new Date(item.searchable.start_date).toDateString()}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
     );
 
     return (
       <FlatList
-        data={results}
-        keyExtractor={(item) => `${item.id}`}
+        data={results.events}
+        keyExtractor={(item) => `${item.searchable.id}`}
         renderItem={renderItem}
         contentContainerStyle={tw`py-5`}
-        onEndReached={loadMore}
+        // onEndReached={loadMore}
+        onEndReachedThreshold={0.1}
+      />
+    );
+  };
+
+  const renderPeople = () => {
+    //
+    const renderItem = ({ item }) => (
+      <View style={[tw`flex justify-start items-center mb-3 px-3 py-2`]}>
+        <TouchableOpacity
+          style={tw`flex-row items-center w-full`}
+          onPress={() =>
+            navigation.navigate("User Profile", { id: item.searchable.id })
+          }
+        >
+          <Image
+            source={
+              /*item.banner ? {uri:`${BASEURL}/storage/images/uploads/${item.banner}` } : */ noImage
+            }
+            resizeMode="stretch"
+            style={tw`w-16 h-16 rounded`}
+          />
+          <View style={tw`px-3`}>
+            <Text style={tw`text-base font-semibold`} numberOfLines={1}>
+              {" "}
+              {item.searchable.username}{" "}
+            </Text>
+            <Text numberOfLines={1} style={tw`text-gray-600 text-base`}>
+              {item.searchable.fullname}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+
+    return (
+      <FlatList
+        data={results.users}
+        keyExtractor={(item) => `${item.searchable.id}`}
+        renderItem={renderItem}
+        contentContainerStyle={tw`py-5`}
+        // onEndReached={loadMore}
         onEndReachedThreshold={0.1}
       />
     );
   };
 
   const handleSubmit = () => {
-    if (title == "") {
+    if (query == "") {
       setResults([]);
       return;
     }
 
     SecureStore.getItemAsync("mytoken").then((token) => {
       fetch(
-        `${BASEURL}/api/search?title=${title}&venue=${venue}&category=${category}
-      &date=${date}`,
+        `${BASEURL}/api/search?query=${query}&venue=${venue}&category=${category}&date=${date}`,
         {
           method: "GET",
           headers: new Headers({
@@ -106,8 +204,24 @@ const SearchScreen = ({ navigation, route }) => {
       )
         .then((response) => response.json())
         .then((res) => {
-          console.log(res.meta);
-          setResults(res.data);
+          // Create an empty object to store the grouped data
+          const groupedData = {};
+          // Iterate through the array and group objects by their "type" property
+          res.forEach((item) => {
+            const itemType = item.type;
+
+            if (!groupedData[itemType]) {
+              // If the type doesn't exist in the groupedData object, create a new array for it
+              groupedData[itemType] = [item];
+            } else {
+              // If the type already exists, push the item to the existing array
+              groupedData[itemType].push(item);
+            }
+          });
+
+          // Now, groupedData contains the objects grouped by their "type" property
+          setResults(groupedData);
+          // console.log(groupedData);
         })
         .catch((err) => {
           console.log(err.message);
@@ -144,12 +258,12 @@ const SearchScreen = ({ navigation, route }) => {
     setVenue(filters.venue);
     setCategory(filters.category);
     setDate(filters.date);
+    setQuery("");
 
     return () => {
       setResults([]);
-      setOffset(2);
     };
-  }, [filters]);
+  }, [filters, isFocused]);
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
@@ -179,18 +293,49 @@ const SearchScreen = ({ navigation, route }) => {
               style={tw`flex-1 text-lg `}
               placeholderTextColor="black"
               placeholder="Search..."
-              onChangeText={(val) => setTitle(val)}
+              onChangeText={(val) => setQuery(val)}
               returnKeyType="search"
               // onChange={handleSubmit}
               onSubmitEditing={handleSubmit}
             />
 
-            <TouchableOpacity onPress={() => setShowFilterModal(true)}>
-              <Icon name="sliders" type="feather" size={20} />
-            </TouchableOpacity>
+            {showFilterIcon && (
+              <TouchableOpacity onPress={() => setShowFilterModal(true)}>
+                <Icon name="sliders" type="feather" size={20} />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </View>
+
+      {/**Search Results */}
+      <Tab
+        value={index}
+        onChange={(e) => setIndex(e)}
+        indicatorStyle={{
+          backgroundColor: "black",
+          height: 2,
+        }}
+        dense
+      >
+        <Tab.Item
+          titleStyle={tw`text-black text-sm`}
+          onPressIn={() => setShowFilterIcon(true)}
+        >
+          Events
+        </Tab.Item>
+        <Tab.Item
+          titleStyle={tw`text-black text-sm`}
+          onPressIn={() => setShowFilterIcon(false)}
+        >
+          People
+        </Tab.Item>
+      </Tab>
+
+      <TabView value={index} onChange={setIndex} animationType="spring">
+        <TabView.Item style={tw`w-full`}>{renderEvents()}</TabView.Item>
+        <TabView.Item style={tw`w-full`}>{renderPeople()}</TabView.Item>
+      </TabView>
 
       {/**Filter */}
       {showFilterModal && (
@@ -201,8 +346,6 @@ const SearchScreen = ({ navigation, route }) => {
           categories={categories}
         />
       )}
-      {/**Search Results */}
-      <View style={tw`pb-10`}>{renderData()}</View>
     </SafeAreaView>
   );
 };
