@@ -22,34 +22,13 @@ import TextButton from "../buttons/TextButton";
 import Section from "../content/Section";
 import { noImage } from "../../utils/helpers";
 
-const MapModal = ({ isVisible, onClose, ticketId, action }) => {
+const InviteModal = ({ isVisible, onClose, event }) => {
   const modalAnimatedValue = useRef(new Animated.Value(0)).current;
   const [showModal, setShowModal] = useState(isVisible);
   const [value, setVal] = useState("");
-  const [users, setResults] = useState([
-    {
-      id: 1,
-      profile: {
-        banner: require("../../assets/awards.jpg"),
-      },
-      fullname: "Jonh Doe",
-      username: "mkiwfl1441",
-    },
-    {
-      id: 2,
-      banner: require("../../assets/toonmecom_d39300.jpg"),
-      title: "Meek Koo",
-      startTime: "08:30",
-    },
-    {
-      id: 4,
-      banner: require("../../assets/salaFest.jpg"),
-      title: "New Gaol",
-      startTime: "08:30",
-    },
-  ]);
-  const [id, setId] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [users, setResults] = useState([]);
+  const [id, setId] = useState(0);
+  const [invite, setInvite] = useState({});
 
   function renderSearch() {
     return (
@@ -99,32 +78,29 @@ const MapModal = ({ isVisible, onClose, ticketId, action }) => {
             <Text style={tw`text-base text-gray-500`}> {item.username}</Text>
           </View>
         </View>
-        {/**Check button */}
-        <TouchableOpacity
-          style={tw`absolute right-0 mr-1 z-10`}
-          onPress={() => {
-            setId(item.id);
-            setModalVisible(true);
-          }}
-        >
-          <View
-            style={tw`rounded-full p-1 mx-1 border-2 ${
-              item.id === id ? "border-green-400" : "border-gray-400"
-            }
-            `}
-            //onPress={() => selectHandler(item)}
-          >
-            <Icon
-              name="check"
-              type="feather"
-              size={12}
-              color={`${item.id === id ? "white" : "gray"}`}
-              containerStyle={tw`rounded-full  ${
-                item.id === id ? "bg-green-400" : ""
-              }`}
-            />
-          </View>
-        </TouchableOpacity>
+        {/**Send button */}
+        <View style={tw`absolute right-0 mr-1 z-10`}>
+          {item.id === id ? (
+            <TouchableOpacity
+              style={tw`rounded p-2 mx-1 text-blue-900 bg-gray-300`}
+              onPress={() => {
+                undo();
+              }}
+            >
+              <Text style={tw`text-sm`}>Undo</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={tw`rounded p-2 mx-1 bg-blue-300 text-blue-900`}
+              onPress={() => {
+                setId(item.id);
+                send(item.id);
+              }}
+            >
+              <Text style={tw`text-sm`}>Send</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     );
 
@@ -139,7 +115,7 @@ const MapModal = ({ isVisible, onClose, ticketId, action }) => {
   };
 
   //
-  const send = () => {
+  const undo = () => {
     SecureStore.getItemAsync("mytoken").then((token) => {
       let parsed = JSON.parse(token);
       const config = {
@@ -149,13 +125,47 @@ const MapModal = ({ isVisible, onClose, ticketId, action }) => {
         },
       };
       axios
-        .post(`${BASEURL}/api/ticket/share/${ticketId}`, { id }, config)
+        .post(`${BASEURL}/api/invitations/undo/`, { id: invite.id }, config)
         .then((res) => {
           let { data } = res;
-          // console.log(data)
-          if (data.message == "success") {
-            setShowModal(false);
+          console.log(data);
+          if (data == "Done") {
+            setId(0);
           }
+        })
+        .catch((err) => {
+          console.log(err.response.data.message);
+        });
+    });
+  };
+
+  const send = (id) => {
+    SecureStore.getItemAsync("mytoken").then((token) => {
+      let parsed = JSON.parse(token);
+      const config = {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${parsed}`,
+        },
+      };
+      axios
+        .post(
+          `${BASEURL}/api/invitations/send/`,
+          {
+            id: id,
+            eventId: event.eventId,
+            banner: event.banner,
+            title: event.title,
+          },
+          config
+        )
+        .then((res) => {
+          let { data } = res;
+          console.log(data);
+          setInvite(data);
+          //   if (data.message == "success") {
+          //     setShowModal(false);
+          //   }
         })
         .catch((err) => {
           console.log(err.response.data.message);
@@ -175,7 +185,7 @@ const MapModal = ({ isVisible, onClose, ticketId, action }) => {
       axios
         .get(`${BASEURL}/api/followers`, config)
         .then((res) => {
-          console.log(res.data);
+          //  console.log(res.data);
           setResults(res.data.data);
         })
         .catch((err) => {
@@ -266,48 +276,9 @@ const MapModal = ({ isVisible, onClose, ticketId, action }) => {
         {/**Search */}
         {renderSearch()}
         <View style={tw`flex-1 px-2`}>{renderUsers()}</View>
-        {/** */}
-        <Modal animationType="fade" transparent={true} visible={modalVisible}>
-          <View style={tw`flex-1 bg-black bg-opacity-70`}>
-            <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
-              <View style={tw`absolute bottom-0 top-0 left-0 right-0 `} />
-            </TouchableWithoutFeedback>
-          </View>
-          <View style={tw`flex-1 justify-center items-center absolute inset-0`}>
-            <View style={tw`bg-white rounded p-6`}>
-              <Text style={tw`font-bold text-center text-base text-gray-700`}>
-                Are you sure?
-              </Text>
-              <Text style={tw`text-center mb-5 mt-1 mx-2 text-gray-600`}>
-                This action cannot be reversed.
-              </Text>
-              <View style={tw`flex-row justify-between items-center`}>
-                <TextButton
-                  label="Cancel"
-                  buttonContainerStyle={tw`p-1 bg-transparent`}
-                  labelStyle={tw`text-red-400`}
-                  onPress={() => setModalVisible(false)}
-                />
-                <TextButton
-                  label="Yes"
-                  buttonContainerStyle={tw`p-1 bg-transparent`}
-                  labelStyle={tw`text-black`}
-                  onPress={() => {
-                    send();
-                    setModalVisible(false);
-                  }}
-                />
-              </View>
-            </View>
-          </View>
-        </Modal>
-        {/**Button 
-        <View style={tw`absolute h-24 bottom-20 left-0 right-0 p-3 bg-white`}>
-      <TextButton label='Done' buttonContainerStyle={tw`h-11 rounded`}/>
-        </View>*/}
       </Animated.View>
     </Modal>
   );
 };
 
-export default MapModal;
+export default InviteModal;

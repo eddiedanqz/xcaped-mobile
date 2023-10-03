@@ -20,6 +20,7 @@ import ReactionModal from "../../components/search/ReactionModal";
 import TextButton from "../../components/buttons/TextButton";
 import { BASEURL } from "@env";
 import { noImage } from "../../utils/helpers";
+import InviteModal from "../../components/modal/InviteModal";
 
 const WelcomeScreen = ({ navigation, route }) => {
   const [authUser, setAuth] = useState(null);
@@ -29,6 +30,7 @@ const WelcomeScreen = ({ navigation, route }) => {
   const [profile, setProfile] = useState("");
   const [status, setStatus] = useState(null);
   const [savedStatus, setSavedStatus] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const toggleFollow = (id) => {
     SecureStore.getItemAsync("mytoken").then((token) => {
@@ -150,6 +152,14 @@ const WelcomeScreen = ({ navigation, route }) => {
             style={tw`h-full w-full rounded-2xl`}
           />
         </View>
+        <TextButton
+          label="Send Invite"
+          labelStyle={tw`text-sm`}
+          buttonContainerStyle={tw`rounded-lg p-2 mt-1 mx-3 w-24 bg-gray-500`}
+          onPress={() => {
+            setShowModal(true);
+          }}
+        />
 
         {/*Content*/}
         <View style={tw`flex-1 my-6 px-1 pb-10`}>
@@ -338,6 +348,20 @@ const WelcomeScreen = ({ navigation, route }) => {
         <ReactionModal
           isVisible={showReactionModal}
           onClose={() => setShowReactionModal(false)}
+        />
+      )}
+      {/**Filter */}
+      {showModal && (
+        <InviteModal
+          isVisible={showModal}
+          onClose={() => {
+            setShowModal(false);
+          }}
+          event={{
+            eventId: event?.id,
+            title: event?.title,
+            banner: event?.banner,
+          }}
         />
       )}
     </SafeAreaView>

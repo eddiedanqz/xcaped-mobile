@@ -30,6 +30,7 @@ import QrScannerScreen from "./screens/report/QrScannerScreen";
 import AddPlaceScreen from "./screens/place/AddScreen";
 import EditPlaceScreen from "./screens/place/EditPlaceScreen";
 import PlaceScreen from "./screens/place/PlaceScreen";
+import InvitationScreen from "./screens/profile/InvitationScreen";
 
 const Stack = createStackNavigator();
 const NavStack = createStackNavigator();
@@ -81,6 +82,7 @@ export default function App() {
             <NavStack.Screen name="Add Place" component={AddPlaceScreen} />
             <NavStack.Screen name="Edit Place" component={EditPlaceScreen} />
             <NavStack.Screen name="Place" component={PlaceScreen} />
+            <NavStack.Screen name="Invitations" component={InvitationScreen} />
           </NavStack.Navigator>
         ) : (
           <Stack.Navigator screenOptions={{ headerShown: false }}>

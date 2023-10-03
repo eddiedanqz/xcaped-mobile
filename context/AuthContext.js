@@ -21,13 +21,10 @@ export const AuthProvider = ({ children }) => {
   const [count, setCount] = useState(null);
 
   //Actions
-  const signIn = () => {
+  const signIn = (user) => {
     // setLoading(false)
     axios
-      .post(`${BASEURL}/api/login`, {
-        username: "danQz",
-        password: "password",
-      })
+      .post(`${BASEURL}/api/login`, user)
       .then((res) => {
         console.log(res.data);
         setUser(res.data.user);
@@ -99,7 +96,7 @@ export const AuthProvider = ({ children }) => {
         SecureStore.setItemAsync("user", JSON.stringify(res.data.user));
       })
       .catch((err) => {
-        // console.log(err.response.data);
+        console.log(err.response.data);
         setData(err.response.data);
         setIsVisible(true);
       });

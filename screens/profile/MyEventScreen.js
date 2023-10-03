@@ -17,21 +17,19 @@ import TopHeader from "../../components/TopHeader";
 import ListCard from "../../components/cards/ListCard";
 import List from "../../components/content/List";
 
-
 const MyEventScreen = ({ navigation }) => {
   const [passedId, setPassedId] = useState(0);
   const [events, setEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
-
   const openSheet = (id) => {
-    setPassedId(id)
-    setShowModal(true)
-  }
+    setPassedId(id);
+    setShowModal(true);
+  };
 
   //
   const closeSheet = () => {
-    setPassedId(0)
+    setPassedId(0);
     setShowModal(false);
   };
 
@@ -40,34 +38,37 @@ const MyEventScreen = ({ navigation }) => {
     //
     const renderItem = ({ item }) => (
       <View>
-     <ListCard
-                item={item}
-                onPress={() => navigation.navigate("Event",{ id:item.id })}
-                iconName="more-vertical"
-                iconMethod={() =>  openSheet(item.id)}
-              />
+        <ListCard
+          item={item}
+          onPress={() => navigation.navigate("Event", { id: item.id })}
+          iconName="more-vertical"
+          iconMethod={() => openSheet(item.id)}
+        />
 
-    <BottomSheet isVisible={showModal} modalProps={{ animationType:"slide"}}>
-           <View style={tw`flex-1 bg-white py-3 px-4`}>
-           {/**Header */}
-        <View style={tw`flex-row justify-end items-center py-2 px-3`}>
-          <TouchableOpacity
-            style={tw`rounded-lg z-10`}
-           onPress={() => closeSheet()}
-          >
-            <Icon type="feather" name="x-circle" size={20} color="gray" />
-          </TouchableOpacity>
-        </View>
+        <BottomSheet
+          isVisible={showModal}
+          modalProps={{ animationType: "slide" }}
+        >
+          <View style={tw`flex-1 bg-white py-3 px-4`}>
+            {/**Header */}
+            <View style={tw`flex-row justify-end items-center py-2 px-3`}>
+              <TouchableOpacity
+                style={tw`rounded-lg z-10`}
+                onPress={() => closeSheet()}
+              >
+                <Icon type="feather" name="x-circle" size={20} color="gray" />
+              </TouchableOpacity>
+            </View>
 
-        <List
+            <List
               icon="users"
               iconColor="#374e51"
               title="Attendees"
               containerStyle={tw``}
               onPress={() => {
                 closeSheet();
-                
-                 navigation.navigate("Attendee",{ id:passedId});
+
+                navigation.navigate("Attendee", { id: passedId });
               }}
             />
             <List
@@ -77,7 +78,7 @@ const MyEventScreen = ({ navigation }) => {
               containerStyle={tw``}
               onPress={() => {
                 closeSheet();
-                 navigation.navigate("Report",  { id:passedId});
+                navigation.navigate("Report", { id: passedId });
               }}
             />
             <List
@@ -87,7 +88,7 @@ const MyEventScreen = ({ navigation }) => {
               containerStyle={tw``}
               onPress={() => {
                 closeSheet();
-                 navigation.navigate("Edit Event",  { id:passedId});
+                navigation.navigate("Edit Event", { id: passedId });
               }}
             />
             <List
@@ -97,12 +98,15 @@ const MyEventScreen = ({ navigation }) => {
               containerStyle={tw`mb-2`}
               onPress={() => {
                 closeSheet();
-                 navigation.navigate("Edit Ticket", { id:passedId ,count:item.ticket});
+                navigation.navigate("Edit Ticket", {
+                  id: passedId,
+                  count: item.ticket,
+                });
               }}
             />
-            </View>
+          </View>
         </BottomSheet>
-        </View>
+      </View>
     );
 
     return (
@@ -139,7 +143,6 @@ const MyEventScreen = ({ navigation }) => {
 
   useEffect(() => {
     getData();
-
   }, []);
 
   return (
@@ -159,7 +162,6 @@ const MyEventScreen = ({ navigation }) => {
         />
       </View>
       <View style={tw`px-2 pb-16`}>{renderEvents()}</View>
-      
     </SafeAreaView>
   );
 };

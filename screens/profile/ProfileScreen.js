@@ -242,82 +242,86 @@ function ProfileScreen({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          {events.map((item, i) => (
-            <View key={item.id}>
-              <ListCard
-                item={item}
-                onPress={() => navigation.navigate("Event", { id: item.id })}
-                iconName="more-vertical"
-                iconMethod={() => openSheet(item.id)}
-              />
-              <BottomSheet
-                isVisible={showModal}
-                modalProps={{ animationType: "slide" }}
-              >
-                <View style={tw`flex-1 bg-white py-3 px-4`}>
-                  {/**Header */}
-                  <View style={tw`flex-row justify-end items-center py-2 px-3`}>
-                    <TouchableOpacity
-                      style={tw`rounded-lg z-10`}
-                      onPress={() => closeSheet()}
+          {events ? (
+            events.map((item, i) => (
+              <View key={item.id}>
+                <ListCard
+                  item={item}
+                  onPress={() => navigation.navigate("Event", { id: item.id })}
+                  iconName="more-vertical"
+                  iconMethod={() => openSheet(item.id)}
+                />
+                <BottomSheet
+                  isVisible={showModal}
+                  modalProps={{ animationType: "slide" }}
+                >
+                  <View style={tw`flex-1 bg-white py-3 px-4`}>
+                    {/**Header */}
+                    <View
+                      style={tw`flex-row justify-end items-center py-2 px-3`}
                     >
-                      <Icon
-                        type="feather"
-                        name="x-circle"
-                        size={20}
-                        color="gray"
-                      />
-                    </TouchableOpacity>
+                      <TouchableOpacity
+                        style={tw`rounded-lg z-10`}
+                        onPress={() => closeSheet()}
+                      >
+                        <Icon
+                          type="feather"
+                          name="x-circle"
+                          size={20}
+                          color="gray"
+                        />
+                      </TouchableOpacity>
+                    </View>
+
+                    <List
+                      icon="users"
+                      iconColor="#374e51"
+                      title="Attendees"
+                      containerStyle={tw``}
+                      onPress={() => {
+                        closeSheet();
+
+                        navigation.navigate("Attendee", { id: passedId });
+                      }}
+                    />
+                    <List
+                      icon="bar-chart"
+                      iconColor="#374e51"
+                      title="Report"
+                      containerStyle={tw``}
+                      onPress={() => {
+                        closeSheet();
+                        navigation.navigate("Report", { id: passedId });
+                      }}
+                    />
+                    <List
+                      icon="calendar"
+                      iconColor="#374e51"
+                      title="Edit Event"
+                      containerStyle={tw``}
+                      onPress={() => {
+                        closeSheet();
+                        navigation.navigate("Edit Event", { id: passedId });
+                      }}
+                    />
+                    <List
+                      icon="edit"
+                      iconColor="#374e51"
+                      title="Edit Ticket"
+                      containerStyle={tw`mb-2`}
+                      onPress={() => {
+                        closeSheet();
+                        navigation.navigate("Edit Ticket", {
+                          id: passedId,
+                          count: item.ticket,
+                        });
+                      }}
+                    />
                   </View>
-
-                  <List
-                    icon="users"
-                    iconColor="#374e51"
-                    title="Attendees"
-                    containerStyle={tw``}
-                    onPress={() => {
-                      closeSheet();
-
-                      navigation.navigate("Attendee", { id: passedId });
-                    }}
-                  />
-                  <List
-                    icon="bar-chart"
-                    iconColor="#374e51"
-                    title="Report"
-                    containerStyle={tw``}
-                    onPress={() => {
-                      closeSheet();
-                      navigation.navigate("Report", { id: passedId });
-                    }}
-                  />
-                  <List
-                    icon="calendar"
-                    iconColor="#374e51"
-                    title="Edit Event"
-                    containerStyle={tw``}
-                    onPress={() => {
-                      closeSheet();
-                      navigation.navigate("Edit Event", { id: passedId });
-                    }}
-                  />
-                  <List
-                    icon="edit"
-                    iconColor="#374e51"
-                    title="Edit Ticket"
-                    containerStyle={tw`mb-2`}
-                    onPress={() => {
-                      closeSheet();
-                      navigation.navigate("Edit Ticket", {
-                        id: passedId,
-                        count: item.ticket,
-                      });
-                    }}
-                  />
-                </View>
-              </BottomSheet>
-            </View>
-          )) && (
+                </BottomSheet>
+              </View>
+            ))
+          ) : (
             <View style={tw`h-36 justify-center items-center`}>
               <Text style={tw`text-xl text-gray-400`}>No Events</Text>
             </View>
@@ -341,7 +345,7 @@ function ProfileScreen({ navigation }) {
 
             {/**Invites*/}
             <TouchableOpacity
-              onPress={() => navigation.navigate("My Events")}
+              onPress={() => navigation.navigate("Invitations")}
               style={tw`bg-white justify-center items-center w-2/5 h-28 p-4`}
             >
               <Icon type="feather" name="mail" size={40} color="black" />
