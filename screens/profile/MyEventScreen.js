@@ -12,7 +12,7 @@ import tw from "tailwind-react-native-classnames";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import TopHeader from "../../components/TopHeader";
 import ListCard from "../../components/cards/ListCard";
 import List from "../../components/content/List";

@@ -20,7 +20,7 @@ import { AuthContext } from "../../context/AuthContext";
 import Section from "../../components/content/Section";
 import TextButton from "../../components/buttons/TextButton";
 import ListCard from "../../components/cards/ListCard";
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import List from "../../components/content/List";
 import { noImage } from "../../utils/helpers";
 

@@ -17,7 +17,7 @@ import HorizontalCard from "../../components/cards/HorizontalCard";
 import CascadedCard from "../../components/cards/CascadedCard";
 import ImageCard from "../../components/cards/ImageCard";
 import FilterModal from "../../components/search/FilterModal";
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import axios from "axios";
 
 const ExploreScreen = ({ navigation }) => {
@@ -30,7 +30,7 @@ const ExploreScreen = ({ navigation }) => {
     const renderItem = ({ item }) => (
       <ImageCard
         item={item}
-        onPress={() => navigation.navigate("Event", { id:item.id  })}
+        onPress={() => navigation.navigate("Event", { id: item.id })}
       />
     );
 
@@ -38,7 +38,9 @@ const ExploreScreen = ({ navigation }) => {
       return (
         <View>
           <View style={tw`flex-row my-5 p-1 px-2`}>
-            <Text style={tw`flex-1 font-bold text-gray-700 text-base text-left`}>
+            <Text
+              style={tw`flex-1 font-bold text-gray-700 text-base text-left`}
+            >
               Live Events
             </Text>
 
@@ -58,7 +60,7 @@ const ExploreScreen = ({ navigation }) => {
               <VerticalCard
                 containerStyle={tw`mx-2`}
                 item={item}
-                onPress={() => navigation.navigate("Event", { id:item.id })}
+                onPress={() => navigation.navigate("Event", { id: item.id })}
               />
             )}
           />
@@ -73,7 +75,9 @@ const ExploreScreen = ({ navigation }) => {
             Nearby Events
           </Text>
 
-          <TouchableOpacity onPress={() => navigation.navigate("Listing",{link:'events'})}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Listing", { link: "events" })}
+          >
             <Text style={[tw`font-bold text-base`, { color: "#ff8552" }]}>
               View All
             </Text>
@@ -101,32 +105,35 @@ const ExploreScreen = ({ navigation }) => {
       />
     );
   };
-  
+
   const getEvents = () => {
     SecureStore.getItemAsync("mytoken").then((token) => {
-      let parsed = JSON.parse(token)
+      let parsed = JSON.parse(token);
       const config = {
         headers: {
-          Accept: "application/json", Authorization: `Bearer ${parsed}`,}
-      }
-      axios.get(`${BASEURL}/api/events`,config)
+          Accept: "application/json",
+          Authorization: `Bearer ${parsed}`,
+        },
+      };
+      axios
+        .get(`${BASEURL}/api/events`, config)
         .then((res) => {
           //  console.log(res.data)
-           setEvents(res.data.data)
-          } )
-          .catch((err) => {
-                console.log(err.response.data);
-              });
-            })
-  }
- 
+          setEvents(res.data.data);
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+        });
+    });
+  };
+
   useEffect(() => {
-    getEvents()
-    
+    getEvents();
+
     return () => {
-      setEvents([])
-    }
-  },[]);
+      setEvents([]);
+    };
+  }, []);
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>

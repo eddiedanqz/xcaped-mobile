@@ -17,7 +17,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as SecureStore from "expo-secure-store";
 import { useIsFocused } from "@react-navigation/native";
 
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 
 import FilterModal from "../../components/search/FilterModal";
 import { FilterContext } from "../../context/filterContext";

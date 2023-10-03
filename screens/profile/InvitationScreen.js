@@ -15,7 +15,7 @@ import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import moment from "moment";
 
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import { noImage } from "../../utils/helpers";
 
 const InvitationScreen = ({ navigation }) => {
@@ -78,7 +78,7 @@ const InvitationScreen = ({ navigation }) => {
         .get(`${BASEURL}/api/invitations/all/`, config)
         .then((res) => {
           let { data } = res.data;
-         // console.log(data);
+          // console.log(data);
           setInvites(data);
           setNext(res.data.next_page_url);
         })

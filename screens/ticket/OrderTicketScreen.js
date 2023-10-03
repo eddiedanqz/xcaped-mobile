@@ -16,7 +16,7 @@ import { Paystack, paystackProps } from "react-native-paystack-webview";
 import axios from "axios";
 
 import TextButton from "../../components/buttons/TextButton";
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 
 const OrderTicketScreen = ({ navigation, route }) => {
   const [ticketData, setTicket] = useState([]);

@@ -15,7 +15,7 @@ import tw from "tailwind-react-native-classnames";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as SecureStore from "expo-secure-store";
 
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import TwoPointSlider from "./TwoPointSlider";
 import TextButton from "../buttons/TextButton";
 import Section from "../content/Section";

@@ -14,7 +14,7 @@ import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import { BarCodeScanner } from "expo-barcode-scanner";
 
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import TextButton from "../../components/buttons/TextButton";
 import Validator from "../../components/errors/Validator";
 
@@ -23,9 +23,8 @@ const QrScannerScreen = ({ navigation, route }) => {
   const [info, setInfo] = useState({});
   const [scanned, setScanned] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [errors, setError] = useState([])
-  const [isError, setIsError] = useState(false)
-
+  const [errors, setError] = useState([]);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -35,13 +34,12 @@ const QrScannerScreen = ({ navigation, route }) => {
     })();
   }, []);
 
-
   const handleBarCodeScanned = ({ data }) => {
     // alert(`Bar code with data ${data} has been scanned!`);
-    setChecked(false)
+    setChecked(false);
     setScanned(true);
     // console.log(data);
-    checkIn(data)
+    checkIn(data);
   };
 
   if (hasPermission === null) {
@@ -61,21 +59,20 @@ const QrScannerScreen = ({ navigation, route }) => {
         },
       };
       axios
-        .post(`${BASEURL}/api/attendee/checkin`, {id: data }, config)
+        .post(`${BASEURL}/api/attendee/checkin`, { id: data }, config)
         .then((res) => {
           // console.log(res.data)
-          setChecked(true)
+          setChecked(true);
           setInfo(res.data.data);
         })
         .catch((err) => {
           console.log(err.response.data.message);
-          setError(err.response.data)
-          setIsError(true)
+          setError(err.response.data);
+          setIsError(true);
         });
     });
   };
 
-    
   return (
     <View style={tw`flex-1 h-28 justify-center items-center`}>
       <BarCodeScanner
@@ -86,12 +83,11 @@ const QrScannerScreen = ({ navigation, route }) => {
         <TextButton
           label="Tap to Scan Again"
           onPress={() => {
-            setScanned(false)
-            setChecked(false)
-            setInfo({})
-            setIsError(false)
-          }
-          }
+            setScanned(false);
+            setChecked(false);
+            setInfo({});
+            setIsError(false);
+          }}
           labelStyle={tw`text-sm`}
           buttonContainerStyle={tw`py-3 px-6 rounded-2xl bg-white bg-opacity-20`}
         />
@@ -121,31 +117,48 @@ const QrScannerScreen = ({ navigation, route }) => {
               <Text style={tw`text-base text-gray-500 font-semibold`}>
                 {info.fullname}
               </Text>
-              <Text style={tw`text-lg font-semibold text-gray-700`}>ID:{info.reference}</Text>
+              <Text style={tw`text-lg font-semibold text-gray-700`}>
+                ID:{info.reference}
+              </Text>
               <View style={tw`flex-row`}>
-              <Text style={tw`text-base font-semibold text-gray-500`}>{info.ticket?.title}</Text>
-              <Text style={tw`text-base font-semibold text-gray-500 mx-2 border-r border-gray-300`}>|</Text>
-              <Text style={tw`text-base font-semibold text-gray-500`}>GHS{info.ticket?.price}</Text>
+                <Text style={tw`text-base font-semibold text-gray-500`}>
+                  {info.ticket?.title}
+                </Text>
+                <Text
+                  style={tw`text-base font-semibold text-gray-500 mx-2 border-r border-gray-300`}
+                >
+                  |
+                </Text>
+                <Text style={tw`text-base font-semibold text-gray-500`}>
+                  GHS{info.ticket?.price}
+                </Text>
               </View>
             </View>
-            <Icon type='feather' name={info.status == 'checked' ? 'check-circle' : 'alert-octagon'} size={20} color='white'
-      containerStyle={tw`${info.status == 'checked'? 'bg-green-400': 'bg-yellow-400'} rounded-md p-3`}/>
-
+            <Icon
+              type="feather"
+              name={info.status == "checked" ? "check-circle" : "alert-octagon"}
+              size={20}
+              color="white"
+              containerStyle={tw`${
+                info.status == "checked" ? "bg-green-400" : "bg-yellow-400"
+              } rounded-md p-3`}
+            />
           </View>
         </View>
       )}
 
-   {isError&&
-      (    
-       <Validator data={errors} isVisible={isError} 
-       viewStyle={tw`top-3/4 right-0 left-0 mx-10`}
-       messageStyle={tw`bg-blue-500 p-4 rounded-full`}
-       onPress={() => {
-        setIsError(false)
-        setError([])
-       }} />
-      )
-      }
+      {isError && (
+        <Validator
+          data={errors}
+          isVisible={isError}
+          viewStyle={tw`top-3/4 right-0 left-0 mx-10`}
+          messageStyle={tw`bg-blue-500 p-4 rounded-full`}
+          onPress={() => {
+            setIsError(false);
+            setError([]);
+          }}
+        />
+      )}
     </View>
   );
 };

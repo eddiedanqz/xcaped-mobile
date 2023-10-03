@@ -19,7 +19,7 @@ import base64 from "react-native-base64";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import TextButton from "../../components/buttons/TextButton";
 import RadioButton from "../../components/buttons/RadioButton";
 import BannerImage from "../../components/BannerImage";

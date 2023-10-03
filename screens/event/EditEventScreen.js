@@ -17,7 +17,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import TextButton from "../../components/buttons/TextButton";
 import BannerImage from "../../components/BannerImage";
 import MapModal from "../../components/modal/MapModal";
@@ -37,10 +37,10 @@ const EditEventScreen = ({ navigation, route }) => {
   const [showDate, setShowDate] = useState(false);
   const [type, setType] = useState("");
   const [isVisible, setIsVisible] = useState(false);
-  const [location, setLocation] = useState('');
-  const [address, setAddress] = useState('');
-  const [latitude, setLat] = useState('');
-  const [longitude, setLon] = useState('');
+  const [location, setLocation] = useState("");
+  const [address, setAddress] = useState("");
+  const [latitude, setLat] = useState("");
+  const [longitude, setLon] = useState("");
   const [description, setDescription] = useState("");
   const [path, setPath] = useState("");
   const [image, setImage] = useState("");
@@ -50,10 +50,10 @@ const EditEventScreen = ({ navigation, route }) => {
   const [category, setCategory] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [option, setOption] = useState(null);
-  const [errors, setError] = useState('')
-  const [isError, setIsError] = useState(false)
-  const [isOk, setIsOk] = useState(false)
-  const [success, setSucess] = useState('')
+  const [errors, setError] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [isOk, setIsOk] = useState(false);
+  const [success, setSucess] = useState("");
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -79,11 +79,11 @@ const EditEventScreen = ({ navigation, route }) => {
   //Load Image
   let openImagePickerAsync = async () => {
     let pickerResult = await ImagePicker.launchImageLibraryAsync();
-    const sizeInMb = pickerResult.assets[0].fileSize / 1024 / 1024
-    if ( sizeInMb > 1) {
-      alert('File shuld be less than 1mb')
+    const sizeInMb = pickerResult.assets[0].fileSize / 1024 / 1024;
+    if (sizeInMb > 1) {
+      alert("File shuld be less than 1mb");
       //set error
-      return
+      return;
     }
     setPath(pickerResult.assets[0].uri);
     //console.log(path);
@@ -127,7 +127,7 @@ const EditEventScreen = ({ navigation, route }) => {
     setSelectedCategory(i);
     setCategoryId(c.id);
   };
-  
+
   const renderTitle = () => {
     return (
       <View style={tw`justify-start`}>
@@ -272,13 +272,13 @@ const EditEventScreen = ({ navigation, route }) => {
                     style={tw`text-base text-gray-600`}
                     onPress={endDatepicker}
                   >
-                    {end != 'null' ? end.split("T")[0] : "D-MM-YY"}
+                    {end != "null" ? end.split("T")[0] : "D-MM-YY"}
                   </Text>
                   <Text
                     style={tw`text-base text-gray-600`}
                     onPress={endTimepicker}
                   >
-                    {endTime != 'null' ? endTime : "00:00"}
+                    {endTime != "null" ? endTime : "00:00"}
                   </Text>
                 </View>
               </View>
@@ -325,23 +325,15 @@ const EditEventScreen = ({ navigation, route }) => {
             defaultValue={location}
           />
         </View>
-         {/*Address*/}
-         <View style={tw`p-3 flex-row items-center justify-center`}
-        >
+        {/*Address*/}
+        <View style={tw`p-3 flex-row items-center justify-center`}>
           <Input
             placeholder="Address*"
             textContentType="none"
-            leftIcon={
-              <Icon
-              type="feather"
-                name="map"
-                size={20}
-                color="gray"
-              />
-            }
-            onChangeText ={addr => setAddress(addr)}
-            onFocus = {()=> Keyboard.dismiss()}
-            onPressIn = { () => setShowModal(true)}
+            leftIcon={<Icon type="feather" name="map" size={20} color="gray" />}
+            onChangeText={(addr) => setAddress(addr)}
+            onFocus={() => Keyboard.dismiss()}
+            onPressIn={() => setShowModal(true)}
             defaultValue={address}
           />
         </View>
@@ -351,7 +343,7 @@ const EditEventScreen = ({ navigation, route }) => {
 
   const renderDescription = () => {
     return (
-      <View style={tw`justify-start`}>  
+      <View style={tw`justify-start`}>
         {/*Description*/}
         <View style={tw`mx-1 mb-5 items-center justify-center`}>
           <Input
@@ -371,11 +363,11 @@ const EditEventScreen = ({ navigation, route }) => {
   };
 
   const sendGps = (values) => {
-    setAddress(values.address)
-    setLat(values.latitude)
-    setLon(values.longitude)
-    setShowModal(false)
-   }
+    setAddress(values.address);
+    setLat(values.latitude);
+    setLon(values.longitude);
+    setShowModal(false);
+  };
 
   // extract the filetype
   let fileType = path.substring(path.lastIndexOf(".") + 1);
@@ -388,54 +380,53 @@ const EditEventScreen = ({ navigation, route }) => {
       type: `image/${fileType}`,
     });
   }
-    formData.append("title", title);
-    formData.append("category_id", categoryId);
-    formData.append("start_date", start);
-    formData.append("start_time", startTime);
-    formData.append("end_date", end);
-    formData.append("end_time", endTime);
-    formData.append("venue", location);
-    formData.append("lat", latitude);
-    formData.append("lon", longitude);
-    formData.append("description", description);
-    formData.append('type', option)
+  formData.append("title", title);
+  formData.append("category_id", categoryId);
+  formData.append("start_date", start);
+  formData.append("start_time", startTime);
+  formData.append("end_date", end);
+  formData.append("end_time", endTime);
+  formData.append("venue", location);
+  formData.append("lat", latitude);
+  formData.append("lon", longitude);
+  formData.append("description", description);
+  formData.append("type", option);
 
-  
- const checkFields = () => {
+  const checkFields = () => {
     //title
     if (title == "") {
-       setError('Title is required')
-       setIsError(true)
-       return
+      setError("Title is required");
+      setIsError(true);
+      return;
     }
     //category
     if (categoryId == "") {
-      setError('Select a category')
-      setIsError(true)
-      return
+      setError("Select a category");
+      setIsError(true);
+      return;
     }
     //startDate //StartTime
     if (start == "" || startTime == "") {
-      setError('Date and Time are required')
-      setIsError(true)
-      return
+      setError("Date and Time are required");
+      setIsError(true);
+      return;
     }
     //Venue
-    if (location == "" || description =="" ) {
-      setError(['Event venue and description are required'])
-      setIsError(true)
-      return
+    if (location == "" || description == "") {
+      setError(["Event venue and description are required"]);
+      setIsError(true);
+      return;
     }
     if (address == "") {
-      setError(['Event Address is required'])
-      setIsError(true)
-      return
+      setError(["Event Address is required"]);
+      setIsError(true);
+      return;
     }
-    updateData()
-     }
+    updateData();
+  };
 
   const updateData = () => {
-    console.log(formData)
+    console.log(formData);
     SecureStore.getItemAsync("mytoken").then((token) => {
       let parsed = JSON.parse(token);
       const config = {
@@ -448,8 +439,8 @@ const EditEventScreen = ({ navigation, route }) => {
         .post(`${BASEURL}/api/event/${id}`, formData, config)
         .then((res) => {
           console.log(res.data);
-          setSucess(res.data)
-          setIsOk(true)
+          setSucess(res.data);
+          setIsOk(true);
         })
         .catch((err) => {
           console.log(err.response.data.message);
@@ -473,7 +464,7 @@ const EditEventScreen = ({ navigation, route }) => {
           // console.log(data)
           setTitle(data.title);
           setCategoryId(data.category.id);
-          setCategory(data.category.name)
+          setCategory(data.category.name);
           setStartDate(data.start_date);
           setStartTime(data.start_time);
           setEndDate(data.end_date);
@@ -518,14 +509,13 @@ const EditEventScreen = ({ navigation, route }) => {
 
   const clearError = () => {
     if (isOk) {
-     setTimeout(() => {
-       setIsOk(false)
-        setSucess('')
-     }, 5000);
+      setTimeout(() => {
+        setIsOk(false);
+        setSucess("");
+      }, 5000);
     }
-    
-    }
- 
+  };
+
   useEffect(() => {
     getCategories();
     let { id } = route.params;
@@ -548,8 +538,8 @@ const EditEventScreen = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    clearError()
-  }, [isOk])
+    clearError();
+  }, [isOk]);
 
   return (
     <SafeAreaView style={tw`h-full bg-white`}>
@@ -595,38 +585,47 @@ const EditEventScreen = ({ navigation, route }) => {
           {renderCategory()}
           {renderBanner()}
           {renderDate()}
-             {/**Type */}
-            <View  style={tw`items-start`}>
-             <RadioButton data={['Private','Public']} onSelect={(value) => setOption(value)} 
-             buttonStyle={tw`justify-between`} option={option} />
-            </View>
+          {/**Type */}
+          <View style={tw`items-start`}>
+            <RadioButton
+              data={["Private", "Public"]}
+              onSelect={(value) => setOption(value)}
+              buttonStyle={tw`justify-between`}
+              option={option}
+            />
+          </View>
 
           {renderVenue()}
           {renderDescription()}
         </View>
       </KeyboardAwareScrollView>
-      {isError && 
-      (<View style={tw`flex flex-row justify-between items-center bg-red-600 z-10 mx-4 p-2 bottom-20 rounded z-10`}>
-        <Text style={tw`text-base text-white`}>{errors}</Text>
-        <TouchableOpacity style={tw``} onPress={() => {
-          setIsError(false)
-          setError('')
-        }
-          }>
-        <Icon type="feather" name="x" size={20} color="white" />
-        </TouchableOpacity>
-      </View>
+      {isError && (
+        <View
+          style={tw`flex flex-row justify-between items-center bg-red-600 z-10 mx-4 p-2 bottom-20 rounded z-10`}
+        >
+          <Text style={tw`text-base text-white`}>{errors}</Text>
+          <TouchableOpacity
+            style={tw``}
+            onPress={() => {
+              setIsError(false);
+              setError("");
+            }}
+          >
+            <Icon type="feather" name="x" size={20} color="white" />
+          </TouchableOpacity>
+        </View>
       )}
 
-    {isOk&&
-      (    
-      <Validator data={success} isVisible={isOk}
-      viewStyle={tw`top-3/4 right-0 left-0 mx-28`}
-       messageStyle={tw`bg-black p-3 rounded-full bg-opacity-70`}/>
-      )
-      }
+      {isOk && (
+        <Validator
+          data={success}
+          isVisible={isOk}
+          viewStyle={tw`top-3/4 right-0 left-0 mx-28`}
+          messageStyle={tw`bg-black p-3 rounded-full bg-opacity-70`}
+        />
+      )}
 
-{showModal && (
+      {showModal && (
         <MapModal
           isVisible={showModal}
           onClose={() => setShowModal(false)}

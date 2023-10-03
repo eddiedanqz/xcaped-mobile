@@ -16,7 +16,7 @@ import VerticalCard from "../../components/cards/VerticalCard";
 import CascadedCard from "../../components/cards/CascadedCard";
 import ImageCard from "../../components/cards/ImageCard";
 import FilterModal from "../../components/search/FilterModal";
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 
 const PlaceScreen = ({ navigation }) => {
   return <SafeAreaView style={tw`h-full bg-white`}>Add</SafeAreaView>;

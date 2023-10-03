@@ -17,7 +17,7 @@ import * as SecureStore from "expo-secure-store";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import { AuthContext } from "../../context/AuthContext";
 import Section from "../../components/content/Section";
 import Validator from "../../components/errors/Validator";

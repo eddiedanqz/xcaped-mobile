@@ -20,7 +20,7 @@ import base64 from "react-native-base64";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import TextButton from "../../components/buttons/TextButton";
 import MapModal from "../../components/modal/MapModal";
 import { noBanner } from "../../utils/helpers";

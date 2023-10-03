@@ -37,14 +37,7 @@ const NavStack = createStackNavigator();
 
 export default function App() {
   const [isLoading, setLoading] = useState(false);
-  const [user, setUser] = useState({});
   const { authUser } = useContext(AuthContext);
-
-  const getUser = async () => {
-    const response = await authUser;
-    setUser(response);
-    console.log(response);
-  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -52,7 +45,6 @@ export default function App() {
     }, 1000);
 
     console.log(authUser);
-    getUser();
   }, []);
 
   if (isLoading) {
@@ -64,7 +56,12 @@ export default function App() {
   return (
     <NavigationContainer>
       <View style={styles.container}>
-        {user ? (
+        {!authUser ? (
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="LogIn" component={LoginScreen} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+          </Stack.Navigator>
+        ) : (
           <NavStack.Navigator screenOptions={{ headerShown: false }}>
             <NavStack.Screen name="Main" component={BottomNav} />
             <NavStack.Screen name="Edit Event" component={EditEventScreen} />
@@ -92,11 +89,6 @@ export default function App() {
             <NavStack.Screen name="Place" component={PlaceScreen} />
             <NavStack.Screen name="Invitations" component={InvitationScreen} />
           </NavStack.Navigator>
-        ) : (
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="LogIn" component={LoginScreen} />
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
-          </Stack.Navigator>
         )}
         <StatusBar style="dark" />
       </View>

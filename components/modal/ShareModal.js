@@ -17,7 +17,7 @@ import tw from "tailwind-react-native-classnames";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import TextButton from "../buttons/TextButton";
 import Section from "../content/Section";
 import { noImage } from "../../utils/helpers";

@@ -6,40 +6,39 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
-import { Icon} from "react-native-elements";
-import { NavigationContainer, useIsFocused } from '@react-navigation/native';
+import { Icon } from "react-native-elements";
+import { NavigationContainer, useIsFocused } from "@react-navigation/native";
 import tw from "tailwind-react-native-classnames";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
 import ListCard from "../../components/cards/ListCard";
 import TopHeader from "../../components/TopHeader";
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 
-const SavedScreen = ({navigation}) => {
+const SavedScreen = ({ navigation }) => {
   const [events, setEvents] = useState([]);
 
   const isFocused = useIsFocused();
 
-
   const renderEvents = () => {
-  //
-  const renderItem = ({ item }) => (
-    <ListCard 
-    item={item}
-    onPress={() => navigation.navigate("Event",{ id:item.id })}
-    />
-  );
+    //
+    const renderItem = ({ item }) => (
+      <ListCard
+        item={item}
+        onPress={() => navigation.navigate("Event", { id: item.id })}
+      />
+    );
 
- return ( 
- <FlatList
-  data={events}
-  keyExtractor={(item) => `${item.id}`}
-  renderItem={renderItem}
-  contentContainerStyle={tw`py-5 px-3`}
-  />
-  );
-  }
+    return (
+      <FlatList
+        data={events}
+        keyExtractor={(item) => `${item.id}`}
+        renderItem={renderItem}
+        contentContainerStyle={tw`py-5 px-3`}
+      />
+    );
+  };
 
   const getData = () => {
     SecureStore.getItemAsync("mytoken").then((token) => {
@@ -55,7 +54,7 @@ const SavedScreen = ({navigation}) => {
         .then((res) => {
           // let { data } = res.data;
           // console.log(res.data)
-           setEvents(res.data.data);
+          setEvents(res.data.data);
         })
         .catch((err) => {
           console.log(err.response.data.message);
@@ -67,29 +66,29 @@ const SavedScreen = ({navigation}) => {
     getData();
 
     return () => {
-      setEvents([])
-    }
+      setEvents([]);
+    };
   }, [isFocused]);
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
-       <View style={[tw`overflow-hidden pb-1`]}>
-      <TopHeader
-        title="Saved"
-        leftIcon={
-          <Icon
-          type="font-awesome-5"
-            name="arrow-left"
-            size={20}
-            color="white"
-            onPress={() => navigation.goBack()}
-          />
-        }
-      />
+      <View style={[tw`overflow-hidden pb-1`]}>
+        <TopHeader
+          title="Saved"
+          leftIcon={
+            <Icon
+              type="font-awesome-5"
+              name="arrow-left"
+              size={20}
+              color="white"
+              onPress={() => navigation.goBack()}
+            />
+          }
+        />
       </View>
 
       {/**Search Results */}
-     {renderEvents()}
+      {renderEvents()}
     </SafeAreaView>
   );
 };

@@ -15,7 +15,7 @@ import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import moment from "moment";
 
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import List from "../../components/content/List";
 import TextButton from "../../components/buttons/TextButton";
 import ShareModal from "../../components/modal/ShareModal";

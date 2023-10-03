@@ -18,7 +18,7 @@ import Reactions from "../../components/Reactions";
 import Section from "../../components/content/Section";
 import ReactionModal from "../../components/search/ReactionModal";
 import TextButton from "../../components/buttons/TextButton";
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import { noImage } from "../../utils/helpers";
 import InviteModal from "../../components/modal/InviteModal";
 

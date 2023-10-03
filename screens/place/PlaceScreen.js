@@ -19,7 +19,7 @@ import Reactions from "../../components/Reactions";
 import Section from "../../components/content/Section";
 import ReactionModal from "../../components/search/ReactionModal";
 import TextButton from "../../components/buttons/TextButton";
-import { BASEURL } from "@env";
+import { BASEURL } from "../../config/config";
 import { noBanner } from "../../utils/helpers";
 import { render } from "react-dom";
 

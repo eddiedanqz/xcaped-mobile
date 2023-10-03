@@ -1,7 +1,7 @@
 import React, { createContext, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
-import { BASEURL } from "@env";
+import { BASEURL } from "../config/config";
 
 export const AuthContext = createContext({});
 
