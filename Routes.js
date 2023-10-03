@@ -37,7 +37,14 @@ const NavStack = createStackNavigator();
 
 export default function App() {
   const [isLoading, setLoading] = useState(false);
+  const [user, setUser] = useState({});
   const { authUser } = useContext(AuthContext);
+
+  const getUser = async () => {
+    const response = await authUser;
+    setUser(response);
+    console.log(response);
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -45,6 +52,7 @@ export default function App() {
     }, 1000);
 
     console.log(authUser);
+    getUser();
   }, []);
 
   if (isLoading) {
@@ -56,7 +64,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <View style={styles.container}>
-        {authUser ? (
+        {user ? (
           <NavStack.Navigator screenOptions={{ headerShown: false }}>
             <NavStack.Screen name="Main" component={BottomNav} />
             <NavStack.Screen name="Edit Event" component={EditEventScreen} />
