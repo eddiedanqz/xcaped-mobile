@@ -182,8 +182,7 @@ function ProfileScreen({ navigation }) {
               {/**About */}
               {user.profile?.bio && (
                 <Text style={tw`font-bold text-gray-600 text-sm`}>
-                  {/*user.profile?.bio*/}ihihihiuh iuh uihi uh iu hmklmk vmakmm
-                  mp om vfo movam ommmp ojopp
+                  {user.profile?.bio}
                 </Text>
               )}
             </View>
