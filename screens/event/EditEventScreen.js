@@ -10,7 +10,7 @@ import {
   Platform,
 } from "react-native";
 import { Icon, Input, BottomSheet, ListItem } from "react-native-elements";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as ImagePicker from "expo-image-picker";

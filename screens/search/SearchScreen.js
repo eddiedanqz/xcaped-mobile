@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { Icon, Tab, TabView } from "@rneui/themed";
 
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as SecureStore from "expo-secure-store";
 import { useIsFocused } from "@react-navigation/native";

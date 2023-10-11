@@ -16,7 +16,7 @@ async function getValueFor(key) {
 export const AuthProvider = ({ children }) => {
   const [authUser, setUser] = useState(null);
   const [token, setToken] = useState("");
-  const [errorData, setData] = useState([]);
+  const [errorData, setData] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [count, setCount] = useState(null);
 
@@ -33,9 +33,9 @@ export const AuthProvider = ({ children }) => {
         SecureStore.setItemAsync("user", JSON.stringify(res.data.user));
       })
       .catch((err) => {
-        console.log(err.response.data);
+        // console.log(err.response.data);
         setData(err.response.data);
-        // setIsVisible(true)
+        setIsVisible(true);
       });
 
     //   const params = {

@@ -13,7 +13,7 @@ import {
   Pressable,
 } from "react-native";
 import { Icon } from "react-native-elements";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
@@ -26,28 +26,7 @@ const MapModal = ({ isVisible, onClose, ticketId, action }) => {
   const modalAnimatedValue = useRef(new Animated.Value(0)).current;
   const [showModal, setShowModal] = useState(isVisible);
   const [value, setVal] = useState("");
-  const [users, setResults] = useState([
-    {
-      id: 1,
-      profile: {
-        banner: require("../../assets/awards.jpg"),
-      },
-      fullname: "Jonh Doe",
-      username: "mkiwfl1441",
-    },
-    {
-      id: 2,
-      banner: require("../../assets/toonmecom_d39300.jpg"),
-      title: "Meek Koo",
-      startTime: "08:30",
-    },
-    {
-      id: 4,
-      banner: require("../../assets/salaFest.jpg"),
-      title: "New Gaol",
-      startTime: "08:30",
-    },
-  ]);
+  const [users, setResults] = useState([]);
   const [id, setId] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 

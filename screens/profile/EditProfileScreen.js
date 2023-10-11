@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import { Icon, Input } from "react-native-elements";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";

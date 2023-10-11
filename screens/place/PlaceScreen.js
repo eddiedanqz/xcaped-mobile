@@ -8,7 +8,7 @@ import {
   Text,
 } from "react-native";
 import { Icon, Input, BottomSheet, ListItem } from "react-native-elements";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import { StatusBar } from "expo-status-bar";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import SafeAreaView from "react-native-safe-area-view";

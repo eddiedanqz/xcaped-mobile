@@ -1,5 +1,6 @@
 import noImage from "../assets/Profile_avatar_placeholder_large.png";
 import noBanner from "../assets/banner-placeholder.png";
+import logo from "../assets/xcaped.png";
 
 // var options;
 
@@ -9,4 +10,4 @@ import noBanner from "../assets/banner-placeholder.png";
 
 // }
 
-export { noImage, noBanner };
+export { noImage, noBanner, logo };

@@ -11,7 +11,7 @@ import {
   Keyboard,
 } from "react-native";
 import { Icon, Input, BottomSheet, ListItem } from "react-native-elements";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import SelectDropdown from "react-native-select-dropdown";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";

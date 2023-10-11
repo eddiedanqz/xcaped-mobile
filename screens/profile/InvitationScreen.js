@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import { Icon } from "react-native-elements";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";

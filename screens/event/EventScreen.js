@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Icon, Text } from "react-native-elements";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import { StatusBar } from "expo-status-bar";
 import SafeAreaView from "react-native-safe-area-view";
 import * as SecureStore from "expo-secure-store";

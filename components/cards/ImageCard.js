@@ -6,7 +6,7 @@ import {
   Image,
 } from "react-native";
 import { Text, Icon } from "react-native-elements";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import { BASEURL } from "@env";
 const noImage = require("../../assets/banner-placeholder.png");
 
@@ -24,7 +24,11 @@ const CascadedEventCard = ({ containerStyle, item, onPress }) => {
       <TouchableOpacity style={tw`justify-center`} onPress={onPress}>
         <View style={tw`h-60 w-full  rounded-xl`}>
           <Image
-            source={item.banner ? {uri: `${BASEURL}/storage/images/uploads/${item.banner}` } : noImage }
+            source={
+              item.banner
+                ? { uri: `${BASEURL}/storage/images/uploads/${item.banner}` }
+                : noImage
+            }
             resizeMode="stretch"
             style={tw`h-full w-full rounded-xl`}
           />
@@ -36,7 +40,7 @@ const CascadedEventCard = ({ containerStyle, item, onPress }) => {
           >
             <View style={tw`flex-1 justify-end px-6 pb-2 w-full h-full`}>
               {/* Category  */}
-              {item.ticket.length > 0  && (
+              {item.ticket.length > 0 && (
                 <View
                   style={[
                     tw`flex-row text-left self-start items-center rounded mb-1 p-1 `,
@@ -54,9 +58,7 @@ const CascadedEventCard = ({ containerStyle, item, onPress }) => {
                     return (
                       <Text
                         key={`${ticket.id}`}
-                        style={[
-                          tw`text-xs text-gray-600 font-bold text-white`,
-                        ]}
+                        style={[tw`text-xs text-gray-600 font-bold text-white`]}
                       >
                         ${ticket.price}
                         {i + 1 !== item.ticket.length ? " - " : ""}

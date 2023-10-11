@@ -8,7 +8,7 @@ import {
   Text,
 } from "react-native";
 import { Icon, BottomSheet, ListItem } from "react-native-elements";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 

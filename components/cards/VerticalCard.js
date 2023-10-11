@@ -6,7 +6,7 @@ import {
   Image,
 } from "react-native";
 import { Text, Icon } from "react-native-elements";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import { BASEURL } from "@env";
 
 const noImage = require("../../assets/banner-placeholder.png");
@@ -31,7 +31,11 @@ const VerticalEventCard = ({ containerStyle, item, onPress }) => {
       <TouchableOpacity style={tw`justify-center mb-5`} onPress={onPress}>
         <View style={[tw`flex-1 justify-center h-48 `, { width: 200 }]}>
           <Image
-             source={item.banner ? {uri:`${BASEURL}/storage/images/uploads/${item.banner}` } : noImage }
+            source={
+              item.banner
+                ? { uri: `${BASEURL}/storage/images/uploads/${item.banner}` }
+                : noImage
+            }
             resizeMode="stretch"
             style={[tw`h-full w-full rounded-lg self-center `]}
           />
@@ -43,7 +47,9 @@ const VerticalEventCard = ({ containerStyle, item, onPress }) => {
             ]}
           >
             <Icon type="font-awesome-5" name="map" size={17} />
-            <Text style={tw`text-base ml-2`}>{item.distance.toFixed(2)} -km</Text>
+            <Text style={tw`text-base ml-2`}>
+              {item.distance.toFixed(2)} -km
+            </Text>
           </View>
         </View>
 

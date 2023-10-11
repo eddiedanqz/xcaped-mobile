@@ -1,6 +1,6 @@
 import React from "react";
 import { View, TouchableOpacity, ScrollView, Text } from "react-native";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import { Icon } from "react-native-elements";
 
 const TextButton = ({

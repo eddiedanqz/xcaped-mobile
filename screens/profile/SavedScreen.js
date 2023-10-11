@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Icon } from "react-native-elements";
 import { NavigationContainer, useIsFocused } from "@react-navigation/native";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 

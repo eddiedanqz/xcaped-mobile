@@ -11,7 +11,7 @@ import {
   Image,
 } from "react-native";
 import { Icon } from "react-native-elements";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";

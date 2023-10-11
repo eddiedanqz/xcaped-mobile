@@ -1,5 +1,5 @@
 import React from "react";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import { View, Text } from "react-native";
 
 const Section = ({

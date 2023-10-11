@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import * as SecureStore from "expo-secure-store";
 import { Icon } from "react-native-elements";
 import axios from "axios";

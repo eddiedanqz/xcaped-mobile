@@ -7,7 +7,7 @@ import {
   View,
   Input,
 } from "react-native";
-import tw from "tailwind-react-native-classnames";
+import tw from "twrnc";
 import { noImage } from "../utils/helpers";
 
 const uploadIcon = require("../assets/banner-placeholder.png");
