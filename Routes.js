@@ -4,8 +4,9 @@ import React, { useContext, useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { set } from "react-native-reanimated";
+import { ActivityIndicator } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import tw from "twrnc";
 
 import WelcomeScreen from "./screens/WelcomeScreen";
 import LoginScreen from "./screens/auth/LoginScreen";
@@ -31,13 +32,14 @@ import AddPlaceScreen from "./screens/place/AddScreen";
 import EditPlaceScreen from "./screens/place/EditPlaceScreen";
 import PlaceScreen from "./screens/place/PlaceScreen";
 import InvitationScreen from "./screens/profile/InvitationScreen";
+import { COLORS } from "./constants/theme";
 
 const Stack = createStackNavigator();
 const NavStack = createStackNavigator();
 
 export default function App() {
-  const [isLoading, setLoading] = useState(false);
-  const { authUser } = useContext(AuthContext);
+  const { authUser, isLoading, setLoading } = useContext(AuthContext);
+  // const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -48,7 +50,11 @@ export default function App() {
   }, []);
 
   if (isLoading) {
-    return <LoaderScreen />;
+    return (
+      <View style={tw`flex-1 justify-center`}>
+        <ActivityIndicator size="small" color={COLORS.primary} />
+      </View>
+    );
   }
 
   const BottomNav = () => <BottomNavScreen />;

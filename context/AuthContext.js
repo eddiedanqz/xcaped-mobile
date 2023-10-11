@@ -1,6 +1,7 @@
 import React, { createContext, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
+
 import { BASEURL } from "../config/config";
 
 export const AuthContext = createContext({});
@@ -19,10 +20,11 @@ export const AuthProvider = ({ children }) => {
   const [errorData, setData] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [count, setCount] = useState(null);
+  const [isLoading, setLoading] = useState(false);
 
   //Actions
   const signIn = (user) => {
-    // setLoading(false)
+    setLoading(true);
     axios
       .post(`${BASEURL}/api/login`, user)
       .then((res) => {
@@ -31,10 +33,12 @@ export const AuthProvider = ({ children }) => {
         setCount(res.data.count);
         SecureStore.setItemAsync("mytoken", JSON.stringify(res.data.token));
         SecureStore.setItemAsync("user", JSON.stringify(res.data.user));
+        setLoading(false);
       })
       .catch((err) => {
         // console.log(err.response.data);
         setData(err.response.data);
+        setLoading(false);
         setIsVisible(true);
       });
 
@@ -63,7 +67,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signOut = () => {
-    //setLoading(false)
+    setLoading(true);
     SecureStore.getItemAsync("mytoken").then((token) => {
       fetch(`${BASEURL}/api/logout`, {
         method: "POST",
@@ -78,15 +82,17 @@ export const AuthProvider = ({ children }) => {
           SecureStore.deleteItemAsync("user");
           setUser("");
           console.log(data.message);
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err.response);
+          setLoading(false);
         });
     });
   };
 
   const signUp = (user) => {
-    //setLoading(false)
+    setLoading(true);
     axios
       .post(`${BASEURL}/api/register`, user)
       .then((res) => {
@@ -94,11 +100,13 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data.user);
         SecureStore.setItemAsync("mytoken", JSON.stringify(res.data.token));
         SecureStore.setItemAsync("user", JSON.stringify(res.data.user));
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err.response.data);
         setData(err.response.data);
         setIsVisible(true);
+        setLoading(false);
       });
   };
 
@@ -115,6 +123,8 @@ export const AuthProvider = ({ children }) => {
         setIsVisible,
         count,
         setCount,
+        isLoading,
+        setLoading,
       }}
     >
       {children}
