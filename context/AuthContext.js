@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signUp = (user) => {
-    setLoading(true);
+    //setLoading(true);
     axios
       .post(`${BASEURL}/api/register`, user)
       .then((res) => {
@@ -100,13 +100,13 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data.user);
         SecureStore.setItemAsync("mytoken", JSON.stringify(res.data.token));
         SecureStore.setItemAsync("user", JSON.stringify(res.data.user));
-        setLoading(false);
+        // setLoading(false);
       })
       .catch((err) => {
         console.log(err.response.data);
         setData(err.response.data);
         setIsVisible(true);
-        setLoading(false);
+        // setLoading(false);
       });
   };
 
