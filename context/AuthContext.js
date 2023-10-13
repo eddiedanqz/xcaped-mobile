@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [count, setCount] = useState(null);
   const [isLoading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
 
   //Actions
   const signIn = (user) => {
@@ -92,7 +93,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signUp = (user) => {
-    //setLoading(true);
+    setLoading(true);
     axios
       .post(`${BASEURL}/api/register`, user)
       .then((res) => {
@@ -100,13 +101,32 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data.user);
         SecureStore.setItemAsync("mytoken", JSON.stringify(res.data.token));
         SecureStore.setItemAsync("user", JSON.stringify(res.data.user));
-        // setLoading(false);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err.response.data);
         setData(err.response.data);
         setIsVisible(true);
-        // setLoading(false);
+        setLoading(false);
+      });
+  };
+
+  const passwordReset = (email) => {
+    setLoading(true);
+    axios
+      .post(`${BASEURL}/api/password-reset`, email)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data === "sent") {
+          setSuccess("We have emailed your password reset link!");
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+        setData(err.response.data);
+        setLoading(false);
+        setIsVisible(true);
       });
   };
 
@@ -125,6 +145,9 @@ export const AuthProvider = ({ children }) => {
         setCount,
         isLoading,
         setLoading,
+        passwordReset,
+        success,
+        setSuccess,
       }}
     >
       {children}

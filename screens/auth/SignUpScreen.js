@@ -4,7 +4,7 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import { Input } from "react-native-elements";
 import tw from "twrnc";
@@ -17,8 +17,15 @@ import { COLORS } from "../../constants/theme";
 import { requestValidator } from "../../utils/utils";
 
 const SignUpScreen = ({ navigation }) => {
-  const { signUp, errorData, setData, isVisible, setIsVisible } =
-    React.useContext(AuthContext);
+  const {
+    signUp,
+    errorData,
+    setData,
+    isVisible,
+    setIsVisible,
+    isLoading,
+    setLoading,
+  } = React.useContext(AuthContext);
   const [fullname, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -52,6 +59,20 @@ const SignUpScreen = ({ navigation }) => {
   useEffect(() => {
     clearError();
   }, [isVisible]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={tw`flex-1 justify-center`}>
+        <ActivityIndicator size="small" color={COLORS.primary} />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white items-center justify-center p-1`}>

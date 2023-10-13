@@ -14,22 +14,22 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { AuthContext } from "../../context/AuthContext";
 import TextButton from "../../components/buttons/TextButton";
 import { logo } from "../../utils/helpers";
-import { requestValidator } from "../../utils/utils";
 import { COLORS } from "../../constants/theme";
+import { requestValidator } from "../../utils/utils";
 
 const LoginScreen = ({ navigation }) => {
   const {
-    signIn,
+    passwordReset,
     errorData,
     setData,
     isVisible,
     setIsVisible,
+    success,
+    setSuccess,
     isLoading,
     setLoading,
   } = React.useContext(AuthContext);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
+  const [email, setEmail] = useState("");
 
   let error = {};
   if (isVisible) {
@@ -51,7 +51,7 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     clearError();
-  }, [isVisible]);
+  }, [isVisible, success]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -74,59 +74,40 @@ const LoginScreen = ({ navigation }) => {
         style={tw`w-full`}
         contentContainerStyle={tw`flex-1 justify-center items-center p-1`}
       >
-        <View style={tw`mb-6 justify-center`}>
+        <View style={tw`mb-3 justify-center`}>
           <Image style={tw`w-32 h-32`} source={logo} resizeMode="contain" />
         </View>
-        {isVisible && (
-          <View style={tw`flex flex-row justify-center items-center p-2 mb-2`}>
-            <Text style={tw`text-base text-yellow-500`}>{error.message}</Text>
-          </View>
-        )}
+        <View style={tw`flex justify-center items-center p-2 mb-5`}>
+          <Text style={tw`text-base`}>
+            Just let us know your email address and we will email you a password
+            reset link that will allow you to choose a new one.
+          </Text>
+        </View>
+
+        <View style={tw`flex flex-row justify-center items-center p-2 mb-2`}>
+          <Text style={tw`text-sm text-green-400`}>{success}</Text>
+        </View>
+
         <Input
-          placeholder="Username / Email"
-          textContentType="givenName"
-          onChangeText={(val) => setUsername(val)}
+          placeholder="Email"
+          textContentType="emailAddress"
+          onChangeText={(val) => setEmail(val)}
           containerStyle={tw`w-full px-4`}
-          errorMessage={error.username}
-        />
-        <Input
-          placeholder="Password"
-          textContentType="password"
-          secureTextEntry={true}
-          onChangeText={(val) => setPassword(val)}
-          containerStyle={tw`w-full px-4`}
-          errorMessage={error.password}
+          errorMessage={error.email}
         />
         {/*Button*/}
         <TextButton
-          label="Log In"
-          buttonContainerStyle={tw`h-12 rounded w-11/12 my-4`}
-          onPress={() => signIn({ username, password })}
+          label="Send"
+          buttonContainerStyle={tw`h-12 rounded w-6/12 my-6`}
+          onPress={() => passwordReset({ email })}
         />
-        {/** */}
+
         <Text
-          style={tw`text-[${COLORS.primary}] mt-2 mb-10`}
-          onPress={() => navigation.navigate("PasswordReset")}
+          style={tw`text-[${COLORS.primary}] ml-1`}
+          onPress={() => navigation.navigate("LogIn")}
         >
-          Forgot password?
-        </Text>
-        {/* <View style={tw`justify-center items-center p-2 w-11/12 my-4`}>
-          <View style={tw`bg-gray-200 h-[1px] w-full`} />
-          <Text
-            style={tw`absolute text-center text-sm text-gray-600 bg-white px-2 py-1`}
-          >
-            Or
-          </Text>
-        </View> */}
-        <Text style={tw`text-gray-700`}>
-          Don't have any account?
-          <Text
-            style={tw`text-[${COLORS.primary}]`}
-            onPress={() => navigation.navigate("SignUp")}
-          >
-            {" "}
-            Sign Up
-          </Text>
+          {" "}
+          Back
         </Text>
       </KeyboardAwareScrollView>
     </SafeAreaView>

@@ -4,15 +4,14 @@ import React, { useContext, useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { ActivityIndicator } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import tw from "twrnc";
 
 import WelcomeScreen from "./screens/WelcomeScreen";
+import { AuthContext } from "./context/AuthContext";
 import LoginScreen from "./screens/auth/LoginScreen";
 import SignUpScreen from "./screens/auth/SignUpScreen";
-import LoaderScreen from "./screens/LoaderScreen";
-import { AuthContext } from "./context/AuthContext";
+import PasswordResetScreen from "./screens/auth/PasswordResetScreen";
 import BottomNavScreen from "./screens/BottomNavScreen";
 import SettingsScreen from "./screens/settings/SettingsScreen";
 import CreateScreen from "./screens/event/CreateScreen";
@@ -39,7 +38,6 @@ const NavStack = createStackNavigator();
 
 export default function App() {
   const { authUser, isLoading, setLoading } = useContext(AuthContext);
-  // const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -48,14 +46,6 @@ export default function App() {
 
     console.log(authUser);
   }, []);
-
-  if (isLoading) {
-    return (
-      <View style={tw`flex-1 justify-center`}>
-        <ActivityIndicator size="small" color={COLORS.primary} />
-      </View>
-    );
-  }
 
   const BottomNav = () => <BottomNavScreen />;
 
@@ -66,6 +56,10 @@ export default function App() {
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="LogIn" component={LoginScreen} />
             <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen
+              name="PasswordReset"
+              component={PasswordResetScreen}
+            />
           </Stack.Navigator>
         ) : (
           <NavStack.Navigator screenOptions={{ headerShown: false }}>
