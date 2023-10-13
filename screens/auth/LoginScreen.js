@@ -27,7 +27,7 @@ const LoginScreen = ({ navigation }) => {
     isLoading,
     setLoading,
   } = React.useContext(AuthContext);
-  const [username, setUsername] = useState("");
+  const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
@@ -84,10 +84,10 @@ const LoginScreen = ({ navigation }) => {
         )}
         <Input
           placeholder="Username / Email"
-          textContentType="givenName"
-          onChangeText={(val) => setUsername(val)}
+          textContentType="name"
+          onChangeText={(val) => setUser(val)}
           containerStyle={tw`w-full px-4`}
-          errorMessage={error.username}
+          errorMessage={error.user}
         />
         <Input
           placeholder="Password"
@@ -101,7 +101,7 @@ const LoginScreen = ({ navigation }) => {
         <TextButton
           label="Log In"
           buttonContainerStyle={tw`h-12 rounded w-11/12 my-4`}
-          onPress={() => signIn({ username, password })}
+          onPress={() => signIn({ user, password })}
         />
         {/** */}
         <Text
