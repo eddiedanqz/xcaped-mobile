@@ -7,7 +7,7 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import { Input } from "@rneui/themed";
+import { Input, Icon } from "@rneui/themed";
 import tw from "twrnc";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -29,7 +29,12 @@ const LoginScreen = ({ navigation }) => {
   } = React.useContext(AuthContext);
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Function to toggle the password visibility state
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   let error = {};
   if (isVisible) {
@@ -75,7 +80,7 @@ const LoginScreen = ({ navigation }) => {
         contentContainerStyle={tw`flex-1 justify-center items-center p-1`}
       >
         <View style={tw`mb-6 justify-center`}>
-          <Image style={tw`w-32 h-32`} source={logo} resizeMode="contain" />
+          <Image style={tw`w-28 h-28`} source={logo} resizeMode="contain" />
         </View>
         {isVisible && (
           <View style={tw`flex flex-row justify-center items-center p-2 mb-2`}>
@@ -92,10 +97,19 @@ const LoginScreen = ({ navigation }) => {
         <Input
           placeholder="Password"
           textContentType="password"
-          secureTextEntry={true}
+          secureTextEntry={!showPassword}
           onChangeText={(val) => setPassword(val)}
           containerStyle={tw`w-full px-4`}
           errorMessage={error.password}
+          rightIcon={
+            <Icon
+              type="feather"
+              name={showPassword ? "eye" : "eye-off"}
+              size={20}
+              color="gray"
+              onPress={toggleShowPassword}
+            />
+          }
         />
         {/*Button*/}
         <TextButton

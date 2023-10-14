@@ -75,7 +75,7 @@ const LoginScreen = ({ navigation }) => {
         contentContainerStyle={tw`flex-1 justify-center items-center p-1`}
       >
         <View style={tw`mb-3 justify-center`}>
-          <Image style={tw`w-32 h-32`} source={logo} resizeMode="contain" />
+          <Image style={tw`w-28 h-28`} source={logo} resizeMode="contain" />
         </View>
         <View style={tw`flex justify-center items-center p-2 mb-5`}>
           <Text style={tw`text-base`}>

@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
   Text,
+  ActivityIndicator,
 } from "react-native";
 import { Button, Icon } from "react-native-elements";
 import tw from "twrnc";
 
 import { AuthContext } from "../../context/AuthContext";
 import TopHeader from "../../components/TopHeader";
+import { COLORS } from "../../constants/theme";
 
 const List = ({ containerStyle, title, icon, onPress, iconColor }) => {
   return (
@@ -28,7 +30,29 @@ const List = ({ containerStyle, title, icon, onPress, iconColor }) => {
 };
 
 const SettingsScreen = ({ navigation }) => {
-  const { signOut } = React.useContext(AuthContext);
+  const { signOut, isLoading, setLoading } = React.useContext(AuthContext);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={tw`flex-1 justify-center`}>
+        <ActivityIndicator size="small" color={COLORS.primary} />
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View style={tw`flex-1 justify-center`}>
+        <ActivityIndicator size="small" color={COLORS.primary} />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={tw`flex-1`}>
