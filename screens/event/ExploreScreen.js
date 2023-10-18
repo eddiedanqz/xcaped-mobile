@@ -1,50 +1,53 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  StyleSheet,
   SafeAreaView,
   TouchableOpacity,
   FlatList,
   Image,
 } from "react-native";
-import { Text, Icon } from "react-native-elements";
+import { Text, Icon } from "@rneui/themed";
 import tw, { useDeviceContext } from "twrnc";
 import * as SecureStore from "expo-secure-store";
+import axios from "axios";
 
 import TopHeader from "../../components/TopHeader";
 import VerticalCard from "../../components/cards/VerticalCard";
-import HorizontalCard from "../../components/cards/HorizontalCard";
-import CascadedCard from "../../components/cards/CascadedCard";
 import ImageCard from "../../components/cards/ImageCard";
-import FilterModal from "../../components/search/FilterModal";
 import { BASEURL } from "../../config/config";
-import axios from "axios";
+import { logo, noImage } from "../../utils/helpers";
 
 const ExploreScreen = ({ navigation }) => {
   useDeviceContext(tw);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [events, setEvents] = useState([]);
+  const [liveEvents, setLiveEvents] = useState([]);
+  const [people, setPeople] = useState([]);
 
   const renderEvents = () => {
     //
     const renderItem = ({ item }) => (
-      <ImageCard
-        item={item}
-        onPress={() => navigation.navigate("Event", { id: item.id })}
-      />
+      <View style={tw`bg-white`}>
+        <ImageCard
+          item={item}
+          onPress={() => navigation.navigate("Event", { id: item.id })}
+        />
+      </View>
     );
 
     const renderLiveEvents = () => {
       return (
-        <View>
-          <View style={tw`flex-row my-5 p-1 px-2`}>
+        <View style={tw`bg-white`}>
+          <View style={tw`flex-row mt-2 pb-4 px-3`}>
             <Text
               style={tw`flex-1 font-bold text-gray-700 text-base text-left`}
             >
               Live Events
             </Text>
 
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Listing", { link: "live" })}
+            >
               <Text style={[tw`font-bold text-base`, { color: "#ff8552" }]}>
                 View All
               </Text>
@@ -52,7 +55,7 @@ const ExploreScreen = ({ navigation }) => {
           </View>
 
           <FlatList
-            data={events}
+            data={liveEvents}
             keyExtractor={(item) => `${item.id}`}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -68,15 +71,75 @@ const ExploreScreen = ({ navigation }) => {
       );
     };
 
+    const renderFollowingEvents = () => {
+      return (
+        <View style={tw`bg-white mb-2`}>
+          <View style={tw`flex-row mt-2 pb-4 px-3`}>
+            <Text
+              style={tw`flex-1 font-bold text-gray-700 text-base text-left`}
+            >
+              People You Follow
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Follow Event")}
+            >
+              <Text style={[tw`font-bold text-base`, { color: "#ff8552" }]}>
+                View All
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <FlatList
+            data={people}
+            keyExtractor={(item) => `${item.user.id}`}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                style={tw`mt-1 mx-3 mb-5`}
+                onPress={() =>
+                  navigation.navigate("Calendar", { id: item.user.id })
+                }
+              >
+                <View style={tw`rounded w-48 h-[150px] `}>
+                  <Image
+                    source={
+                      item.user.profile?.profilePhoto
+                        ? {
+                            uri: `${BASEURL}/storage/images/user/${item.user.profile.profilePhoto}`,
+                          }
+                        : noImage
+                    }
+                    resizeMode="stretch"
+                    style={[tw`h-full w-full rounded`]}
+                  />
+                  <Text
+                    style={tw`absolute bg-white bg-opacity-80 text-sm text-gray-600 font-semibold px-2
+                  py-1 bottom-0 right-0 rounded`}
+                  >
+                    {item.count} Events
+                  </Text>
+                </View>
+                <Text style={tw`text-base font-bold m-1`} numberOfLines={1}>
+                  {item.user.username}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      );
+    };
+
     const renderHeaderTitle = () => {
       return (
-        <View style={tw`flex-row mt-5 mb-4 p-1 px-2`}>
+        <View style={tw`bg-white flex-row mt-2 pb-4 pt-1 px-3`}>
           <Text style={tw`flex-1 font-bold text-gray-700 text-base text-left`}>
             Nearby Events
           </Text>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate("Listing", { link: "events" })}
+            onPress={() => navigation.navigate("Listing", { link: "nearby" })}
           >
             <Text style={[tw`font-bold text-base`, { color: "#ff8552" }]}>
               View All
@@ -92,6 +155,9 @@ const ExploreScreen = ({ navigation }) => {
         keyExtractor={(item) => `${item.id}`}
         ListHeaderComponent={
           <View>
+            {/**Following */}
+            {renderFollowingEvents()}
+
             {/**Live */}
             {renderLiveEvents()}
 
@@ -101,7 +167,7 @@ const ExploreScreen = ({ navigation }) => {
         }
         showsVerticalScrollIndicator={false}
         renderItem={renderItem}
-        contentContainerStyle={tw`py-5`}
+        contentContainerStyle={tw`py-1`}
       />
     );
   };
@@ -116,10 +182,12 @@ const ExploreScreen = ({ navigation }) => {
         },
       };
       axios
-        .get(`${BASEURL}/api/events`, config)
+        .get(`${BASEURL}/api/home`, config)
         .then((res) => {
-          //  console.log(res.data)
-          setEvents(res.data.data);
+          // console.log(res.data.following.count);
+          setEvents(res.data.events);
+          setLiveEvents(res.data.live);
+          setPeople(res.data.following);
         })
         .catch((err) => {
           console.log(err.response.data);
@@ -138,77 +206,24 @@ const ExploreScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
       {/*Header*/}
-      <View style={tw`overflow-hidden`}>
+      <View style={tw`overflow-hidden border-b border-gray-200`}>
         <View
-          style={[
-            tw`flex-row w-full h-15 items-center justify-between px-4`,
-            {
-              // backgroundColor: "#fff",
-              shadowColor: "#000",
-              shadowOffset: { width: 1, height: 1 },
-              shadowOpacity: 0.1,
-              shadowRadius: 3,
-              elevation: 1,
-            },
-          ]}
+          style={[tw`flex-row w-full h-15 items-center justify-between px-4`]}
         >
-          <Text h4 style={tw`text-black `}>
-            xcaped
-          </Text>
+          <Image style={tw`w-24 h-24`} source={logo} resizeMode="contain" />
 
           <TouchableOpacity
             style={tw`justify-center`}
             onPress={() => navigation.navigate("Create")}
           >
-            <Icon
-              type="font-awesome-5"
-              name="calendar-plus"
-              size={20}
-              color="#151618"
-            />
+            <Icon type="feather" name="calendar" size={20} color="#151618" />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/**Filter 
-         <TouchableOpacity style={[tw`absolute right-3 justify-center items-center 
-         p-3 w-12 h-12 rounded-full bottom-5 z-10 shadow-md`,{backgroundColor:"#fdcc97"}]}
-         onPress={() => setShowFilterModal(true)}>
-         <Icon
-            type="font-awesome-5"
-              name="sliders-h"
-              size={18}
-              color="#151618"
-            />
-         </TouchableOpacity>*/}
-
-      {showFilterModal && (
-        <FilterModal
-          isVisible={showFilterModal}
-          onClose={() => setShowFilterModal(false)}
-        />
-      )}
-
-      <View style={tw`pb-17`}>{renderEvents()}</View>
+      <View style={tw`flex-1 bg-gray-100`}>{renderEvents()}</View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  shadow: {
-    backgroundColor: "#fff",
-    width: 300,
-    height: 60,
-    shadowColor: "#000",
-    shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.4,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-});
 
 export default ExploreScreen;

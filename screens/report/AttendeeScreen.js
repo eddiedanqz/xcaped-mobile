@@ -21,7 +21,7 @@ const AttendeeScreen = ({ navigation, route }) => {
   const [lists, setLists] = useState([]);
   const [name, setName] = useState("");
   const [eventId, setId] = useState(0);
-  const [offset, setOffset] = useState(2);
+  const [page, setPage] = useState(1);
 
   const renderLists = () => {
     //
@@ -102,11 +102,10 @@ const AttendeeScreen = ({ navigation, route }) => {
         },
       };
       axios
-        .get(`${BASEURL}/api/attendees/${id}`, config)
+        .get(`${BASEURL}/api/attendees/${id}?page=${page}`, config)
         .then((res) => {
           // console.log(res.data.data)
-          setLists(res.data.data);
-          setOffset(2);
+          setLists((prev) => [...prev, ...res.data.data]);
         })
         .catch((err) => {
           console.log(err.response.data.message);
@@ -115,29 +114,7 @@ const AttendeeScreen = ({ navigation, route }) => {
   };
 
   const loadMore = () => {
-    //param0
-    SecureStore.getItemAsync("mytoken").then((token) => {
-      fetch(
-        `${BASEURL}/api/search/attendee?term=${name}&eventId=${eventId}&page=${offset}`,
-        {
-          method: "GET",
-          headers: new Headers({
-            Accept: "application/json",
-            Authorization: `Bearer ${JSON.parse(token)}`,
-          }),
-        }
-      )
-        .then((response) => response.json())
-        .then((res) => {
-          // let { data } = res;
-          setLists((results) => [...results, ...res.data]);
-          setOffset(offset + 1);
-          // console.log(res.data);
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-    });
+    setPage(page + 1);
   };
 
   const checkIn = (id) => {
@@ -168,7 +145,6 @@ const AttendeeScreen = ({ navigation, route }) => {
     }
 
     SecureStore.getItemAsync("mytoken").then((token) => {
-      setOffset(2);
       fetch(`${BASEURL}/api/search/attendee?term=${name}&eventId=${eventId}`, {
         method: "GET",
         headers: new Headers({
@@ -192,6 +168,10 @@ const AttendeeScreen = ({ navigation, route }) => {
     getList(id);
     setId(id);
   }, []);
+
+  useEffect(() => {
+    getList(eventId);
+  }, [page]);
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>

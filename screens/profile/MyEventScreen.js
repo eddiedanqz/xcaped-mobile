@@ -21,6 +21,7 @@ const MyEventScreen = ({ navigation }) => {
   const [passedId, setPassedId] = useState(0);
   const [events, setEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [page, setPage] = useState(1);
 
   const openSheet = (id) => {
     setPassedId(id);
@@ -115,6 +116,8 @@ const MyEventScreen = ({ navigation }) => {
         keyExtractor={(item) => `${item.id}`}
         renderItem={renderItem}
         contentContainerStyle={tw`my-5`}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.1}
       />
     );
   };
@@ -129,11 +132,11 @@ const MyEventScreen = ({ navigation }) => {
         },
       };
       axios
-        .get(`${BASEURL}/api/my-events`, config)
+        .get(`${BASEURL}/api/my-events?page=${page}`, config)
         .then((res) => {
           // let { data } = res.data;
           // console.log(res.data.data)
-          setEvents(res.data.data);
+          setEvents((prev) => [...prev, ...res.data.data]);
         })
         .catch((err) => {
           console.log(err.response.data.message);
@@ -141,9 +144,13 @@ const MyEventScreen = ({ navigation }) => {
     });
   };
 
+  const loadMore = () => {
+    setPage(page + 1);
+  };
+
   useEffect(() => {
     getData();
-  }, []);
+  }, [page]);
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>

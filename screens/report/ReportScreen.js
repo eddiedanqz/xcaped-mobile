@@ -101,7 +101,7 @@ const ReportScreen = ({ navigation, route }) => {
       </View>
 
       {/**Chart */}
-      <View style={tw`flex mt-4 p-2 shadow-md`}>
+      <View style={tw`flex mt-4 p-2 shadow-md w-full`}>
         <Text style={tw`text-center text-gray-500`}>
           Total number of orders
         </Text>
@@ -114,7 +114,7 @@ const ReportScreen = ({ navigation, route }) => {
               },
             ],
           }}
-          width={Dimensions.get("window").width - 15}
+          width={Dimensions.get("window").width - 5}
           height={230}
           withInnerLines={false}
           bezier={true}

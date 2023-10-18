@@ -8,11 +8,11 @@ import {
 import { Text, Icon } from "react-native-elements";
 import tw from "twrnc";
 import { BASEURL } from "@env";
-const noImage = require("../../assets/banner-placeholder.png");
+import { noBanner } from "../../utils/helpers";
 
 const CascadedEventCard = ({ containerStyle, item, onPress }) => {
   return (
-    <View style={tw`rounded-xl shadow-lg mb-5 mt-1 mx-3`}>
+    <View style={tw`rounded-xl mb-5 mt-1 mx-3`}>
       {/**Save Icon
     <TouchableOpacity
       style={tw`flex-row absolute bg-white p-2 items-center right-3 top-0 z-10`}
@@ -27,7 +27,7 @@ const CascadedEventCard = ({ containerStyle, item, onPress }) => {
             source={
               item.banner
                 ? { uri: `${BASEURL}/storage/images/uploads/${item.banner}` }
-                : noImage
+                : noBanner
             }
             resizeMode="stretch"
             style={tw`h-full w-full rounded-xl`}

@@ -18,7 +18,7 @@ import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
 import { BASEURL } from "../../config/config";
-import TextButton from "../buttons/TextButton";
+import { COLORS } from "../../constants/theme";
 import Section from "../content/Section";
 import { noImage } from "../../utils/helpers";
 
@@ -91,13 +91,13 @@ const InviteModal = ({ isVisible, onClose, event }) => {
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              style={tw`rounded p-2 mx-1 bg-blue-300 text-blue-900`}
+              style={tw`rounded p-2 mx-1 bg-[#ffede6]`}
               onPress={() => {
                 setId(item.id);
                 send(item.id);
               }}
             >
-              <Text style={tw`text-sm`}>Send</Text>
+              <Text style={tw`text-sm  text-[${COLORS.primary}]`}>Send</Text>
             </TouchableOpacity>
           )}
         </View>

@@ -9,11 +9,11 @@ import { Text, Icon } from "react-native-elements";
 import tw from "twrnc";
 import { BASEURL } from "@env";
 
-const noImage = require("../../assets/banner-placeholder.png");
+const noImage = require("../../assets/salaFest.jpg");
 
 const CascadedEventCard = ({ containerStyle, item, onPress }) => {
   return (
-    <View style={tw`rounded bg-white shadow mb-5 mx-3 p-2`}>
+    <View style={tw`rounded bg-white border border-gray-100 mb-5 mx-3 p-2`}>
       {/**Save Icon*/}
       {/* <TouchableOpacity
       style={tw`flex-row absolute bg-white p-2 items-center right-3 top-0 z-10`}
@@ -23,12 +23,12 @@ const CascadedEventCard = ({ containerStyle, item, onPress }) => {
     </TouchableOpacity> */}
 
       <TouchableOpacity style={tw`justify-center pb-2 `} onPress={onPress}>
-        <View style={tw`h-52 w-full rounded shadow-lg`}>
+        <View style={tw`h-56 w-full rounded shadow-lg`}>
           <Image
             source={
-              item.banner
+              /*item.banner
                 ? { uri: `${BASEURL}/storage/images/uploads/${item.banner}` }
-                : noImage
+                : */ noImage
             }
             resizeMode="stretch"
             style={tw`h-full w-full rounded`}

@@ -283,7 +283,7 @@ const OrderTicketScreen = ({ navigation, route }) => {
             label="Buy"
             buttonContainerStyle={[
               tw`rounded-lg p-3 w-48`,
-              { backgroundColor: "#ff8552" },
+              { backgroundColor: disabled ? "#ffd6a5" : "#ff8552" },
             ]}
             onPress={() => submitOrder()}
             disabled={disabled}

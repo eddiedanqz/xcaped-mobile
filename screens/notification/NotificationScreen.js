@@ -23,6 +23,7 @@ import { AuthContext } from "../../context/AuthContext";
 const NotificationScreen = ({ navigation }) => {
   const [lists, setList] = useState([]);
   const { setCount } = useContext(AuthContext);
+  const [page, setPage] = useState(1);
 
   //
   const renderList = () => {
@@ -67,6 +68,8 @@ const NotificationScreen = ({ navigation }) => {
         keyExtractor={(item) => `${item.id}`}
         renderItem={renderItem}
         contentContainerStyle={tw`py-5`}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.1}
       />
     );
   };
@@ -102,10 +105,10 @@ const NotificationScreen = ({ navigation }) => {
         },
       };
       axios
-        .get(`${BASEURL}/api/notifications`, config)
+        .get(`${BASEURL}/api/notifications?page=${page}`, config)
         .then((res) => {
           // console.log(res.data)
-          setList(res.data);
+          setList((prev) => [...prev, ...res.data]);
           setCount(null);
 
           //
@@ -119,9 +122,13 @@ const NotificationScreen = ({ navigation }) => {
     });
   };
 
+  const loadMore = () => {
+    setPage(page + 1);
+  };
+
   useEffect(() => {
     getData();
-  }, []);
+  }, [page]);
 
   return (
     <View style={tw`flex-1 bg-white`}>

@@ -22,4 +22,8 @@ function requestValidator(data) {
   return result;
 }
 
-export { requestValidator };
+const firstToUpper = (inputString) => {
+  return inputString && inputString[0].toUpperCase() + inputString.slice(1);
+};
+
+export { requestValidator, firstToUpper };

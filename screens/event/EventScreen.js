@@ -7,30 +7,29 @@ import {
   Animated,
   ScrollView,
 } from "react-native";
-import { Icon, Text } from "react-native-elements";
+import { Icon, Text } from "@rneui/themed";
 import tw from "twrnc";
 import { StatusBar } from "expo-status-bar";
 import SafeAreaView from "react-native-safe-area-view";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
-import Reactions from "../../components/Reactions";
 import Section from "../../components/content/Section";
-import ReactionModal from "../../components/search/ReactionModal";
 import TextButton from "../../components/buttons/TextButton";
 import { BASEURL } from "../../config/config";
 import { noImage } from "../../utils/helpers";
 import InviteModal from "../../components/modal/InviteModal";
+import { COLORS } from "../../constants/theme";
 
-const WelcomeScreen = ({ navigation, route }) => {
+const EventScreen = ({ navigation, route }) => {
   const [authUser, setAuth] = useState(null);
   const [event, setEvent] = useState(null);
   const [tickets, setTicket] = useState([]);
-  const [showReactionModal, setShowReactionModal] = useState(false);
   const [profile, setProfile] = useState("");
   const [status, setStatus] = useState(null);
   const [savedStatus, setSavedStatus] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [invitees, setIvitees] = useState([]);
 
   const toggleFollow = (id) => {
     SecureStore.getItemAsync("mytoken").then((token) => {
@@ -76,12 +75,13 @@ const WelcomeScreen = ({ navigation, route }) => {
         .get(`${BASEURL}/api/event/show/${id}`, config)
         .then((res) => {
           let { event } = res.data;
-          console.log(res.data);
+          // console.log(res.data);
           setEvent(event);
           setTicket(event.ticket);
           setStatus(res.data.follows);
           setSavedStatus(res.data.saved);
           setProfile(res.data.profile);
+          setIvitees(res.data.invitees);
         })
         .catch((err) => {
           console.log(err.response);
@@ -140,39 +140,57 @@ const WelcomeScreen = ({ navigation, route }) => {
 
         <View style={tw`flex-row`}></View>
       </View>
-
-      <ScrollView style={tw`flex-1 pt-5 px-5 pb-10`}>
-        {/**Banner */}
-        <View style={tw`flex-1 shadow-lg rounded-3xl h-60 w-full`}>
-          <Image
-            source={{
-              uri: `${BASEURL}/storage/images/uploads/${event?.banner}`,
-            }}
-            resizeMode="stretch"
-            style={tw`h-full w-full rounded-2xl`}
-          />
-        </View>
-        <TextButton
-          label="Send Invite"
-          labelStyle={tw`text-sm`}
-          buttonContainerStyle={tw`rounded-lg p-2 mt-1 mx-3 w-24 bg-gray-500`}
-          onPress={() => {
-            setShowModal(true);
-          }}
-        />
-
-        {/*Content*/}
-        <View style={tw`flex-1 my-6 px-1 pb-10`}>
-          <Section containerStyle={tw`border-b border-gray-400`}>
-            {/*Category*/}
-            <View style={[tw`flex-row justify-between items-center mb-1 px-1`]}>
-              <View style={[tw`flex-row items-center`]}>
-                <Icon
-                  type="font-awesome-5"
-                  name="crown"
-                  color="#ff8552"
-                  size={13}
+      <ScrollView style={tw`flex-1 bg-gray-200`}>
+        <View style={tw`bg-white  pt-4 px-5 pb-4`}>
+          {/**Banner */}
+          <View style={tw`flex-1 shadow-lg rounded-3xl h-60 w-full`}>
+            <Image
+              source={{
+                uri: `${BASEURL}/storage/images/uploads/${event?.banner}`,
+              }}
+              resizeMode="stretch"
+              style={tw`h-full w-full rounded-2xl`}
+            />
+          </View>
+          {/**Invite */}
+          <Section containerStyle={tw`p-1 mb-3`} subtitle="Invite People">
+            <View style={tw`flex-row items-center `}>
+              {invitees.map((avatar, index) => (
+                <Image
+                  key={index}
+                  source={
+                    avatar?.profilePhoto
+                      ? {
+                          uri: `${BASEURL}/storage/images/user/${avatar.profilePhoto}`,
+                        }
+                      : noImage
+                  }
+                  style={[tw`w-10 h-10 rounded-full border border-white -mr-4`]}
                 />
+              ))}
+              <TouchableOpacity
+                onPress={() => {
+                  setShowModal(true);
+                }}
+              >
+                <Icon
+                  type="feather"
+                  name="plus"
+                  size={19}
+                  color="white"
+                  containerStyle={tw`bg-gray-700 w-10 h-10 rounded-full justify-center`}
+                />
+              </TouchableOpacity>
+            </View>
+          </Section>
+
+          {/*Content*/}
+          <View style={tw`flex-1 my-2 px-1 pb-10`}>
+            <Section containerStyle={tw`border-b border-gray-400`}>
+              {/*Category*/}
+              <View
+                style={[tw`flex-row justify-between items-center mb-1 px-1`]}
+              >
                 <Text
                   style={[
                     tw`text-base text-left font-medium text-gray-500 mx-1`,
@@ -181,153 +199,141 @@ const WelcomeScreen = ({ navigation, route }) => {
                 >
                   {event?.category.name}
                 </Text>
+
+                <View style={tw`flex-row items-center`}>
+                  {/**Save/Favourite */}
+                  <TouchableOpacity
+                    style={tw`rounded-full mr-3`}
+                    onPress={() => saveEvent(event?.id)}
+                  >
+                    <Icon
+                      type="font-awesome-5"
+                      name="bookmark"
+                      size={19}
+                      color={savedStatus ? "red" : "black"}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
 
+              {/*Title */}
+              <Text style={tw`text-xl font-bold mb-1 text-gray-700`}>
+                {event?.title}
+              </Text>
+            </Section>
+
+            {/*Date & Time*/}
+            <Section containerStyle={tw`p-1 mb-3`} subtitle="Date & Time">
               <View style={tw`flex-row items-center`}>
-                {/**Save/Favourite */}
-                <TouchableOpacity
-                  style={tw`rounded-full mr-3`}
-                  onPress={() => saveEvent(event?.id)}
+                {/**Icon */}
+                <View
+                  style={[
+                    tw`p-2 items-center rounded-full`,
+                    { backgroundColor: "#ffede6" },
+                  ]}
                 >
                   <Icon
                     type="font-awesome-5"
-                    name="bookmark"
-                    size={19}
-                    color={savedStatus ? "red" : "black"}
+                    name="calendar"
+                    size={16}
+                    color="#ff8552"
                   />
-                </TouchableOpacity>
+                </View>
+                <View style={tw`flex-1 flex-col p-2`}>
+                  {/**Date */}
+                  <View style={tw`flex-row justify-between mx-1`}>
+                    <Text style={tw`text-sm font-semibold text-gray-500`}>
+                      {new Date(event?.start_date).toDateString()}
+                    </Text>
 
-                {/**Reaction */}
-                <TouchableOpacity
-                  style={tw`flex-row items-center`}
-                  onPress={() => setShowReactionModal(!showReactionModal)}
-                >
-                  <View style={tw`w-6 h-6 mr-1 `}>
-                    <Image
-                      style={tw`w-full h-full`}
-                      source={require("../../assets/cool.png")}
-                    />
+                    <Text style={tw`text-sm font-semibold text-gray-500 `}>
+                      {event?.end_date
+                        ? new Date(event.end_date).toDateString()
+                        : ""}
+                    </Text>
                   </View>
-                  <Text style={tw` text-sm`}>55%</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
 
-            {/*Title */}
-            <Text style={tw`text-xl font-bold mb-1 text-gray-700`}>
-              {event?.title}
-            </Text>
-          </Section>
+                  {/*Time*/}
+                  <View style={tw`flex-row justify-between mx-1`}>
+                    <Text style={tw`text-lg text-gray-700`}>
+                      {event?.start_time}
+                    </Text>
 
-          {/*Date & Time*/}
-          <Section containerStyle={tw`p-1 mb-3`} subtitle="Date & Time">
-            <View style={tw`flex-row items-center`}>
-              {/**Icon */}
-              <View
-                style={[
-                  tw`p-2 items-center rounded-full`,
-                  { backgroundColor: "#ffede6" },
-                ]}
-              >
-                <Icon
-                  type="font-awesome-5"
-                  name="calendar"
-                  size={16}
-                  color="#ff8552"
-                />
-              </View>
-              <View style={tw`flex-1 flex-col p-2`}>
-                {/**Date */}
-                <View style={tw`flex-row justify-between mx-1`}>
-                  <Text style={tw`text-sm font-semibold text-gray-500`}>
-                    {new Date(event?.start_date).toDateString()}
-                  </Text>
-
-                  <Text style={tw`text-sm font-semibold text-gray-500 `}>
-                    {event?.end_date
-                      ? new Date(event.end_date).toDateString()
-                      : ""}
-                  </Text>
-                </View>
-
-                {/*Time*/}
-                <View style={tw`flex-row justify-between mx-1`}>
-                  <Text style={tw`text-lg text-gray-700`}>
-                    {event?.start_time}
-                  </Text>
-
-                  <Text style={tw`text-lg text-gray-700`}>
-                    {event?.end_time}
-                  </Text>
+                    <Text style={tw`text-lg text-gray-700`}>
+                      {event?.end_time}
+                    </Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          </Section>
+            </Section>
 
-          <Section containerStyle={tw`p-1 mb-3`} subtitle="Location">
-            <View style={tw`flex-row items-center`}>
-              {/**Location*/}
-              <View
-                style={[
-                  tw`bg-black bg-opacity-30 p-2 items-center rounded-full`,
-                  { backgroundColor: "#ffede6" },
-                ]}
-              >
-                <Icon
-                  type="font-awesome-5"
-                  name="map"
-                  size={16}
-                  color="#ff8552"
-                />
+            <Section containerStyle={tw`p-1 mb-3`} subtitle="Location">
+              <View style={tw`flex-row items-center`}>
+                {/**Location*/}
+                <View
+                  style={[
+                    tw`bg-black bg-opacity-30 p-2 items-center rounded-full`,
+                    { backgroundColor: "#ffede6" },
+                  ]}
+                >
+                  <Icon
+                    type="font-awesome-5"
+                    name="map"
+                    size={16}
+                    color="#ff8552"
+                  />
+                </View>
+                <View style={tw`mx-2`}>
+                  <Text style={tw`text-base text-gray-500`}>
+                    {event?.address}
+                  </Text>
+                  <Text style={tw`text-lg text-gray-700`}>{event?.venue}</Text>
+                </View>
               </View>
-              <View style={tw`mx-2`}>
-                <Text style={tw`text-lg text-gray-500`}>{event?.address}</Text>
-                <Text style={tw`text-lg text-gray-700`}>{event?.venue}</Text>
-              </View>
-            </View>
-          </Section>
+            </Section>
 
-          {/*Description*/}
-          <Section containerStyle={tw`p-1 mb-3`} title="Description">
-            <Text style={tw`text-base text-gray-500`}>
-              {event?.description}
-            </Text>
-          </Section>
+            {/*Description*/}
+            <Section containerStyle={tw`p-1 mb-3`} title="Description">
+              <Text style={tw`text-base text-gray-500`}>
+                {event?.description}
+              </Text>
+            </Section>
 
-          {/**Organizer */}
-          <Section containerStyle={tw`p-1 mb-3`}>
-            <View style={tw`flex-row`}>
-              <TouchableOpacity
-                style={tw``}
-                onPress={() =>
-                  navigation.navigate("User Profile", { id: event?.userId })
-                }
-              >
-                <Image
-                  style={tw`mr-1 w-16 h-16 rounded-xl`}
-                  source={
-                    profile
-                      ? { uri: `${BASEURL}/storage/images/user/${profile}` }
-                      : noImage
-                  }
-                />
-              </TouchableOpacity>
-              <View style={tw`flex-col p-1`}>
-                <Text style={tw`text-xl mb-1 text-gray-700`}>
-                  {event?.author}
-                </Text>
-                {/*  Follow  */}
+            {/**Organizer */}
+            <Section containerStyle={tw`p-1`}>
+              <View style={tw`flex-row`}>
                 <TouchableOpacity
                   style={tw``}
-                  onPress={() => toggleFollow(event?.userId)}
+                  onPress={() =>
+                    navigation.navigate("User Profile", { id: event?.userId })
+                  }
                 >
-                  <Text style={tw`text-red-400 text-base`}>
-                    {status ? "Unfollow" : "Follow"}
-                  </Text>
+                  <Image
+                    style={tw`mr-1 w-16 h-16 rounded-xl`}
+                    source={
+                      profile
+                        ? { uri: `${BASEURL}/storage/images/user/${profile}` }
+                        : noImage
+                    }
+                  />
                 </TouchableOpacity>
+                <View style={tw`flex-col p-1`}>
+                  <Text style={tw`text-xl mb-1 text-gray-700`}>
+                    {event?.author}
+                  </Text>
+                  {/*  Follow  */}
+                  <TouchableOpacity
+                    style={tw``}
+                    onPress={() => toggleFollow(event?.userId)}
+                  >
+                    <Text style={tw`text-red-400 text-base`}>
+                      {status ? "Unfollow" : "Follow"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </Section>
+            </Section>
+          </View>
         </View>
       </ScrollView>
 
@@ -343,13 +349,6 @@ const WelcomeScreen = ({ navigation, route }) => {
         </Section>
       )}
 
-      {/* *Reactions*/}
-      {showReactionModal && (
-        <ReactionModal
-          isVisible={showReactionModal}
-          onClose={() => setShowReactionModal(false)}
-        />
-      )}
       {/**Filter */}
       {showModal && (
         <InviteModal
@@ -368,12 +367,4 @@ const WelcomeScreen = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  divider: {
-    borderBottomColor: "black",
-    borderBottomWidth: 0.2,
-    margin: 5,
-  },
-});
-
-export default WelcomeScreen;
+export default EventScreen;

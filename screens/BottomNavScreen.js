@@ -10,6 +10,8 @@ import CreateScreen from "./event/CreateScreen";
 import TicketScreen from "./ticket/TicketScreen";
 import SearchScreen from "./search/SearchScreen";
 import ListingScreen from "./event/ListingScreen";
+import FollowEventScreen from "./event/FollowEventScreen";
+import CalendarScreen from "./event/CalendarScreen";
 import ProfileScreen from "./profile/ProfileScreen";
 import UserProfileScreen from "./profile/UserProfileScreen";
 import MyEventScreen from "./profile/MyEventScreen";
@@ -23,8 +25,9 @@ const HomeStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Explore" component={ExploreScreen} />
-      {/* <Stack.Screen name="Create" component={CreateScreen}/> */}
+      <Stack.Screen name="Calendar" component={CalendarScreen} />
       <Stack.Screen name="Listing" component={ListingScreen} />
+      <Stack.Screen name="Follow Event" component={FollowEventScreen} />
     </Stack.Navigator>
   );
 };

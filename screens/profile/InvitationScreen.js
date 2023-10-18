@@ -19,10 +19,8 @@ import { BASEURL } from "../../config/config";
 import { noImage } from "../../utils/helpers";
 
 const InvitationScreen = ({ navigation }) => {
-  const [categories, setCategories] = useState([]);
   const [invites, setInvites] = useState([]);
-  const [offset, setOffset] = useState(0);
-  const [next, setNext] = useState("");
+  const [page, setPage] = useState(1);
 
   const renderInvitations = () => {
     //
@@ -59,7 +57,7 @@ const InvitationScreen = ({ navigation }) => {
         keyExtractor={(item) => `${item.id}`}
         renderItem={renderItem}
         contentContainerStyle={tw`py-5`}
-        // onEndReached={loadMore}
+        onEndReached={loadMore}
         onEndReachedThreshold={0.1}
       />
     );
@@ -75,12 +73,11 @@ const InvitationScreen = ({ navigation }) => {
         },
       };
       axios
-        .get(`${BASEURL}/api/invitations/all/`, config)
+        .get(`${BASEURL}/api/invitations/all?page=${page}`, config)
         .then((res) => {
           let { data } = res.data;
           // console.log(data);
-          setInvites(data);
-          setNext(res.data.next_page_url);
+          setInvites((prev) => [...prev, ...data]);
         })
         .catch((err) => {
           console.log(err.response.data.message);
@@ -89,31 +86,12 @@ const InvitationScreen = ({ navigation }) => {
   };
 
   const loadMore = () => {
-    //param0
-    SecureStore.getItemAsync("mytoken").then((token) => {
-      fetch(`${next}`, {
-        method: "GET",
-        headers: new Headers({
-          Accept: "application/json",
-          Authorization: `Bearer ${JSON.parse(token)}`,
-        }),
-      })
-        .then((response) => response.json())
-        .then((res) => {
-          let { data } = res;
-          setInvites((invites) => [...invites, ...data]);
-          //setOffset(offset + 1);
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-    });
+    setPage(page + 1);
   };
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [page]);
 
   return (
     <View style={tw`flex-1 bg-white`}>

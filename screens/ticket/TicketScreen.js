@@ -7,7 +7,6 @@ import {
   SafeAreaView,
   FlatList,
   TouchableOpacity,
-  StyleSheet,
 } from "react-native";
 import tw from "twrnc";
 import { Icon, BottomSheet } from "react-native-elements";
@@ -19,12 +18,14 @@ import { BASEURL } from "../../config/config";
 import List from "../../components/content/List";
 import TextButton from "../../components/buttons/TextButton";
 import ShareModal from "../../components/modal/ShareModal";
+import { COLORS } from "../../constants/theme";
 
 const TicketScreen = ({ navigation }) => {
   const [showMore, setShowMore] = useState(false);
   const [passedId, setPassedId] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [events, setEvents] = useState([]);
+  const [page, setPage] = useState(1);
 
   const openSheet = (id) => {
     setPassedId(id);
@@ -95,8 +96,10 @@ const TicketScreen = ({ navigation }) => {
             <Text style={tw`text-sm text-gray-500 font-semibold mt-2`}>
               Price
             </Text>
-            <Text style={tw`text-base text-green-400 font-bold`}>
-              <Text style={tw`text-xs text-green-400 font-bold`}>GHC</Text>
+            <Text style={tw`text-base text-[${COLORS.primary}] font-bold`}>
+              <Text style={tw`text-xs text-[${COLORS.primary}] font-bold`}>
+                GHC
+              </Text>
               {item.ticket.price}
             </Text>
           </View>
@@ -148,8 +151,14 @@ const TicketScreen = ({ navigation }) => {
         keyExtractor={(item) => `${item.id}`}
         renderItem={renderItem}
         contentContainerStyle={tw`py-4`}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.1}
       />
     );
+  };
+
+  const loadMore = () => {
+    setPage(page + 1);
   };
 
   const getData = () => {
@@ -162,11 +171,11 @@ const TicketScreen = ({ navigation }) => {
         },
       };
       axios
-        .get(`${BASEURL}/api/my-tickets`, config)
+        .get(`${BASEURL}/api/my-tickets?page=${page}`, config)
         .then((res) => {
           let { data } = res.data;
           // console.log(data)
-          setEvents(data);
+          setEvents((prev) => [...prev, ...data]);
         })
         .catch((err) => {
           console.log(err.response.data.message);
@@ -176,7 +185,7 @@ const TicketScreen = ({ navigation }) => {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [page]);
 
   return (
     <View style={tw`flex-1 bg-white`}>
@@ -197,7 +206,7 @@ const TicketScreen = ({ navigation }) => {
       </View>
 
       <View style={tw`flex-1 bg-gray-100`}>
-        <View style={tw`m-2 pb-20 px-1`}>{renderTickets()}</View>
+        <View style={tw` px-1`}>{renderTickets()}</View>
       </View>
       {/**Filter */}
       {showModal && (

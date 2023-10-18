@@ -18,6 +18,7 @@ import { BASEURL } from "../../config/config";
 
 const SavedScreen = ({ navigation }) => {
   const [events, setEvents] = useState([]);
+  const [page, setPage] = useState(1);
 
   const isFocused = useIsFocused();
 
@@ -36,8 +37,14 @@ const SavedScreen = ({ navigation }) => {
         keyExtractor={(item) => `${item.id}`}
         renderItem={renderItem}
         contentContainerStyle={tw`py-5 px-3`}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.1}
       />
     );
+  };
+
+  const loadMore = () => {
+    setPage(page + 1);
   };
 
   const getData = () => {
@@ -50,11 +57,11 @@ const SavedScreen = ({ navigation }) => {
         },
       };
       axios
-        .get(`${BASEURL}/api/event/saved`, config)
+        .get(`${BASEURL}/api/event/saved?page=${page}`, config)
         .then((res) => {
           // let { data } = res.data;
           // console.log(res.data)
-          setEvents(res.data.data);
+          setEvents((prev) => [...prev, ...res.data.data]);
         })
         .catch((err) => {
           console.log(err.response.data.message);
@@ -64,11 +71,7 @@ const SavedScreen = ({ navigation }) => {
 
   useEffect(() => {
     getData();
-
-    return () => {
-      setEvents([]);
-    };
-  }, [isFocused]);
+  }, [isFocused, page]);
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>

@@ -15,7 +15,7 @@ async function getValueFor(key) {
 
 //Provider Component
 export const AuthProvider = ({ children }) => {
-  const [authUser, setUser] = useState(null);
+  const [authUser, setUser] = useState({});
   const [token, setToken] = useState("");
   const [errorData, setData] = useState(null);
   const [isVisible, setIsVisible] = useState(false);

@@ -1,23 +1,19 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  Image,
-} from "react-native";
-import { Text, Icon } from "react-native-elements";
+import React from "react";
+import { View, TouchableOpacity, Image } from "react-native";
+import { Text, Icon } from "@rneui/themed";
 import tw from "twrnc";
 import { BASEURL } from "@env";
-
-const noImage = require("../../assets/banner-placeholder.png");
+import { noImage } from "../../utils/helpers";
 
 const HorizontalEventCard = ({ containerStyle, item, onPress }) => {
   return (
     <TouchableOpacity
-      style={[tw`bg-white mb-4 mx-4 rounded-md shadow-lg`, { containerStyle }]}
+      style={[tw`bg-white mb-3 rounded-md`, containerStyle]}
       onPress={onPress}
     >
-      <View style={tw`flex-row items-center border-b border-gray-300 p-1`}>
+      <View
+        style={tw`flex-row items-center border-b border-gray-200 py-2 px-3`}
+      >
         <Image
           source={
             item.banner
@@ -63,7 +59,7 @@ const HorizontalEventCard = ({ containerStyle, item, onPress }) => {
         </View>
       </View>
       {/**Extra Content */}
-      <View style={tw`flex-row justify-between items-center p-1`}>
+      <View style={tw`flex-row justify-between items-center py-1 px-4`}>
         {/**Category */}
         <View
           style={[
@@ -94,7 +90,7 @@ const HorizontalEventCard = ({ containerStyle, item, onPress }) => {
           </Text>
         </View> */}
           {/**Date */}
-          <Text style={[tw`text-base font-semibold`, { color: "#151618" }]}>
+          <Text style={[tw`text-sm font-semibold`, { color: "#151618" }]}>
             {new Date(item.start_date).toDateString()}
           </Text>
         </View>
