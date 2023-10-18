@@ -52,7 +52,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <View style={styles.container}>
-        {!authUser ? (
+        {Object.entries(authUser).length > 0 ? (
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="LogIn" component={LoginScreen} />
             <Stack.Screen name="SignUp" component={SignUpScreen} />
