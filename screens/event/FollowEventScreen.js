@@ -138,7 +138,7 @@ const FollowEventScreen = ({ navigation, route }) => {
         />
       )}
 
-      <View style={tw`px-2 pb-17`}>{renderEvents()}</View>
+      <View style={tw`flex-1 px-2 pb-7`}>{renderEvents()}</View>
     </SafeAreaView>
   );
 };

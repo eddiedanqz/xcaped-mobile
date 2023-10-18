@@ -10,6 +10,7 @@ const List = ({
   onPress,
   iconColor,
   titleStyle,
+  iconContentStyle,
 }) => {
   return (
     <TouchableOpacity
@@ -19,7 +20,13 @@ const List = ({
       ]}
       onPress={onPress}
     >
-      <Icon type="feather" name={icon} size={20} color={iconColor} />
+      <Icon
+        type="feather"
+        name={icon}
+        size={20}
+        color={iconColor}
+        containerStyle={iconContentStyle}
+      />
       <Text style={[tw`mx-3 font-bold text-lg text-gray-700`, titleStyle]}>
         {title}
       </Text>
