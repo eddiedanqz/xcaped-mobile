@@ -23,7 +23,7 @@ import SearchModal from "../../components/search/SearchModal";
 import List from "../../components/content/List";
 
 const ExploreScreen = ({ navigation }) => {
-  const { filters } = useContext(FilterContext);
+  const { filters, clearFilters } = useContext(FilterContext);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showFilterIcon, setShowFilterIcon] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -33,27 +33,31 @@ const ExploreScreen = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [date, setDate] = useState("");
   const [results, setResults] = useState({});
-  const [page, setPage] = useState(1);
   const isFocused = useIsFocused();
 
   const filterData = () => {
     //
-    // handleSubmit();
     // setShowFilterModal(false);
     // setShowFilterIcon(false);
-    console.log(showFilterIcon);
+    handleSubmit();
+    // console.log(filters);
   };
 
   function renderCategories() {
     //
     const renderItem = ({ item }) => (
       <List
-        onPress={() => navigation.navigate("Event", { id: item.id })}
+        onPress={() =>
+          navigation.navigate("Event Category", {
+            id: item.id,
+            name: item.name,
+          })
+        }
         title={item.name}
-        titleStyle={tw`text-blue-400`}
-        icon="anchor"
-        iconColor="white"
-        iconContentStyle={tw`bg-blue-400 rounded-sm p-5`}
+        titleStyle={tw`text-[${item.color}] `}
+        icon={item.image}
+        iconColor={item.color}
+        iconContentStyle={tw`bg-[${item.bgColor}] rounded-sm p-5`}
         containerStyle={tw` px-4`}
       />
     );
@@ -94,12 +98,8 @@ const ExploreScreen = ({ navigation }) => {
   };
 
   const handleSubmit = () => {
-    if (query == "") {
-      setResults([]);
-      return;
-    }
-
     SecureStore.getItemAsync("mytoken").then((token) => {
+      // console.log("submit", { query, filters });
       fetch(
         `${BASEURL}/api/search?query=${query}&venue=${venue}&category=${category}&date=${date}`,
         {
@@ -112,6 +112,7 @@ const ExploreScreen = ({ navigation }) => {
       )
         .then((response) => response.json())
         .then((res) => {
+          // console.log(res);
           // Create an empty object to store the grouped data
           const groupedData = {};
           // Iterate through the array and group objects by their "type" property
@@ -129,7 +130,6 @@ const ExploreScreen = ({ navigation }) => {
 
           // Now, groupedData contains the objects grouped by their "type" property
           setResults(groupedData);
-          // console.log(groupedData);
         })
         .catch((err) => {
           console.log(err.message);
@@ -141,16 +141,29 @@ const ExploreScreen = ({ navigation }) => {
     setShowFilterIcon(val);
   };
 
+  const clear = () => {
+    setQuery("");
+    setShowFilterIcon(false);
+    setResults([]);
+    setShowModal(false);
+    clearFilters({
+      venue: "",
+      category: "",
+      date: "",
+    });
+    // console.log("clear", { query, filters });
+  };
+
   useEffect(() => {
     getCategories();
   }, []);
 
   useEffect(() => {
-    //  console.log(filters)
     setVenue(filters.venue);
     setCategory(filters.category);
     setDate(filters.date);
-    setQuery("");
+    // setQuery("");
+    //  console.log("change", { query, filters });
 
     return () => {
       setResults([]);
@@ -163,16 +176,14 @@ const ExploreScreen = ({ navigation }) => {
       <View style={tw`overflow-hidden border-b border-gray-200 z-50`}>
         <View style={[tw`flex-row items-center justify-center px-3 py-1`]}>
           {showModal && (
-            <TouchableOpacity
-              onPress={() => setShowModal(false)}
-              style={tw`py-1 px-2`}
-            >
+            <TouchableOpacity onPress={clear} style={tw`py-1 px-2`}>
               <Icon name="arrow-left" type="feather" size={20} />
             </TouchableOpacity>
           )}
           <TextInput
-            style={tw`flex-1 text-lg bg-gray-300 p-1.5 rounded-lg`}
+            style={tw`flex-1 text-base bg-gray-300 p-1.5 rounded-lg items-center`}
             placeholderTextColor="black"
+            defaultValue={query}
             placeholder="Search..."
             onChangeText={(val) => setQuery(val)}
             returnKeyType="search"
@@ -202,6 +213,7 @@ const ExploreScreen = ({ navigation }) => {
             onClose={() => setShowModal(false)}
             results={results}
             showIcon={showIcon}
+            navigation={navigation}
           />
         )}
       </View>

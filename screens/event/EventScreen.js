@@ -255,11 +255,11 @@ const EventScreen = ({ navigation, route }) => {
 
                   {/*Time*/}
                   <View style={tw`flex-row justify-between mx-1`}>
-                    <Text style={tw`text-lg text-gray-700`}>
+                    <Text style={tw`text-base text-gray-700`}>
                       {event?.start_time}
                     </Text>
 
-                    <Text style={tw`text-lg text-gray-700`}>
+                    <Text style={tw`text-base text-gray-700`}>
                       {event?.end_time}
                     </Text>
                   </View>

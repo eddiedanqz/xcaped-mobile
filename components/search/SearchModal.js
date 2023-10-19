@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useEffect, useState, useRef, Fragment } from "react";
 import {
   View,
   TouchableOpacity,
@@ -7,6 +7,7 @@ import {
   Text,
   Image,
   FlatList,
+  FR,
 } from "react-native";
 import { Icon, TabView, Tab } from "@rneui/themed";
 import tw from "twrnc";
@@ -18,17 +19,18 @@ import TwoPointSlider from "./TwoPointSlider";
 import Section from "../content/Section";
 import { noImage } from "../../utils/helpers";
 
-const SearchModal = ({ isVisible, onClose, results, showIcon }) => {
+const SearchModal = ({ isVisible, onClose, results, showIcon, navigation }) => {
   const modalAnimatedValue = useRef(new Animated.Value(0)).current;
   const [showSearchModal, setShowSearchModal] = useState(isVisible);
   const [showFilterIcon, setShowFilterIcon] = useState(false);
   const [index, setIndex] = useState(0);
+  const [data, setData] = useState([]);
 
   const renderEvents = () => {
     //
     const renderItem = ({ item }) => (
       <TouchableOpacity
-        style={[tw`bg-white mb-4 mx-4 rounded-md shadow-md`]}
+        style={[tw`bg-white mb-3 border-b border-gray-200`]}
         onPress={() => navigation.navigate("Event", { id: item.searchable.id })}
       >
         <View style={tw`flex-row items-center border-b border-gray-300 p-1`}>
@@ -57,7 +59,7 @@ const SearchModal = ({ isVisible, onClose, results, showIcon }) => {
           </View>
         </View>
         {/**Extra Content */}
-        <View style={tw`flex-row justify-between items-center p-1`}>
+        <View style={tw`flex-row justify-between items-center py-1 px-3`}>
           {/**Category */}
           <View
             style={[
@@ -75,7 +77,7 @@ const SearchModal = ({ isVisible, onClose, results, showIcon }) => {
             </Text>
           </View>
           <View style={tw`flex-row items-center`}>
-            <Text style={[tw`text-base font-semibold`, { color: "#151618" }]}>
+            <Text style={[tw`text-sm font-semibold`, { color: "#151618" }]}>
               {new Date(item.searchable.start_date).toDateString()}
             </Text>
           </View>
@@ -88,9 +90,7 @@ const SearchModal = ({ isVisible, onClose, results, showIcon }) => {
         data={results.events}
         keyExtractor={(item) => `${item.searchable.id}`}
         renderItem={renderItem}
-        contentContainerStyle={tw`py-5`}
-        // onEndReached={loadMore}
-        onEndReachedThreshold={0.1}
+        contentContainerStyle={tw`bg-white`}
       />
     );
   };
@@ -107,7 +107,11 @@ const SearchModal = ({ isVisible, onClose, results, showIcon }) => {
         >
           <Image
             source={
-              /*item.banner ? {uri:`${BASEURL}/storage/images/uploads/${item.banner}` } : */ noImage
+              item.searchable.profile.profilePhoto
+                ? {
+                    uri: `${BASEURL}/storage/images/user/${item.searchable.profile.profilePhoto}`,
+                  }
+                : noImage
             }
             resizeMode="stretch"
             style={tw`w-16 h-16 rounded`}
@@ -130,7 +134,7 @@ const SearchModal = ({ isVisible, onClose, results, showIcon }) => {
         data={results.users}
         keyExtractor={(item) => `${item.searchable.id}`}
         renderItem={renderItem}
-        contentContainerStyle={tw`py-5`}
+        contentContainerStyle={tw`bg-white`}
       />
     );
   };
@@ -156,8 +160,12 @@ const SearchModal = ({ isVisible, onClose, results, showIcon }) => {
     outputRange: [200, 0],
   });
 
+  useEffect(() => {
+    //console.log(results);
+  }, [results]);
+
   return (
-    <View style={tw`absolute inset-0`}>
+    <View style={tw`absolute inset-0 `}>
       {/* <View style={tw`flex-1 bg-black bg-opacity-60`}></View> */}
       <Animated.View
         style={{
@@ -167,11 +175,10 @@ const SearchModal = ({ isVisible, onClose, results, showIcon }) => {
           width: "100%",
           height: "100%",
           backgroundColor: "white",
-          padding: 20,
         }}
       >
         {Object.entries(results).length > 0 && (
-          <View>
+          <Fragment>
             <Tab
               value={index}
               onChange={(e) => setIndex(e)}
@@ -202,10 +209,14 @@ const SearchModal = ({ isVisible, onClose, results, showIcon }) => {
             </Tab>
 
             <TabView value={index} onChange={setIndex} animationType="spring">
-              <TabView.Item style={tw`w-full`}>{renderEvents()}</TabView.Item>
-              <TabView.Item style={tw`w-full`}>{renderPeople()}</TabView.Item>
+              <TabView.Item style={tw`w-full px-2 py-1`}>
+                {renderEvents()}
+              </TabView.Item>
+              <TabView.Item style={tw`w-full px-2 py-1`}>
+                {renderPeople()}
+              </TabView.Item>
             </TabView>
-          </View>
+          </Fragment>
         )}
       </Animated.View>
     </View>

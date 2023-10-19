@@ -192,7 +192,7 @@ const FilterModal = ({ isVisible, onClose, filterData, categories }) => {
     clearFilters({
       venue: "",
       category: "",
-      date: "Select Date",
+      date: "",
     });
   };
 
@@ -279,12 +279,13 @@ const FilterModal = ({ isVisible, onClose, filterData, categories }) => {
         </ScrollView>
 
         {/**Button */}
-        <View style={tw`absolute h-24 bottom-20 left-0 right-0 p-3 bg-white`}>
+        <View style={tw`absolute h-24 bottom-24 left-0 right-0 p-3 bg-white`}>
           <TextButton
             label="Apply"
-            buttonContainerStyle={tw`h-11 rounded`}
+            buttonContainerStyle={tw`h-12 rounded`}
             onPress={() => {
               addFilters(values);
+              setShowFilterModal(false);
               filterData();
             }}
           />

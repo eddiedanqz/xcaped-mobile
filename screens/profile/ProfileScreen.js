@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from "react-native";
 import tw from "twrnc";
-import { Icon, BottomSheet } from "react-native-elements";
+import { Icon, BottomSheet } from "@rneui/themed";
 import { StatusBar } from "expo-status-bar";
 import { useIsFocused } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
@@ -253,6 +253,7 @@ function ProfileScreen({ navigation }) {
                 <BottomSheet
                   isVisible={showModal}
                   modalProps={{ animationType: "slide" }}
+                  onBackdropPress={() => closeSheet()}
                 >
                   <View style={tw`flex-1 bg-white py-3 px-4`}>
                     {/**Header */}

@@ -109,7 +109,7 @@ function UserProfileScreen({ navigation, route }) {
     getValueFor("user");
 
     getProfile(route.params.id);
-  }, [navigation, routeId]);
+  }, [navigation]);
 
   const renderProfileArea = () => {
     return (

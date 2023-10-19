@@ -6,10 +6,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "./HomeScreen";
 import ExploreScreen from "./event/ExploreScreen";
 import NotificationScreen from "./notification/NotificationScreen";
-import CreateScreen from "./event/CreateScreen";
 import TicketScreen from "./ticket/TicketScreen";
 import SearchScreen from "./search/SearchScreen";
 import ListingScreen from "./event/ListingScreen";
+import EventCategoryScreen from "./event/EventCategoryScreen";
 import FollowEventScreen from "./event/FollowEventScreen";
 import CalendarScreen from "./event/CalendarScreen";
 import ProfileScreen from "./profile/ProfileScreen";
@@ -36,8 +36,16 @@ const ProfileStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="User Profile" component={UserProfileScreen} />
       <Stack.Screen name="My Events" component={MyEventScreen} />
+      <Stack.Screen name="User Profile" component={UserProfileScreen} />
+    </Stack.Navigator>
+  );
+};
+const SearchStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Search" component={SearchScreen} />
+      <Stack.Screen name="Event Category" component={EventCategoryScreen} />
     </Stack.Navigator>
   );
 };
@@ -77,8 +85,8 @@ const BottomNavScreen = () => {
         }}
       />
       <Tabs.Screen
-        name="Search"
-        component={SearchScreen}
+        name="Find"
+        component={SearchStack}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon type="font-awesome-5" name="search" color={color} size={20} />
@@ -87,7 +95,6 @@ const BottomNavScreen = () => {
             return null;
           },
         }}
-        initialParams={{ link: "" }}
       />
       <Tabs.Screen
         name="Notification"
