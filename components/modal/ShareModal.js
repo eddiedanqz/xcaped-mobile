@@ -62,7 +62,7 @@ const MapModal = ({ isVisible, onClose, ticketId, action }) => {
               source={
                 item.profile?.banner
                   ? {
-                      uri: `${BASEURL}/storage/images/user/${item.profile?.banner}`,
+                      uri: `${BASEURL}/storage/images/uploads/${item.profile?.banner}`,
                     }
                   : noImage
               }

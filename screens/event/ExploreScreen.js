@@ -107,7 +107,7 @@ const ExploreScreen = ({ navigation }) => {
                     source={
                       item.user.profile?.profilePhoto
                         ? {
-                            uri: `${BASEURL}/storage/images/user/${item.user.profile.profilePhoto}`,
+                            uri: `${BASEURL}/storage/images/uploads/${item.user.profile.profilePhoto}`,
                           }
                         : noImage
                     }

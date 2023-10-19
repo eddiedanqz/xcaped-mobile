@@ -93,11 +93,19 @@ const NotificationScreen = ({ navigation }) => {
       >
         <TouchableOpacity
           style={tw`flex-row items-center`}
-          //onPress={onPress}
+          onPress={() =>
+            navigation.navigate(item.data.link, { id: item.data.id })
+          }
         >
-          <View style={tw`bg-white w-10 h-10 shadow-xl rounded`}>
+          <View style={tw`bg-white w-11 h-11 shadow-xl rounded`}>
             <Image
-              source={noImage}
+              source={
+                item.data.image
+                  ? {
+                      uri: `${BASEURL}/storage/images/uploads/${item.data.image}`,
+                    }
+                  : noImage
+              }
               resizeMode="stretch"
               style={tw`w-full h-full rounded p-1`}
             />

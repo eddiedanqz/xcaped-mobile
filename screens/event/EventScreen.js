@@ -161,7 +161,7 @@ const EventScreen = ({ navigation, route }) => {
                   source={
                     avatar?.profilePhoto
                       ? {
-                          uri: `${BASEURL}/storage/images/user/${avatar.profilePhoto}`,
+                          uri: `${BASEURL}/storage/images/uploads/${avatar.profilePhoto}`,
                         }
                       : noImage
                   }
@@ -312,7 +312,9 @@ const EventScreen = ({ navigation, route }) => {
                     style={tw`mr-1 w-16 h-16 rounded-xl`}
                     source={
                       profile
-                        ? { uri: `${BASEURL}/storage/images/user/${profile}` }
+                        ? {
+                            uri: `${BASEURL}/storage/images/uploads/${profile}`,
+                          }
                         : noImage
                     }
                   />
