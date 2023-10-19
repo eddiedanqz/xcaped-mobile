@@ -20,6 +20,7 @@ import { BASEURL } from "../../config/config";
 import { noImage } from "../../utils/helpers";
 import InviteModal from "../../components/modal/InviteModal";
 import { COLORS } from "../../constants/theme";
+import { useIsFocused } from "@react-navigation/native";
 
 const EventScreen = ({ navigation, route }) => {
   const [authUser, setAuth] = useState(null);
@@ -30,6 +31,7 @@ const EventScreen = ({ navigation, route }) => {
   const [savedStatus, setSavedStatus] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [invitees, setIvitees] = useState([]);
+  const isFocused = useIsFocused();
 
   const toggleFollow = (id) => {
     SecureStore.getItemAsync("mytoken").then((token) => {
@@ -44,7 +46,7 @@ const EventScreen = ({ navigation, route }) => {
         .post(`${BASEURL}/api/follow/${id}`, { id: "" }, config)
         .then((res) => {
           setStatus(!status);
-          console.log(res.data);
+          //console.log(res.data);
         })
         .catch((err) => {
           console.log(err.response.data.message);
@@ -101,7 +103,7 @@ const EventScreen = ({ navigation, route }) => {
       axios
         .post(`${BASEURL}/api/event/save/${id}`, { id: "" }, config)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           setSavedStatus(!savedStatus);
         })
         .catch((err) => {
@@ -119,7 +121,7 @@ const EventScreen = ({ navigation, route }) => {
     //  getValueFor('user')
 
     return () => {};
-  }, [navigation]);
+  }, [navigation, isFocused]);
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>

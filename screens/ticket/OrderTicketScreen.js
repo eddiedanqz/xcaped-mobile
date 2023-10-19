@@ -17,12 +17,15 @@ import axios from "axios";
 
 import TextButton from "../../components/buttons/TextButton";
 import { BASEURL } from "../../config/config";
+import { useIsFocused } from "@react-navigation/native";
 
 const OrderTicketScreen = ({ navigation, route }) => {
   const [ticketData, setTicket] = useState([]);
   const [orderItems, setOrderItems] = useState([]);
   const [order, setOrder] = useState({});
   const [disabled, setDisabled] = useState(false);
+  const isFocused = useIsFocused();
+
   const paystackWebViewRef = useRef(paystackProps.PayStackRef);
 
   function editOrder(action, ticketId, eventId, price) {
@@ -98,7 +101,7 @@ const OrderTicketScreen = ({ navigation, route }) => {
       axios
         .post(`${BASEURL}/api/order`, formData, config)
         .then((res) => {
-          console.log(res.data.order);
+          //  console.log(res.data.order);
           setOrder(res.data.order);
           //  navigation.navigate('Order', {orderItems})
           paystackWebViewRef.current.startTransaction();
@@ -211,7 +214,7 @@ const OrderTicketScreen = ({ navigation, route }) => {
     let { tickets } = route.params;
     setTicket(tickets);
     // console.log(tickets)
-  }, []);
+  }, [isFocused]);
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
@@ -272,7 +275,9 @@ const OrderTicketScreen = ({ navigation, route }) => {
               // handle response here
               console.log(res);
               if (res.status === "success") {
+                setDisabled(false);
                 updateOrder();
+                navigation.goBack();
               }
             }}
             ref={paystackWebViewRef}
