@@ -10,7 +10,9 @@ const TopHeader = ({ leftIcon, rightIcon, title }) => {
         tw`flex-row w-full h-16 items-center justify-center px-3 border-b border-gray-200 px-3`,
       ]}
     >
-      <TouchableOpacity style={tw`justify-center`}>{leftIcon}</TouchableOpacity>
+      <TouchableOpacity style={tw`justify-center p-2`}>
+        {leftIcon}
+      </TouchableOpacity>
 
       <View style={tw`flex-1 items-center justify-center`}>
         <Text style={tw`text-black text-gray-700 text-lg font-bold`}>

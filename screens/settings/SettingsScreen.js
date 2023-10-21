@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   TouchableOpacity,
@@ -13,6 +13,7 @@ import tw from "twrnc";
 import { AuthContext } from "../../context/AuthContext";
 import TopHeader from "../../components/TopHeader";
 import { COLORS } from "../../constants/theme";
+import { BASEURL } from "../../config/config";
 
 const List = ({ containerStyle, title, icon, onPress, iconColor }) => {
   return (
@@ -32,27 +33,19 @@ const List = ({ containerStyle, title, icon, onPress, iconColor }) => {
 const SettingsScreen = ({ navigation }) => {
   const { signOut, isLoading, setLoading } = React.useContext(AuthContext);
 
+  if (isLoading) {
+    return (
+      <View style={tw`flex-1 justify-center`}>
+        <ActivityIndicator size="small" color={COLORS.primary} />
+      </View>
+    );
+  }
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   }, []);
-
-  if (isLoading) {
-    return (
-      <View style={tw`flex-1 justify-center`}>
-        <ActivityIndicator size="small" color={COLORS.primary} />
-      </View>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <View style={tw`flex-1 justify-center`}>
-        <ActivityIndicator size="small" color={COLORS.primary} />
-      </View>
-    );
-  }
 
   return (
     <SafeAreaView style={tw`flex-1`}>
@@ -83,8 +76,16 @@ const SettingsScreen = ({ navigation }) => {
           onPress={() => navigation.navigate("Password")}
         />
         <List title="Notifications" icon="bell" />
-        <List title="About" icon="info" />
-        <List title="Help" icon="help-circle" />
+        <List
+          title="About"
+          icon="info"
+          onPress={() => navigation.navigate("About")}
+        />
+        <List
+          title="Help"
+          icon="help-circle"
+          onPress={() => navigation.navigate("Help")}
+        />
         <List title="Log out" icon="log-out" onPress={() => signOut()} />
 
         <View style={tw`flex-1 items-center justify-center my-5`}>

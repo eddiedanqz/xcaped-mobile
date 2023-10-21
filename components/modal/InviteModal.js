@@ -58,9 +58,9 @@ const InviteModal = ({ isVisible, onClose, event }) => {
           <View style={tw`bg-white w-16 h-16 shadow-xl`}>
             <Image
               source={
-                item.profile?.banner
+                item.profile?.profilePhoto
                   ? {
-                      uri: `${BASEURL}/storage/images/uploads/${item.profile?.banner}`,
+                      uri: `${BASEURL}/storage/images/uploads/${item.profile?.profilePhoto}`,
                     }
                   : noImage
               }

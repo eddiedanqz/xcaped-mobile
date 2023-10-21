@@ -15,6 +15,8 @@ import PasswordResetScreen from "./screens/auth/PasswordResetScreen";
 import BottomNavScreen from "./screens/BottomNavScreen";
 import SettingsScreen from "./screens/settings/SettingsScreen";
 import PasswordScreen from "./screens/settings/PasswordScreen";
+import AboutScreen from "./screens/settings/AboutScreen";
+import HelpScreen from "./screens/settings/HelpScreen";
 import CreateScreen from "./screens/event/CreateScreen";
 import EditEventScreen from "./screens/event/EditEventScreen";
 import EditProfileScreen from "./screens/profile/EditProfileScreen";
@@ -72,6 +74,8 @@ export default function App() {
             />
             <NavStack.Screen name="Settings" component={SettingsScreen} />
             <NavStack.Screen name="Password" component={PasswordScreen} />
+            <NavStack.Screen name="About" component={AboutScreen} />
+            <NavStack.Screen name="Help" component={HelpScreen} />
             <NavStack.Screen name="Create" component={CreateScreen} />
             <NavStack.Screen name="Event" component={EventScreen} />
             <NavStack.Screen name="Saved" component={SavedScreen} />

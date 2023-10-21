@@ -1,15 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  FlatList,
-  ScrollView,
-} from "react-native";
+import { View, TouchableOpacity, FlatList } from "react-native";
 import { Icon, Text } from "@rneui/themed";
 import tw from "twrnc";
-import { StatusBar } from "expo-status-bar";
 import SafeAreaView from "react-native-safe-area-view";
 import * as SecureStore from "expo-secure-store";
 import { Paystack, paystackProps } from "react-native-paystack-webview";

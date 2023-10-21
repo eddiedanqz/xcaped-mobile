@@ -104,7 +104,7 @@ const BottomNavScreen = () => {
           tabBarIcon: ({ color, size }) => (
             <Icon type="font-awesome-5" name="bell" color={color} size={20} />
           ),
-          tabBarBadge: count,
+          tabBarBadge: count > 0 ? count : null,
           tabBarBadgeStyle: { color: "white", backgroundColor: "#151618" },
           tabBarLabel: () => {
             return null;
