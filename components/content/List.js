@@ -27,7 +27,7 @@ const List = ({
         color={iconColor}
         containerStyle={iconContentStyle}
       />
-      <Text style={[tw`mx-3 font-bold text-lg text-gray-700`, titleStyle]}>
+      <Text style={[tw`mx-3 font-bold text-base text-gray-700`, titleStyle]}>
         {title}
       </Text>
     </TouchableOpacity>

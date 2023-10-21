@@ -36,11 +36,12 @@ const ProfileStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="My Events" component={MyEventScreen} />
       <Stack.Screen name="User Profile" component={UserProfileScreen} />
+      <Stack.Screen name="My Events" component={MyEventScreen} />
     </Stack.Navigator>
   );
 };
+
 const SearchStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>

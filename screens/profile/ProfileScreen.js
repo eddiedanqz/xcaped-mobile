@@ -23,6 +23,7 @@ import ListCard from "../../components/cards/ListCard";
 import { BASEURL } from "../../config/config";
 import List from "../../components/content/List";
 import { noImage } from "../../utils/helpers";
+import { COLORS } from "../../constants/theme";
 
 function ProfileScreen({ navigation }) {
   const [authUser, setAuth] = useState({});
@@ -32,6 +33,7 @@ function ProfileScreen({ navigation }) {
   const [events, setEvents] = useState([]);
   const [saved, setSaved] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const [more, setShowMore] = useState(false);
   const [passedId, setPassedId] = useState(0);
   const [status, setStatus] = useState(null);
 
@@ -78,31 +80,10 @@ function ProfileScreen({ navigation }) {
           // console.log(res.data)
           setUser(res.data.user);
           setEvents(res.data.events);
-          setSaved(res.data.savedCount);
+          setSaved(res.data.eventCount);
           setFollowers(res.data.followers);
           setFollowing(res.data.following);
           setStatus(res.data.follows);
-        })
-        .catch((err) => {
-          console.log(err.response.data);
-        });
-    });
-  };
-
-  const toggleFollow = () => {
-    SecureStore.getItemAsync("mytoken").then((token) => {
-      let parsed = JSON.parse(token);
-      const config = {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${parsed}`,
-        },
-      };
-      axios
-        .post(`${BASEURL}/api/follow/${user.id}`, { id: "" }, config)
-        .then((res) => {
-          console.log(res.data);
-          setStatus(!status);
         })
         .catch((err) => {
           console.log(err.response.data);
@@ -124,26 +105,26 @@ function ProfileScreen({ navigation }) {
     <SafeAreaView style={tw`bg-white flex-1`}>
       {/*Header*/}
       <View
-        style={tw`bg-white flex-row w-full h-14 items-center justify-between px-3 z-20`}
+        style={tw`bg-white flex-row w-full h-14 items-center justify-between px-3 z-20 border-b border-gray-200`}
       >
         <TouchableOpacity
           style={tw`justify-center`}
           onPress={() => navigation.navigate("Edit Profile")}
         >
-          <Icon type="font-awesome-5" name="edit" size={20} color="black" />
+          <Icon type="feather" name="edit" size={20} color="black" />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={tw`justify-center`}
           onPress={() => navigation.navigate("Settings")}
         >
-          <Icon type="font-awesome-5" name="cog" size={20} color="black" />
+          <Icon type="feather" name="settings" size={20} color="black" />
         </TouchableOpacity>
       </View>
 
       <ScrollView style={tw`bg-gray-100 pb-4`}>
         {/*Container*/}
-        <View style={tw`bg-white py-4 px-3 mb-1`}>
+        <View style={tw`bg-white py-4 px-3`}>
           <View style={tw`flex-row items-center justify-start my-4`}>
             {/**Profile Image */}
             <View style={tw`w-28 h-32 rounded-xl border-0 shadow-xl mr-3`}>
@@ -152,7 +133,7 @@ function ProfileScreen({ navigation }) {
                 source={
                   user.profile?.profilePhoto
                     ? {
-                        uri: `${BASEURL}/storage/images/user/${user.profile.profilePhoto}`,
+                        uri: `${BASEURL}/storage/images/uploads/${user.profile.profilePhoto}`,
                       }
                     : noImage
                 }
@@ -174,7 +155,7 @@ function ProfileScreen({ navigation }) {
                   size={15}
                   color="gray"
                 />
-                <Text style={tw`ml-1 text-gray-500 text-sm`}>
+                <Text style={tw`ml-1 text-gray-500 text-sm`} numberOfLines={1}>
                   {user.profile?.location ? user.profile?.location : "N/A"}
                 </Text>
               </View>
@@ -189,39 +170,36 @@ function ProfileScreen({ navigation }) {
           </View>
 
           {/** Stats*/}
-          <View style={tw`justify-center items-center pb-4`}>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={tw`flex-row items-center`}
-            >
-              {/* <TouchableOpacity style={tw`items-center m-3`} onPress={() => navigation.navigate('My Events') }>
-          <Text style={tw`text-base font-bold text-gray-700`}>10</Text>
-          <Text style={tw`text-base text-gray-500`} >Events</Text>
-        </TouchableOpacity> */}
-              <View style={tw`items-center m-3`}>
-                <Text style={tw`text-base font-bold text-gray-700`}>
-                  {following}
-                </Text>
-                <Text style={tw`text-base text-gray-500`}>Following</Text>
-              </View>
-              <View style={tw`items-center m-3`}>
-                <Text style={tw`text-base font-bold text-gray-700`}>
-                  {followers}
-                </Text>
-                <Text style={tw`text-base text-gray-500`}>Followers</Text>
-              </View>
+          <View style={tw`flex-row justify-center items-center pb-4 w-full`}>
+            <View style={tw`items-center m-3`}>
+              <Text style={tw`text-base font-bold text-gray-700`}>
+                {following}
+              </Text>
+              <Text style={tw`text-base text-gray-500`}>Following</Text>
+            </View>
+            <View style={tw`items-center m-3`}>
+              <Text style={tw`text-base font-bold text-gray-700`}>
+                {followers}
+              </Text>
+              <Text style={tw`text-base text-gray-500`}>Followers</Text>
+            </View>
 
-              <TouchableOpacity
-                style={tw`items-center m-3`}
-                onPress={() => navigation.navigate("Saved")}
-              >
-                <Text style={tw`text-base font-bold text-gray-700`}>
-                  {saved}
-                </Text>
-                <Text style={tw`text-base text-gray-500`}>Saved</Text>
-              </TouchableOpacity>
-            </ScrollView>
+            <TouchableOpacity style={tw`items-center m-3`}>
+              <Text style={tw`text-base font-bold text-gray-700`}>{saved}</Text>
+              <Text style={tw`text-base text-gray-500`}>Events</Text>
+            </TouchableOpacity>
+            {/**Invites*/}
+            <TouchableOpacity
+              style={tw`items-center p-2.5 m-3 border border-gray-300 rounded-full`}
+              onPress={() => setShowMore(true)}
+            >
+              <Icon
+                type="feather"
+                name="more-horizontal"
+                size={20}
+                color={COLORS.primary}
+              />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -235,7 +213,7 @@ function ProfileScreen({ navigation }) {
             </Text>
 
             <TouchableOpacity onPress={() => navigation.navigate("My Events")}>
-              <Text style={[tw`font-bold text-base `, { color: "#ff8552" }]}>
+              <Text style={tw`font-bold text-base text-[${COLORS.primary}]`}>
                 View All
               </Text>
             </TouchableOpacity>
@@ -328,33 +306,34 @@ function ProfileScreen({ navigation }) {
           )}
         </Section>
 
-        {/** Business Page*/}
-        <Section containerStyle={tw`p-2 mb-5`}>
-          <View style={tw`w-full flex-row justify-between items-center`}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Place")}
-              style={tw`bg-white justify-center items-center w-7/12 h-28 p-4`}
-            >
-              <Text style={tw`font-bold text-gray-600 text-base`}>
-                Add a Place
-              </Text>
-              <Text style={tw`font-bold text-gray-400 text-sm`}>
-                This is a description
-              </Text>
-            </TouchableOpacity>
-
-            {/**Invites*/}
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Invitations")}
-              style={tw`bg-white justify-center items-center w-2/5 h-28 p-4`}
-            >
-              <Icon type="feather" name="mail" size={40} color="black" />
-              <Text style={[tw`font-bold text-sm `, { color: "#ff8552" }]}>
-                Invites
-              </Text>
-            </TouchableOpacity>
+        <BottomSheet
+          isVisible={more}
+          modalProps={{ animationType: "slide" }}
+          onBackdropPress={() => setShowMore(false)}
+        >
+          <View style={tw`flex-1 bg-white pt-3 pb-5 px-4`}>
+            <List
+              icon="mail"
+              iconColor="#374e51"
+              title="Invitations"
+              containerStyle={tw``}
+              onPress={() => {
+                setShowMore(false);
+                navigation.navigate("Invitations");
+              }}
+            />
+            <List
+              icon="bookmark"
+              iconColor="#374e51"
+              title="Saved"
+              containerStyle={tw`mb-2`}
+              onPress={() => {
+                setShowMore(false);
+                navigation.navigate("Saved");
+              }}
+            />
           </View>
-        </Section>
+        </BottomSheet>
       </ScrollView>
     </SafeAreaView>
   );

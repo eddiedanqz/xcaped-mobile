@@ -57,8 +57,8 @@ const EventScreen = ({ navigation, route }) => {
   async function getValueFor(key) {
     let result = await SecureStore.getItemAsync(key);
     if (result) {
-      setUser(JSON.parse(result));
-      console.log("secure");
+      setAuth(JSON.parse(result));
+      // console.log(JSON.parse(result));
     } else {
       alert("No values stored under that key.");
     }
@@ -118,7 +118,7 @@ const EventScreen = ({ navigation, route }) => {
     //  console.log(route.params)
     getEvent(id);
 
-    //  getValueFor('user')
+    getValueFor("user");
 
     return () => {};
   }, [navigation, isFocused]);
@@ -302,10 +302,10 @@ const EventScreen = ({ navigation, route }) => {
             </Section>
 
             {/**Organizer */}
-            <Section containerStyle={tw`p-1`}>
-              <View style={tw`flex-row`}>
+            {authUser?.id !== event?.userId && (
+              <Section containerStyle={tw`p-1`}>
                 <TouchableOpacity
-                  style={tw``}
+                  style={tw`flex-row`}
                   onPress={() =>
                     navigation.navigate("User Profile", { id: event?.userId })
                   }
@@ -320,23 +320,22 @@ const EventScreen = ({ navigation, route }) => {
                         : noImage
                     }
                   />
-                </TouchableOpacity>
-                <View style={tw`flex-col p-1`}>
-                  <Text style={tw`text-xl mb-1 text-gray-700`}>
-                    {event?.author}
-                  </Text>
-                  {/*  Follow  */}
-                  <TouchableOpacity
-                    style={tw``}
-                    onPress={() => toggleFollow(event?.userId)}
-                  >
-                    <Text style={tw`text-red-400 text-base`}>
-                      {status ? "Unfollow" : "Follow"}
+                  <View style={tw`flex-col p-1 items-center`}>
+                    <Text style={tw`text-xl mb-1 text-gray-700`}>
+                      {event?.author}
                     </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </Section>
+                    <TouchableOpacity
+                      style={tw`z-50`}
+                      onPress={() => toggleFollow(event?.userId)}
+                    >
+                      <Text style={tw`text-red-400 text-base`}>
+                        {status ? "Unfollow" : "Follow"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              </Section>
+            )}
           </View>
         </View>
       </ScrollView>

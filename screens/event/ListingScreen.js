@@ -13,11 +13,13 @@ import * as SecureStore from "expo-secure-store";
 
 import ImageCard from "../../components/cards/ImageCard";
 import { BASEURL } from "../../config/config";
+import { firstToUpper } from "../../utils/utils";
 
 const ListingScreen = ({ navigation, route }) => {
   useDeviceContext(tw);
   const [events, setEvents] = useState([]);
   const [page, setPage] = useState(1);
+  const [title, setTitle] = useState("");
 
   //
   const loadMore = () => {
@@ -29,7 +31,7 @@ const ListingScreen = ({ navigation, route }) => {
     const renderItem = ({ item }) => (
       <ImageCard
         item={item}
-        onPress={() => navigation.navigate("Event", { item })}
+        onPress={() => navigation.navigate("Event", { id: item.id })}
       />
     );
 
@@ -68,6 +70,8 @@ const ListingScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     // console.log(route.params.link);
+    let header = firstToUpper(route.params.link);
+    setTitle(header);
     getEvents(route.params.link);
   }, [page]);
 
@@ -88,7 +92,7 @@ const ListingScreen = ({ navigation, route }) => {
           </TouchableOpacity>
 
           <Text style={[tw`text-black text-gray-700 text-lg font-bold`]}>
-            Events
+            {title} Events
           </Text>
 
           <TouchableOpacity

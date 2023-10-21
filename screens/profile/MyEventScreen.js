@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
-import { Icon, BottomSheet, ListItem } from "react-native-elements";
+import { Icon, BottomSheet } from "@rneui/themed";
 import tw from "twrnc";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
@@ -49,18 +49,9 @@ const MyEventScreen = ({ navigation }) => {
         <BottomSheet
           isVisible={showModal}
           modalProps={{ animationType: "slide" }}
+          onBackdropPress={() => setShowModal(false)}
         >
-          <View style={tw`flex-1 bg-white py-3 px-4`}>
-            {/**Header */}
-            <View style={tw`flex-row justify-end items-center py-2 px-3`}>
-              <TouchableOpacity
-                style={tw`rounded-lg z-10`}
-                onPress={() => closeSheet()}
-              >
-                <Icon type="feather" name="x-circle" size={20} color="gray" />
-              </TouchableOpacity>
-            </View>
-
+          <View style={tw`flex-1 bg-white pt-3 pb-5 px-4`}>
             <List
               icon="users"
               iconColor="#374e51"
@@ -115,11 +106,15 @@ const MyEventScreen = ({ navigation }) => {
         data={events}
         keyExtractor={(item) => `${item.id}`}
         renderItem={renderItem}
-        contentContainerStyle={tw`my-5`}
         onEndReached={loadMore}
         onEndReachedThreshold={0.1}
+        contentContainerStyle={tw`bg-white pb-1`}
       />
     );
+  };
+
+  const loadMore = () => {
+    setPage(page + 1);
   };
 
   const getData = () => {
@@ -144,10 +139,6 @@ const MyEventScreen = ({ navigation }) => {
     });
   };
 
-  const loadMore = () => {
-    setPage(page + 1);
-  };
-
   useEffect(() => {
     getData();
   }, [page]);
@@ -159,16 +150,16 @@ const MyEventScreen = ({ navigation }) => {
           title="My Events"
           leftIcon={
             <Icon
-              type="font-awesome-5"
+              type="feather"
               name="arrow-left"
               size={20}
-              color="white"
+              color="black"
               onPress={() => navigation.goBack()}
             />
           }
         />
       </View>
-      <View style={tw`px-2 pb-16`}>{renderEvents()}</View>
+      <View style={tw`bg-gray-100 px-2 pb-4 mb-1`}>{renderEvents()}</View>
     </SafeAreaView>
   );
 };

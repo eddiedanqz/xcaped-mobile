@@ -36,7 +36,7 @@ const SavedScreen = ({ navigation }) => {
         data={events}
         keyExtractor={(item) => `${item.id}`}
         renderItem={renderItem}
-        contentContainerStyle={tw`py-5 px-3`}
+        contentContainerStyle={tw`flex-1 bg-white py-1`}
         onEndReached={loadMore}
         onEndReachedThreshold={0.1}
       />
@@ -61,7 +61,7 @@ const SavedScreen = ({ navigation }) => {
         .then((res) => {
           // let { data } = res.data;
           // console.log(res.data)
-          setEvents((prev) => [...prev, ...res.data.data]);
+          setEvents((prev) => [...res.data.data]);
         })
         .catch((err) => {
           console.log(err.response.data.message);
@@ -75,23 +75,21 @@ const SavedScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={tw`flex-1 bg-white`}>
-      <View style={[tw`overflow-hidden pb-1`]}>
-        <TopHeader
-          title="Saved"
-          leftIcon={
-            <Icon
-              type="font-awesome-5"
-              name="arrow-left"
-              size={20}
-              color="white"
-              onPress={() => navigation.goBack()}
-            />
-          }
-        />
-      </View>
+      <TopHeader
+        title="Saved"
+        leftIcon={
+          <Icon
+            type="feather"
+            name="arrow-left"
+            size={20}
+            color="black"
+            onPress={() => navigation.goBack()}
+          />
+        }
+      />
 
       {/**Search Results */}
-      {renderEvents()}
+      <View style={tw`flex-1 bg-gray-100 px-2`}>{renderEvents()}</View>
     </SafeAreaView>
   );
 };

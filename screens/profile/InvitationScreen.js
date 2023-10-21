@@ -17,6 +17,7 @@ import moment from "moment";
 
 import { BASEURL } from "../../config/config";
 import { noImage } from "../../utils/helpers";
+import { COLORS } from "../../constants/theme";
 
 const InvitationScreen = ({ navigation }) => {
   const [invites, setInvites] = useState([]);
@@ -39,7 +40,15 @@ const InvitationScreen = ({ navigation }) => {
             resizeMode="stretch"
             style={tw`w-16 h-16 rounded`}
           />
-          <View style={tw`px-3`}>
+          <View style={tw`px-3 items-center`}>
+            <Text style={tw`text-base font-semibold text-[${COLORS.primary}]`}>
+              {moment(item.start_date).format("MMM")}
+            </Text>
+            <Text style={tw`text-sm font-semibold text-[${COLORS.primary}]`}>
+              {moment(item.start_date).day()}
+            </Text>
+          </View>
+          <View style={tw`flex-row px-3`}>
             <Text style={tw`text-base font-semibold`} numberOfLines={1}>
               {" "}
               {item.title}{" "}
@@ -56,7 +65,7 @@ const InvitationScreen = ({ navigation }) => {
         data={invites}
         keyExtractor={(item) => `${item.id}`}
         renderItem={renderItem}
-        contentContainerStyle={tw`py-5`}
+        contentContainerStyle={tw`bg-white `}
         onEndReached={loadMore}
         onEndReachedThreshold={0.1}
       />
@@ -76,7 +85,7 @@ const InvitationScreen = ({ navigation }) => {
         .get(`${BASEURL}/api/invitations/all?page=${page}`, config)
         .then((res) => {
           let { data } = res.data;
-          // console.log(data);
+          console.log(data);
           setInvites((prev) => [...prev, ...data]);
         })
         .catch((err) => {
@@ -94,17 +103,17 @@ const InvitationScreen = ({ navigation }) => {
   }, [page]);
 
   return (
-    <View style={tw`flex-1 bg-white`}>
+    <SafeAreaView style={tw`flex-1 bg-white`}>
       {/*Header*/}
       <View
-        style={tw`bg-white flex-row w-full h-16 items-center justify-between mt-6 px-4 z-20`}
+        style={tw`bg-white flex-row w-full h-16 items-center justify-between px-4 z-20 border-b border-gray-200`}
       >
         <TouchableOpacity>
           <Icon
             type="feather"
             name="arrow-left"
             size={20}
-            color="#ff8552"
+            color="black"
             onPress={() => navigation.goBack()}
           />
         </TouchableOpacity>
@@ -116,10 +125,11 @@ const InvitationScreen = ({ navigation }) => {
         >
           Invitations
         </Text>
+        <TouchableOpacity></TouchableOpacity>
       </View>
 
-      <View style={tw`px-2 pb-16`}>{renderInvitations()}</View>
-    </View>
+      <View style={tw`flex-1 bg-gray-100 px-2`}>{renderInvitations()}</View>
+    </SafeAreaView>
   );
 };
 

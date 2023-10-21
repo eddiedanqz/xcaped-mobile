@@ -14,6 +14,7 @@ import SignUpScreen from "./screens/auth/SignUpScreen";
 import PasswordResetScreen from "./screens/auth/PasswordResetScreen";
 import BottomNavScreen from "./screens/BottomNavScreen";
 import SettingsScreen from "./screens/settings/SettingsScreen";
+import PasswordScreen from "./screens/settings/PasswordScreen";
 import CreateScreen from "./screens/event/CreateScreen";
 import EditEventScreen from "./screens/event/EditEventScreen";
 import EditProfileScreen from "./screens/profile/EditProfileScreen";
@@ -45,14 +46,14 @@ export default function App() {
     }, 1000);
 
     console.log(authUser);
-  }, []);
+  }, [authUser]);
 
   const BottomNav = () => <BottomNavScreen />;
 
   return (
     <NavigationContainer>
       <View style={styles.container}>
-        {Object.entries(authUser).length > 0 ? (
+        {!Object.entries(authUser).length > 0 ? (
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="LogIn" component={LoginScreen} />
             <Stack.Screen name="SignUp" component={SignUpScreen} />
@@ -70,6 +71,7 @@ export default function App() {
               component={EditProfileScreen}
             />
             <NavStack.Screen name="Settings" component={SettingsScreen} />
+            <NavStack.Screen name="Password" component={PasswordScreen} />
             <NavStack.Screen name="Create" component={CreateScreen} />
             <NavStack.Screen name="Event" component={EventScreen} />
             <NavStack.Screen name="Saved" component={SavedScreen} />

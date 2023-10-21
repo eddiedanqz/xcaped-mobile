@@ -23,7 +23,7 @@ const List = ({ containerStyle, title, icon, onPress, iconColor }) => {
       ]}
       onPress={onPress}
     >
-      <Icon type="font-awesome-5" name={icon} size={20} color="gray" />
+      <Icon type="feather" name={icon} size={20} color="gray" />
       <Text style={tw`mx-4 font-bold text-lg text-gray-600`}>{title}</Text>
     </TouchableOpacity>
   );
@@ -61,10 +61,10 @@ const SettingsScreen = ({ navigation }) => {
           title="Settings"
           leftIcon={
             <Icon
-              type="font-awesome-5"
+              type="feather"
               name="arrow-left"
               size={20}
-              color="white"
+              color="black"
               onPress={() => navigation.goBack()}
             />
           }
@@ -77,11 +77,15 @@ const SettingsScreen = ({ navigation }) => {
           onPress={() => navigation.navigate("Edit Profile")}
         />
         {/* <List title='Accout' icon='key'/> */}
-        <List title="Password" icon="shield-alt" />
+        <List
+          title="Password"
+          icon="lock"
+          onPress={() => navigation.navigate("Password")}
+        />
         <List title="Notifications" icon="bell" />
-        <List title="About" icon="info-circle" />
-        <List title="Help" icon="question-circle" />
-        <List title="Log out" icon="sign-out-alt" onPress={() => signOut()} />
+        <List title="About" icon="info" />
+        <List title="Help" icon="help-circle" />
+        <List title="Log out" icon="log-out" onPress={() => signOut()} />
 
         <View style={tw`flex-1 items-center justify-center my-5`}>
           <Text style={tw`text-lg text-gray-500`}>xcaped</Text>

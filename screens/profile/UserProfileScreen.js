@@ -10,8 +10,7 @@ import {
   StyleSheet,
 } from "react-native";
 import tw from "twrnc";
-import { Icon, BottomSheet } from "react-native-elements";
-import { StatusBar } from "expo-status-bar";
+import { Icon, BottomSheet } from "@rneui/themed";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
@@ -22,6 +21,7 @@ import ListCard from "../../components/cards/ListCard";
 import { BASEURL } from "../../config/config";
 import List from "../../components/content/List";
 import { noImage } from "../../utils/helpers";
+import { COLORS } from "../../constants/theme";
 
 function UserProfileScreen({ navigation, route }) {
   const [authUser, setAuth] = useState({});
@@ -34,6 +34,7 @@ function UserProfileScreen({ navigation, route }) {
   const [passedId, setPassedId] = useState(0);
   const [status, setStatus] = useState(null);
   const [routeId, setRouteId] = useState(route.params.id);
+  const [more, setShowMore] = useState(false);
 
   const openSheet = (id) => {
     setPassedId(id);
@@ -73,7 +74,7 @@ function UserProfileScreen({ navigation, route }) {
           console.log("User Profile");
           setUser(res.data.user);
           setEvents(res.data.events);
-          setSaved(res.data.savedCount);
+          setSaved(res.data.eventCount);
           setFollowers(res.data.followers);
           setFollowing(res.data.following);
           setStatus(res.data.follows);
@@ -111,174 +112,147 @@ function UserProfileScreen({ navigation, route }) {
     getProfile(route.params.id);
   }, [navigation]);
 
-  const renderProfileArea = () => {
-    return (
-      <View
-        style={tw`absolute -top-16 w-28 h-28 self-center rounded-xl border-0 shadow-xl mb-3`}
-      >
-        <Image
-          style={tw`w-full h-full bg-white rounded-xl`}
-          source={
-            user.profile?.profilePhoto
-              ? {
-                  uri: `${BASEURL}/storage/images/user/${user.profile.profilePhoto}`,
-                }
-              : noImage
-          }
-          resizeMode="center"
-        />
-      </View>
-    );
-  };
-
   return (
     <SafeAreaView style={tw`bg-white flex-1`}>
-      <ScrollView style={tw`bg-gray-100 pb-4`}>
-        {/*Header*/}
-        <View
-          style={tw`flex-row absolute w-full h-16 items-center justify-between mt-6 px-3 z-20`}
+      {/*Header*/}
+      <View
+        style={tw`bg-white flex-row w-full h-14 items-center justify-between px-3 z-20 border-b border-gray-200`}
+      >
+        <TouchableOpacity
+          style={tw`justify-center`}
+          onPress={() => navigation.goBack()}
         >
-          <TouchableOpacity
-            style={tw`justify-center`}
-            onPress={() => navigation.goBack()}
-          >
-            <Icon type="feather" name="arrow-left" size={20} color="white" />
-          </TouchableOpacity>
+          <Icon type="feather" name="arrow-left" size={20} color="black" />
+        </TouchableOpacity>
 
-          {/* <TouchableOpacity
-            style={tw`justify-center`}
-            onPress={() => navigation.navigate("Settings")}
-          >
-            <Icon type="feather" name="more-vertical" size={20} color="white" />
-          </TouchableOpacity> */}
-        </View>
-        <View>
-          {/*Cover Image*/}
-          <View style={tw`w-full h-48`}>
-            <Image
-              resizeMode="cover"
-              style={tw`w-full h-52`}
-              source={
-                user.profile?.profilePhoto
-                  ? {
-                      uri: `${BASEURL}/storage/images/user/${user.profile.profilePhoto}`,
-                    }
-                  : noImage
-              }
-              blurRadius={10}
-            />
-          </View>
+        <TouchableOpacity
+          style={tw`justify-center`}
+          //onPress={() => setShowMore(true)}
+        >
+          <Icon type="feather" name="more-horizontal" size={20} color="black" />
+        </TouchableOpacity>
+      </View>
 
-          {/*Content*/}
-          <View style={tw`rounded-t-3xl bg-white`}>
-            {renderProfileArea()}
-            <View style={tw`mt-14`}>
-              <Text style={tw`text-2xl font-bold text-center text-gray-700`}>
+      <ScrollView style={tw`bg-gray-100 pb-4`}>
+        {/*Container*/}
+        <View style={tw`bg-white py-4 px-3`}>
+          <View style={tw`flex-row items-center justify-start my-4`}>
+            {/**Profile Image */}
+            <View style={tw`w-28 h-32 rounded-xl border-0 shadow-xl mr-3`}>
+              <Image
+                style={tw`w-full h-full rounded-xl`}
+                source={
+                  user.profile?.profilePhoto
+                    ? {
+                        uri: `${BASEURL}/storage/images/uploads/${user.profile.profilePhoto}`,
+                      }
+                    : noImage
+                }
+                resizeMode="cover"
+              />
+            </View>
+
+            {/**Basic Info */}
+            <View style={tw`flex-1`}>
+              {/**Name */}
+              <Text style={tw`text-2xl font-bold text-left text-gray-700`}>
                 {user.username}
               </Text>
               {/**Location */}
-              <View style={tw`flex-row mb-1 justify-center items-center`}>
+              <View style={tw`flex-row mb-1 justify-start items-center`}>
                 <Icon
                   type="font-awesome-5"
                   name="map-marker-alt"
                   size={15}
                   color="gray"
                 />
-                <Text style={tw`ml-1 text-gray-500 text-base`}>
+                <Text style={tw`ml-1 text-gray-500 text-sm`}>
                   {user.profile?.location ? user.profile?.location : "N/A"}
                 </Text>
               </View>
 
-              {/*  Follow  */}
-              <View style={tw`items-center bg-white my-3`}>
-                {/* <Text style={tw`text-red-400 font-bold text-lg`}>Follow</Text> */}
-                {authUser.id != user.id && (
-                  <TextButton
-                    label={status ? "Unfollow" : "Follow"}
-                    buttonContainerStyle={[
-                      tw`bg-red-400 rounded-full shadow-xl p-1.5 w-28`,
-                    ]}
-                    onPress={() => toggleFollow()}
-                  />
-                )}
-              </View>
               {/**About */}
               {user.profile?.bio && (
-                <Text
-                  style={tw`font-bold text-gray-600 text-base text-center mt-3`}
-                >
+                <Text style={tw`font-bold text-gray-600 text-sm`}>
                   {user.profile?.bio}
                 </Text>
               )}
-              {/** */}
-              <View style={tw`justify-center items-center pb-4`}>
-                <ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={tw`flex-row items-center`}
-                >
-                  {/* <TouchableOpacity style={tw`items-center m-3`} onPress={() => navigation.navigate('My Events') }>
-          <Text style={tw`text-base font-bold text-gray-700`}>10</Text>
-          <Text style={tw`text-base text-gray-500`} >Events</Text>
-        </TouchableOpacity> */}
-                  <View style={tw`items-center m-3`}>
-                    <Text style={tw`text-base font-bold text-gray-700`}>
-                      {following}
-                    </Text>
-                    <Text style={tw`text-base text-gray-500`}>Following</Text>
-                  </View>
-                  <View style={tw`items-center m-3`}>
-                    <Text style={tw`text-base font-bold text-gray-700`}>
-                      {followers}
-                    </Text>
-                    <Text style={tw`text-base text-gray-500`}>Followers</Text>
-                  </View>
-
-                  <TouchableOpacity
-                    style={tw`items-center m-3`}
-                    onPress={() => navigation.navigate("Saved")}
-                  >
-                    <Text style={tw`text-base font-bold text-gray-700`}>
-                      {saved}
-                    </Text>
-                    <Text style={tw`text-base text-gray-500`}>Saved</Text>
-                  </TouchableOpacity>
-                </ScrollView>
-              </View>
             </View>
           </View>
-
-          {/** My Events*/}
-          <Section containerStyle={tw`bg-white px-4 pt-4 mb-5`}>
-            <View style={tw`flex-row px-1`}>
-              <Text
-                style={tw`flex-1 font-bold text-gray-600 text-base  text-left`}
-              >
-                Events
-              </Text>
-
-              <TouchableOpacity
-                onPress={() => navigation.navigate("My Events")}
-              >
-                <Text style={[tw`font-bold text-base `, { color: "#ff8552" }]}>
-                  View All
+          {/**Follow */}
+          <View style={tw`flex-row justify-center items-center bg-white my-3`}>
+            <TextButton
+              label={status ? "Unfollow" : "Follow"}
+              buttonContainerStyle={[
+                tw`bg-[${COLORS.primary}] rounded-full shadow-xl p-1.5 w-28`,
+              ]}
+              onPress={() => toggleFollow()}
+            />
+          </View>
+          {/** Stats*/}
+          <View style={tw`justify-center items-center pb-4`}>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={tw`flex-row items-center`}
+            >
+              <View style={tw`items-center m-3`}>
+                <Text style={tw`text-base font-bold text-gray-700`}>
+                  {following}
                 </Text>
-              </TouchableOpacity>
-            </View>
+                <Text style={tw`text-base text-gray-500`}>Following</Text>
+              </View>
+              <View style={tw`items-center m-3`}>
+                <Text style={tw`text-base font-bold text-gray-700`}>
+                  {followers}
+                </Text>
+                <Text style={tw`text-base text-gray-500`}>Followers</Text>
+              </View>
 
-            {events.map((item, i) => (
+              <TouchableOpacity style={tw`items-center m-3`}>
+                <Text style={tw`text-base font-bold text-gray-700`}>
+                  {saved}
+                </Text>
+                <Text style={tw`text-base text-gray-500`}>Events</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </View>
+
+        {/** My Events*/}
+        <Section containerStyle={tw`bg-white px-4 pt-4 mb-0`}>
+          <View style={tw`flex-row px-1`}>
+            <Text
+              style={tw`flex-1 font-bold text-gray-600 text-base  text-left`}
+            >
+              Events
+            </Text>
+
+            <TouchableOpacity>
+              <Text style={tw`font-bold text-base text-[${COLORS.primary}]`}>
+                View All
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {events ? (
+            events.map((item, i) => (
               <View key={item.id}>
                 <ListCard
                   item={item}
-                  onPress={() => navigation.navigate("Event", { item })}
+                  onPress={() => navigation.navigate("Event", { id: item.id })}
                   iconName="more-vertical"
                   iconMethod={() => openSheet(item.id)}
                 />
-                <BottomSheet isVisible={showModal}>
-                  <View style={tw`bg-white p-3`}>
+                <BottomSheet
+                  isVisible={showModal}
+                  modalProps={{ animationType: "slide" }}
+                  onBackdropPress={() => closeSheet()}
+                >
+                  <View style={tw`flex-1 bg-white py-3 px-4`}>
                     {/**Header */}
                     <View
-                      style={tw`flex-row justify-end items-center pt-3 px-4`}
+                      style={tw`flex-row justify-end items-center py-2 px-3`}
                     >
                       <TouchableOpacity
                         style={tw`rounded-lg z-10`}
@@ -292,14 +266,35 @@ function UserProfileScreen({ navigation, route }) {
                         />
                       </TouchableOpacity>
                     </View>
+
                     <List
-                      icon="edit"
+                      icon="users"
                       iconColor="#374e51"
-                      title="Edit Event"
-                      containerStyle={tw`border-0 mb-0`}
+                      title="Attendees"
+                      containerStyle={tw``}
                       onPress={() => {
                         closeSheet();
 
+                        navigation.navigate("Attendee", { id: passedId });
+                      }}
+                    />
+                    <List
+                      icon="bar-chart"
+                      iconColor="#374e51"
+                      title="Report"
+                      containerStyle={tw``}
+                      onPress={() => {
+                        closeSheet();
+                        navigation.navigate("Report", { id: passedId });
+                      }}
+                    />
+                    <List
+                      icon="calendar"
+                      iconColor="#374e51"
+                      title="Edit Event"
+                      containerStyle={tw``}
+                      onPress={() => {
+                        closeSheet();
                         navigation.navigate("Edit Event", { id: passedId });
                       }}
                     />
@@ -307,7 +302,7 @@ function UserProfileScreen({ navigation, route }) {
                       icon="edit"
                       iconColor="#374e51"
                       title="Edit Ticket"
-                      containerStyle={tw`border-0 mb-2 pt-0`}
+                      containerStyle={tw`mb-2`}
                       onPress={() => {
                         closeSheet();
                         navigation.navigate("Edit Ticket", {
@@ -319,9 +314,42 @@ function UserProfileScreen({ navigation, route }) {
                   </View>
                 </BottomSheet>
               </View>
-            ))}
-          </Section>
-        </View>
+            ))
+          ) : (
+            <View style={tw`h-36 justify-center items-center`}>
+              <Text style={tw`text-xl text-gray-400`}>No Events</Text>
+            </View>
+          )}
+        </Section>
+
+        <BottomSheet
+          isVisible={more}
+          modalProps={{ animationType: "slide" }}
+          onBackdropPress={() => setShowMore(false)}
+        >
+          <View style={tw`flex-1 bg-white pt-3 pb-5 px-4`}>
+            <List
+              icon="mail"
+              iconColor="#374e51"
+              title="Invitations"
+              containerStyle={tw``}
+              onPress={() => {
+                setShowMore(false);
+                navigation.navigate("Invitations");
+              }}
+            />
+            <List
+              icon="bookmark"
+              iconColor="#374e51"
+              title="Saved"
+              containerStyle={tw`mb-2`}
+              onPress={() => {
+                setShowMore(false);
+                navigation.navigate("Saved");
+              }}
+            />
+          </View>
+        </BottomSheet>
       </ScrollView>
     </SafeAreaView>
   );

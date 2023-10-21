@@ -18,9 +18,10 @@ import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 
 import { BASEURL } from "../../config/config";
-import { AuthContext } from "../../context/AuthContext";
+import { requestValidator } from "../../utils/utils";
 import Section from "../../components/content/Section";
 import Validator from "../../components/errors/Validator";
+import { COLORS } from "../../constants/theme";
 
 const noImage = require("../../assets/Profile_avatar_placeholder_large.png");
 
@@ -30,8 +31,8 @@ const EditProfileScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [bio, setBio] = useState("");
-  const [errors, setError] = useState([]);
-  const [isError, setIsError] = useState(false);
+  const [validation, setValidator] = useState([]);
+  const [isVisible, setIsVisible] = useState(false);
   const [path, setPath] = useState("");
   const [image, setImage] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -91,14 +92,14 @@ const EditProfileScreen = ({ navigation }) => {
           save("user", data);
           getValueFor("user");
           if (data) {
-            setError({ message: "Profile updated" });
-            setIsError(true);
+            setValidator({ message: "Profile updated" });
+            setIsVisible(true);
           }
         })
         .catch((err) => {
           console.log(err.response.data);
-          setError(err.response.data);
-          setIsError(true);
+          setValidator(err.response.data);
+          setIsVisible(true);
         });
     });
   };
@@ -147,17 +148,25 @@ const EditProfileScreen = ({ navigation }) => {
   }
 
   const clearError = () => {
-    if (isError) {
+    if (isVisible) {
       setTimeout(() => {
-        setIsError(false);
-        setError([]);
+        setIsVisible(false);
+        setValidator([]);
       }, 5000);
     }
   };
 
+  let error = {};
+  if (isVisible) {
+    let first = requestValidator(validation);
+
+    error = first;
+    console.log(error);
+  }
+
   useEffect(() => {
     clearError();
-  }, [isError]);
+  }, [isVisible]);
 
   useEffect(() => {
     getValueFor("user");
@@ -172,16 +181,16 @@ const EditProfileScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <View style={tw`flex-1 bg-white`}>
+    <SafeAreaView style={tw`flex-1 bg-white`}>
       {/*Header*/}
       <View
-        style={tw`flex-row w-full h-16 items-center justify-between mt-6 px-3 z-20`}
+        style={tw`flex-row w-full h-16 items-center justify-between px-3 z-20 border-b border-gray-200`}
       >
         <TouchableOpacity
           style={tw`justify-center`}
           onPress={() => navigation.goBack()}
         >
-          <Icon type="feather" name="x" size={20} color="#ff8552" />
+          <Icon type="feather" name="x" size={20} color="black" />
         </TouchableOpacity>
         <View>
           <Text style={tw`text-black text-gray-700 text-base`}>
@@ -194,15 +203,7 @@ const EditProfileScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {isError && (
-        <Validator
-          data={errors}
-          isVisible={isError}
-          messageStyle={tw`bg-black p-3 rounded-lg bg-opacity-70 self-center`}
-        />
-      )}
-
-      <ScrollView style={tw`pb-5`}>
+      <ScrollView style={tw`pb-2`}>
         <KeyboardAwareScrollView keyboardDismissMode="interactive">
           <Section containerStyle={tw`mb-4 mt-4 p-2 z-0`}>
             {/**Profile Image */}
@@ -213,14 +214,14 @@ const EditProfileScreen = ({ navigation }) => {
                 style={tw`w-full h-full rounded-xl z-0`}
                 source={
                   image
-                    ? { uri: `${BASEURL}/storage/images/user/${image}` }
+                    ? { uri: `${BASEURL}/storage/images/uploads/${image}` }
                     : noImage
                 }
                 resizeMode="stretch"
               />
               {/**Camera Icon */}
               <TouchableOpacity
-                style={tw`absolute -right-5 bottom-3 bg-green-400 p-3 rounded-full`}
+                style={tw`absolute -right-4 -bottom-3 bg-[${COLORS.primary}] p-3 rounded-full`}
                 onPress={openImagePickerAsync}
               >
                 <Icon
@@ -234,12 +235,22 @@ const EditProfileScreen = ({ navigation }) => {
           </Section>
 
           <Section containerStyle={tw`mb-3 p-3`}>
+            {isVisible && (
+              <View
+                style={tw`flex flex-row justify-center items-center p-2 mb-2`}
+              >
+                <Text style={tw`text-base text-green-500`}>
+                  {error.message}
+                </Text>
+              </View>
+            )}
             <View style={tw`p-1 items-center justify-center`}>
               <Input
                 placeholder="Name"
                 textContentType="none"
                 onChangeText={(newText) => setName(newText)}
                 defaultValue={fullname}
+                errorMessage={error.fullname}
               />
             </View>
             {/**Username */}
@@ -249,6 +260,7 @@ const EditProfileScreen = ({ navigation }) => {
                 textContentType="none"
                 onChangeText={(newText) => setUsername(newText)}
                 defaultValue={username}
+                errorMessage={error.username}
               />
             </View>
 
@@ -259,6 +271,7 @@ const EditProfileScreen = ({ navigation }) => {
                 textContentType="emailAddress"
                 onChangeText={(newText) => setEmail(newText)}
                 defaultValue={email}
+                errorMessage={error.email}
               />
             </View>
 
@@ -289,11 +302,22 @@ const EditProfileScreen = ({ navigation }) => {
       {/**Modal */}
       <Modal
         visible={showModal}
-        presentationStyle="fullScreen"
-        animationType="fade"
+        presentationStyle="pageSheet"
+        animationType="slide"
       >
         {/**Content */}
         <View style={tw` h-full`}>
+          <View
+            style={tw`flex-row w-full h-16 items-center justify-between px-5 z-10`}
+          >
+            <TouchableOpacity
+              style={tw`justify-center`}
+              onPress={() => setShowModal(false)}
+            >
+              <Text style={tw`text-base`}>Cancel</Text>
+            </TouchableOpacity>
+            <View></View>
+          </View>
           <View style={tw`flex-1 w-full h-52 self-center border-0 px-1 my-10`}>
             <Image
               style={tw`w-full h-full`}
@@ -303,14 +327,8 @@ const EditProfileScreen = ({ navigation }) => {
           </View>
 
           <View
-            style={tw`flex-row w-full h-16 items-center justify-between bottom-8  px-5 z-10`}
+            style={tw`flex-row w-full h-16 items-center justify-center bottom-8  px-5 z-10`}
           >
-            <TouchableOpacity
-              style={tw`justify-center`}
-              onPress={() => setShowModal(false)}
-            >
-              <Icon type="feather" name="x" size={20} color="#ff8552" />
-            </TouchableOpacity>
             <View></View>
             <TouchableOpacity onPress={() => updatePhoto()}>
               <Text style={[tw`text-base`, { color: "#ff8552" }]}>Done</Text>
@@ -318,7 +336,7 @@ const EditProfileScreen = ({ navigation }) => {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 };
 
