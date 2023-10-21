@@ -1,7 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity, ScrollView, Text } from "react-native";
 import tw from "twrnc";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 
 const TextButton = ({
   label,

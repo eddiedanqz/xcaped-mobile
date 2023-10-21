@@ -1,14 +1,8 @@
-import React,{useState} from 'react'
-import {
-    StyleSheet,Text,View,
-    Image,
-
-  } from "react-native";
-  import { Icon} from "react-native-elements";
-  import StepContent from './StepContent'
-  import StepHeader from './StepHeader'
-  import StepFooter from './StepFooter'
-
+import React, { useState } from "react";
+import { StyleSheet, Text, View, Image } from "react-native";
+import StepContent from "./StepContent";
+import StepHeader from "./StepHeader";
+import StepFooter from "./StepFooter";
 
 const Stepper = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -22,7 +16,6 @@ const Stepper = () => {
 
   return (
     <View>
-
       {/**Stepper */}
       <StepHeader steps={steps} currentStep={currentStep} />
 
@@ -40,7 +33,6 @@ const Stepper = () => {
       />
     </View>
   );
-}
+};
 
-export default Stepper
-
+export default Stepper;

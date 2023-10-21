@@ -10,7 +10,7 @@ import {
   Text,
 } from "react-native";
 import tw from "twrnc";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 

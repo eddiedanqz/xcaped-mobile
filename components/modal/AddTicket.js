@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 import tw from "twrnc";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";

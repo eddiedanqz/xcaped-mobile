@@ -10,16 +10,14 @@ import {
   FlatList,
   Text,
   Image,
-  Pressable,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 import tw from "twrnc";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 
 import { BASEURL } from "../../config/config";
 import { COLORS } from "../../constants/theme";
-import Section from "../content/Section";
 import { noImage } from "../../utils/helpers";
 
 const InviteModal = ({ isVisible, onClose, event }) => {

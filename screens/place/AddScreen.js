@@ -10,7 +10,7 @@ import {
   Platform,
   Keyboard,
 } from "react-native";
-import { Icon, Input, BottomSheet, ListItem } from "react-native-elements";
+import { Icon, Input, BottomSheet, ListItem } from "@rneui/themed";
 import tw from "twrnc";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import SelectDropdown from "react-native-select-dropdown";

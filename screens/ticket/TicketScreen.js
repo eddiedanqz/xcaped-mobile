@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import tw from "twrnc";
-import { Icon, BottomSheet } from "react-native-elements";
+import { Icon, BottomSheet } from "@rneui/themed";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import moment from "moment";

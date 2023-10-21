@@ -7,7 +7,7 @@ import {
   Text,
   ActivityIndicator,
 } from "react-native";
-import { Button, Icon } from "react-native-elements";
+import { Button, Icon } from "@rneui/themed";
 import tw from "twrnc";
 
 import { AuthContext } from "../../context/AuthContext";

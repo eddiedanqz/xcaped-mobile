@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import tw from "twrnc";
 import * as SecureStore from "expo-secure-store";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 import axios from "axios";
 
 import { BASEURL } from "../../config/config";

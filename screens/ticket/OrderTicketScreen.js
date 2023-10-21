@@ -7,7 +7,7 @@ import {
   FlatList,
   ScrollView,
 } from "react-native";
-import { Icon, Text } from "react-native-elements";
+import { Icon, Text } from "@rneui/themed";
 import tw from "twrnc";
 import { StatusBar } from "expo-status-bar";
 import SafeAreaView from "react-native-safe-area-view";

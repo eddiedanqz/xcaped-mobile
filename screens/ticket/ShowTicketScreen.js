@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from "react-native";
 import tw from "twrnc";
-import { Icon, Input } from "react-native-elements";
+import { Icon, Input } from "@rneui/themed";
 import QRCode from "react-native-qrcode-svg";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";

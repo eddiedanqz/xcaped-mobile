@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 import { NavigationContainer, useIsFocused } from "@react-navigation/native";
 import tw from "twrnc";
 import * as SecureStore from "expo-secure-store";

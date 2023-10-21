@@ -9,7 +9,7 @@ import {
   Text,
   Image,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 import tw from "twrnc";
 
 import TextButton from "../buttons/TextButton";

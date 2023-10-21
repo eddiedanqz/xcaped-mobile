@@ -10,7 +10,7 @@ import {
   Text,
   Image,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 import tw from "twrnc";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import MapView, { Marker } from "react-native-maps";

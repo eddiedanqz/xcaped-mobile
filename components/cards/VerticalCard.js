@@ -5,7 +5,7 @@ import {
   TouchableWithoutFeedback,
   Image,
 } from "react-native";
-import { Text, Icon } from "react-native-elements";
+import { Text, Icon } from "@rneui/themed";
 import tw from "twrnc";
 
 import { BASEURL } from "@env";

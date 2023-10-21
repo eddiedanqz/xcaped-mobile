@@ -8,7 +8,7 @@ import {
   Dimensions,
   Text,
 } from "react-native";
-import { Icon, BottomSheet, ListItem } from "react-native-elements";
+import { Icon, BottomSheet, ListItem } from "@rneui/themed";
 import tw from "twrnc";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";

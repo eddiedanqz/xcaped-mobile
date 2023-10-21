@@ -1,7 +1,7 @@
 import React from "react";
 import tw from "twrnc";
 import { View, Text, TouchableOpacity } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 
 const List = ({
   containerStyle,

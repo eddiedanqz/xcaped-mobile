@@ -7,7 +7,7 @@ import {
   Image,
   Text,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 import tw from "twrnc";
 import { BASEURL } from "@env";
 import List from "../content/List";

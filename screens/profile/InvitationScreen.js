@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from "react-native";
 import tw from "twrnc";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import moment from "moment";

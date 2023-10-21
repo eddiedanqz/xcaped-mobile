@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 import tw from "twrnc";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";

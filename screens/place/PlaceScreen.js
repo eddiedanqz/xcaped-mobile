@@ -7,7 +7,7 @@ import {
   ScrollView,
   Text,
 } from "react-native";
-import { Icon, Input, BottomSheet, ListItem } from "react-native-elements";
+import { Icon, Input, BottomSheet, ListItem } from "@rneui/themed";
 import tw from "twrnc";
 import { StatusBar } from "expo-status-bar";
 import DateTimePicker from "@react-native-community/datetimepicker";

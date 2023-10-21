@@ -10,7 +10,7 @@ import {
   Modal,
 } from "react-native";
 import tw from "twrnc";
-import { Icon, Input } from "react-native-elements";
+import { Icon, Input } from "@rneui/themed";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as SecureStore from "expo-secure-store";

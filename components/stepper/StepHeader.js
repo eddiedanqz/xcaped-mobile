@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon } from "@rneui/themed";
 import tw from "twrnc";
 
 const StepHeader = ({ steps, currentStep }) => {
