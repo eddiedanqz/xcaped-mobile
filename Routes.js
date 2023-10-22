@@ -4,7 +4,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import * as SecureStore from "expo-secure-store";
 import tw from "twrnc";
 
 import WelcomeScreen from "./screens/WelcomeScreen";
@@ -41,13 +41,25 @@ const NavStack = createStackNavigator();
 
 export default function App() {
   const { authUser, isLoading, setLoading } = useContext(AuthContext);
+  const [user, setUser] = useState({});
+
+  async function getValueFor(key) {
+    let result = await SecureStore.getItemAsync(key);
+    if (result) {
+      let parsed = JSON.parse(result);
+      console.log(parsed);
+      setUser(parsed);
+    }
+  }
 
   useEffect(() => {
+    getValueFor("mytoken");
+
     setTimeout(() => {
       setLoading(false);
     }, 1000);
 
-    console.log(authUser);
+    // console.log(authUser);
   }, [authUser]);
 
   const BottomNav = () => <BottomNavScreen />;
@@ -55,7 +67,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <View style={styles.container}>
-        {!Object.entries(authUser).length > 0 ? (
+        {(!Object.entries(authUser).length > 0) &
+        (!Object.entries(user).length > 0) ? (
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="LogIn" component={LoginScreen} />
             <Stack.Screen name="SignUp" component={SignUpScreen} />

@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     axios
       .post(`${BASEURL}/api/login`, user)
       .then((res) => {
-        console.log(res.data);
+        //  console.log(res.data);
         setUser(res.data.user);
         setCount(res.data.count);
         SecureStore.setItemAsync("mytoken", JSON.stringify(res.data.token));

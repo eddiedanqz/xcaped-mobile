@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import React, { useContext, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { AuthProvider } from "./context/AuthContext";
@@ -12,25 +12,6 @@ import Routes from "./Routes";
 // const NavStack = createStackNavigator()
 
 export default function App() {
-  // const [isLoading,setLoading] = useState(false)
-  // const {user} = useContext(AuthContext)
-
-  // React.useEffect(() =>{
-  // setTimeout(() => {
-  //   setLoading(false)
-  // }, 1000);
-
-  // console.log(user)
-  // },[])
-
-  // if (isLoading) {
-  //   return <LoaderScreen/>
-  // }
-
-  // const BottomNav = () => (
-  //   <BottomNavScreen/>
-  // )
-
   return (
     <AuthProvider>
       <FilterProvider>

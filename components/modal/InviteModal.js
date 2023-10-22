@@ -3,15 +3,15 @@ import {
   View,
   TouchableOpacity,
   TextInput,
-  StyleSheet,
+  Platform,
   Modal,
   Animated,
   TouchableWithoutFeedback,
   FlatList,
   Text,
   Image,
+  Button,
 } from "react-native";
-import { Icon } from "@rneui/themed";
 import tw from "twrnc";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
@@ -27,6 +27,8 @@ const InviteModal = ({ isVisible, onClose, event }) => {
   const [users, setResults] = useState([]);
   const [id, setId] = useState(0);
   const [invite, setInvite] = useState({});
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
 
   function renderSearch() {
     return (
