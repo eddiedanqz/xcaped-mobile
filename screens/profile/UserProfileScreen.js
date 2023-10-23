@@ -180,15 +180,19 @@ function UserProfileScreen({ navigation, route }) {
             </View>
           </View>
           {/**Follow */}
-          <View style={tw`flex-row justify-center items-center bg-white my-3`}>
-            <TextButton
-              label={status ? "Unfollow" : "Follow"}
-              buttonContainerStyle={[
-                tw`bg-[${COLORS.primary}] rounded-full shadow-xl p-1.5 w-28`,
-              ]}
-              onPress={() => toggleFollow()}
-            />
-          </View>
+          {authUser?.id !== user.id && (
+            <View
+              style={tw`flex-row justify-center items-center bg-white my-3`}
+            >
+              <TextButton
+                label={status ? "Unfollow" : "Follow"}
+                buttonContainerStyle={[
+                  tw`bg-[${COLORS.primary}] rounded-full shadow-xl p-1.5 w-28`,
+                ]}
+                onPress={() => toggleFollow()}
+              />
+            </View>
+          )}
           {/** Stats*/}
           <View style={tw`justify-center items-center pb-4`}>
             <ScrollView
@@ -196,19 +200,28 @@ function UserProfileScreen({ navigation, route }) {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={tw`flex-row items-center`}
             >
-              <View style={tw`items-center m-3`}>
-                <Text style={tw`text-base font-bold text-gray-700`}>
-                  {following}
-                </Text>
-                <Text style={tw`text-base text-gray-500`}>Following</Text>
-              </View>
-              <View style={tw`items-center m-3`}>
+              <TouchableOpacity
+                style={tw`items-center m-3`}
+                onPress={() =>
+                  navigation.navigate("Fans", { index: 0, id: user.id })
+                }
+              >
                 <Text style={tw`text-base font-bold text-gray-700`}>
                   {followers}
                 </Text>
                 <Text style={tw`text-base text-gray-500`}>Followers</Text>
-              </View>
-
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={tw`items-center m-3`}
+                onPress={() =>
+                  navigation.navigate("Fans", { index: 1, id: user.id })
+                }
+              >
+                <Text style={tw`text-base font-bold text-gray-700`}>
+                  {following}
+                </Text>
+                <Text style={tw`text-base text-gray-500`}>Following</Text>
+              </TouchableOpacity>
               <TouchableOpacity style={tw`items-center m-3`}>
                 <Text style={tw`text-base font-bold text-gray-700`}>
                   {saved}

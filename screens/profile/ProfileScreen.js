@@ -31,7 +31,7 @@ function ProfileScreen({ navigation }) {
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
   const [events, setEvents] = useState([]);
-  const [saved, setSaved] = useState(0);
+  const [eventCount, setCount] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [more, setShowMore] = useState(false);
   const [passedId, setPassedId] = useState(0);
@@ -80,7 +80,7 @@ function ProfileScreen({ navigation }) {
           // console.log(res.data)
           setUser(res.data.user);
           setEvents(res.data.events);
-          setSaved(res.data.eventCount);
+          setCount(res.data.eventCount);
           setFollowers(res.data.followers);
           setFollowing(res.data.following);
           setStatus(res.data.follows);
@@ -162,7 +162,7 @@ function ProfileScreen({ navigation }) {
 
               {/**About */}
               {user.profile?.bio && (
-                <Text style={tw`font-bold text-gray-600 text-sm`}>
+                <Text style={tw`font-semibold text-gray-500 text-sm`}>
                   {user.profile?.bio}
                 </Text>
               )}
@@ -171,21 +171,33 @@ function ProfileScreen({ navigation }) {
 
           {/** Stats*/}
           <View style={tw`flex-row justify-center items-center pb-4 w-full`}>
-            <View style={tw`items-center m-3`}>
-              <Text style={tw`text-base font-bold text-gray-700`}>
-                {following}
-              </Text>
-              <Text style={tw`text-base text-gray-500`}>Following</Text>
-            </View>
-            <View style={tw`items-center m-3`}>
+            <TouchableOpacity
+              style={tw`items-center m-3`}
+              onPress={() =>
+                navigation.navigate("Fans", { index: 0, id: user.id })
+              }
+            >
               <Text style={tw`text-base font-bold text-gray-700`}>
                 {followers}
               </Text>
               <Text style={tw`text-base text-gray-500`}>Followers</Text>
-            </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={tw`items-center m-3`}
+              onPress={() =>
+                navigation.navigate("Fans", { index: 1, id: user.id })
+              }
+            >
+              <Text style={tw`text-base font-bold text-gray-700`}>
+                {following}
+              </Text>
+              <Text style={tw`text-base text-gray-500`}>Following</Text>
+            </TouchableOpacity>
 
             <TouchableOpacity style={tw`items-center m-3`}>
-              <Text style={tw`text-base font-bold text-gray-700`}>{saved}</Text>
+              <Text style={tw`text-base font-bold text-gray-700`}>
+                {eventCount}
+              </Text>
               <Text style={tw`text-base text-gray-500`}>Events</Text>
             </TouchableOpacity>
             {/**Invites*/}

@@ -11,12 +11,8 @@ import {
 } from "react-native";
 import { Icon, TabView, Tab } from "@rneui/themed";
 import tw from "twrnc";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import * as SecureStore from "expo-secure-store";
-
 import { BASEURL } from "../../config/config";
 import TwoPointSlider from "./TwoPointSlider";
-import Section from "../content/Section";
 import { noImage } from "../../utils/helpers";
 
 const SearchModal = ({ isVisible, onClose, results, showIcon, navigation }) => {
@@ -109,7 +105,7 @@ const SearchModal = ({ isVisible, onClose, results, showIcon, navigation }) => {
             source={
               item.searchable.profile.profilePhoto
                 ? {
-                    uri: `${BASEURL}/storage/images/user/${item.searchable.profile.profilePhoto}`,
+                    uri: `${BASEURL}/storage/images/uploads/${item.searchable.profile.profilePhoto}`,
                   }
                 : noImage
             }
