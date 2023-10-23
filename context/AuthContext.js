@@ -15,8 +15,7 @@ async function getValueFor(key) {
 
 //Provider Component
 export const AuthProvider = ({ children }) => {
-  const [authUser, setUser] = useState({});
-  const [token, setToken] = useState("");
+  const [authUser, setUser] = useState(null);
   const [errorData, setData] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [count, setCount] = useState(null);
@@ -33,7 +32,7 @@ export const AuthProvider = ({ children }) => {
         setUser(res.data.user);
         setCount(res.data.count);
         SecureStore.setItemAsync("mytoken", JSON.stringify(res.data.token));
-        SecureStore.setItemAsync("user", JSON.stringify(res.data.user));
+        SecureStore.setItemAsync("user", JSON.stringify(res.data));
         setLoading(false);
       })
       .catch((err) => {
@@ -81,7 +80,7 @@ export const AuthProvider = ({ children }) => {
         .then((data) => {
           SecureStore.deleteItemAsync("mytoken");
           SecureStore.deleteItemAsync("user");
-          setUser("");
+          setUser(null);
           console.log(data.message);
           setLoading(false);
         })
@@ -134,6 +133,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         authUser,
+        setUser,
         signIn,
         signUp,
         signOut,

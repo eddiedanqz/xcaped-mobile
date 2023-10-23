@@ -52,7 +52,7 @@ function UserProfileScreen({ navigation, route }) {
   async function getValueFor(key) {
     let result = await SecureStore.getItemAsync(key);
     if (result) {
-      setAuth(JSON.parse(result));
+      setAuth(JSON.parse(result.user));
       //   console.log(result)
     } else {
       alert("No values stored under that key.");

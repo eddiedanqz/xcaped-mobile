@@ -57,7 +57,7 @@ const EventScreen = ({ navigation, route }) => {
   async function getValueFor(key) {
     let result = await SecureStore.getItemAsync(key);
     if (result) {
-      setAuth(JSON.parse(result));
+      setAuth(JSON.parse(result.user));
       // console.log(JSON.parse(result));
     } else {
       alert("No values stored under that key.");

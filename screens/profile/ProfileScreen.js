@@ -57,7 +57,7 @@ function ProfileScreen({ navigation }) {
     if (result) {
       let parsed = JSON.parse(result);
       // setUser(parsed)
-      getProfile(parsed.id);
+      getProfile(parsed.user.id);
       // console.log(result)
     } else {
       alert("No values stored under that key.");

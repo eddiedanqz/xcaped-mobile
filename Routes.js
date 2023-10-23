@@ -41,8 +41,7 @@ const Stack = createStackNavigator();
 const NavStack = createStackNavigator();
 
 export default function App() {
-  const { authUser, isLoading, setLoading } = useContext(AuthContext);
-  const [user, setUser] = useState({});
+  const { authUser, setUser } = useContext(AuthContext);
 
   async function getValueFor(key) {
     let result = await SecureStore.getItemAsync(key);
@@ -54,31 +53,15 @@ export default function App() {
   }
 
   useEffect(() => {
-    getValueFor("mytoken");
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-
-    // console.log(authUser);
-  }, [authUser]);
+    getValueFor("user");
+  }, []);
 
   const BottomNav = () => <BottomNavScreen />;
 
   return (
     <NavigationContainer>
       <View style={styles.container}>
-        {(!Object.entries(authUser).length > 0) &
-        (!Object.entries(user).length > 0) ? (
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="LogIn" component={LoginScreen} />
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
-            <Stack.Screen
-              name="PasswordReset"
-              component={PasswordResetScreen}
-            />
-          </Stack.Navigator>
-        ) : (
+        {authUser ? (
           <NavStack.Navigator screenOptions={{ headerShown: false }}>
             <NavStack.Screen name="Main" component={BottomNav} />
             <NavStack.Screen name="Edit Event" component={EditEventScreen} />
@@ -110,6 +93,15 @@ export default function App() {
             <NavStack.Screen name="Invitations" component={InvitationScreen} />
             <NavStack.Screen name="Fans" component={FansScreen} />
           </NavStack.Navigator>
+        ) : (
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="LogIn" component={LoginScreen} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen
+              name="PasswordReset"
+              component={PasswordResetScreen}
+            />
+          </Stack.Navigator>
         )}
         <StatusBar style="dark" />
       </View>
