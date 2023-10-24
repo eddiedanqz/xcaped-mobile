@@ -208,14 +208,7 @@ const NotificationScreen = ({ navigation }) => {
         >
           <Icon type="feather" name="arrow-left" size={20} color="#151618" />
         </TouchableOpacity>
-        <Text
-          style={[
-            tw`text-black text-gray-700 text-lg font-bold`,
-            // {color:'#ff8552'}
-          ]}
-        >
-          Notifications
-        </Text>
+        <Text style={tw` text-gray-700 text-lg font-bold`}>Notifications</Text>
         <TouchableOpacity></TouchableOpacity>
       </View>
 

@@ -55,7 +55,7 @@ function UserProfileScreen({ navigation, route }) {
       let parsed = JSON.parse(result);
 
       setAuth(parsed.user);
-      console.log(parsed);
+      // console.log(parsed);
     } else {
       alert("No values stored under that key.");
     }

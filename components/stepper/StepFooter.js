@@ -97,7 +97,7 @@ const StepFooter = ({
   };
 
   return (
-    <View style={tw`flex-1 justify-end`}>
+    <View style={tw`justify-end`}>
       {isError && (
         <View
           style={tw`flex flex-row justify-between items-center bg-red-600 z-10 mx-1 p-2 bottom-20 rounded z-10`}
@@ -116,11 +116,11 @@ const StepFooter = ({
       )}
 
       {/**Buttons */}
-      <View style={tw`bottom-8 w-full flex-row justify-between bg-white`}>
+      <View style={tw`bottom-0 w-full flex-row justify-between bg-white`}>
         {currentStep > 0 ? (
           <View style={tw`w-1/2 border-r items-center justify-center`}>
             <TouchableOpacity
-              style={tw`justify-center items-center`}
+              style={tw`justify-center items-center p-2 w-full`}
               onPress={() => {
                 if (currentStep > 0) {
                   setCurrentStep(currentStep - 1);
@@ -131,14 +131,16 @@ const StepFooter = ({
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={tw`w-1/2 border-r items-center justify-center `}>
+          <View
+            style={tw`w-1/2 border-r border-gray-700 items-center justify-center `}
+          >
             <Text style={tw`text-center text-base text-gray-400`}> Back</Text>
           </View>
         )}
         {currentStep + 1 < steps.length /* add other conditions here */ && (
           <View style={tw`w-1/2 items-center justify-center`}>
             <TouchableOpacity
-              style={[tw`justify-center items-center`]}
+              style={[tw`justify-center items-center p-2 w-full`]}
               onPress={() => {
                 if (currentStep + 1 < steps.length) {
                   setCurrentStep(currentStep + 1);
@@ -154,7 +156,7 @@ const StepFooter = ({
         {currentStep + 1 == steps.length /* add other conditions here */ && (
           <View style={tw`w-1/2 items-center justify-center`}>
             <TouchableOpacity
-              style={tw`justify-center items-center`}
+              style={tw`justify-center items-center w-full p-2`}
               onPress={checkFields}
             >
               <Text style={[tw`text-base text-black` /*,{color:'#fdcc97'}*/]}>

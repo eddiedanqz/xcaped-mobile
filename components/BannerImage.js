@@ -15,23 +15,21 @@ const uploadIcon = require("../assets/banner-placeholder.png");
 
 const InputField = ({ url, onPress }) => {
   return (
-    <Fragment>
-      <TouchableOpacity
-        activeOpacity={0.7}
-        style={[
-          tw`justify-center items-center rounded w-full h-48 
+    <TouchableOpacity
+      activeOpacity={0.7}
+      style={[
+        tw`justify-center items-center rounded w-full h-full  bg-gray-100 
       `,
-          // { borderStyle: "dashed", borderRadius: 1, borderWidth: 1,borderColor:'gray' },
-        ]}
-        onPress={onPress}
-      >
-        <Image
-          source={url ? { uri: url } : uploadIcon}
-          resizeMode="stretch"
-          style={tw`w-full h-full rounded-xl`}
-        />
-      </TouchableOpacity>
-    </Fragment>
+        // { borderStyle: "dashed", borderRadius: 1, borderWidth: 1,borderColor:'gray' },
+      ]}
+      onPress={onPress}
+    >
+      <Image
+        source={url ? { uri: url } : uploadIcon}
+        resizeMode="stretch"
+        style={tw`w-full h-full rounded-xl`}
+      />
+    </TouchableOpacity>
   );
 };
 

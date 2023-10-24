@@ -131,7 +131,7 @@ const CreateScreen = ({ navigation }) => {
     return (
       <Fragment>
         {/**Image */}
-        <View style={tw`mt-5 mb-3 w-80 h-52 flex justify-center self-center`}>
+        <View style={tw`flex justify-center w-48 h-52 mb-3 p-3`}>
           <BannerImage onPress={openImagePickerAsync} url={path} />
           {/**Button */}
           <View
@@ -156,7 +156,7 @@ const CreateScreen = ({ navigation }) => {
     return (
       <Fragment>
         {/*Title*/}
-        <View style={tw`p-3 flex-row items-center justify-center`}>
+        <View style={tw`mt-5 p-3 flex-row items-center justify-center`}>
           <Input
             placeholder="Title"
             textContentType="none"
@@ -174,7 +174,7 @@ const CreateScreen = ({ navigation }) => {
     return (
       <Fragment>
         {/*Category*/}
-        <View style={tw`mb-2 ml-1 p-3 flex-row items-center`}>
+        <View style={tw`mb-3 ml-1 p-3 flex-row items-center`}>
           <Icon type="feather" name="tag" size={20} color="gray" />
           <TouchableOpacity onPress={() => setIsVisible(true)}>
             <Text style={tw`mx-2 text-lg text-gray-600`}>
@@ -185,7 +185,11 @@ const CreateScreen = ({ navigation }) => {
           </TouchableOpacity>
 
           {/**Category List */}
-          <BottomSheet modalProps={{}} isVisible={isVisible}>
+          <BottomSheet
+            modalProps={{}}
+            isVisible={isVisible}
+            onBackdropPress={() => closeSheet()}
+          >
             {category.map((c, i) => (
               <ListItem key={i} onPress={() => chooseCategory(i, c)}>
                 <ListItem.Content>
@@ -193,13 +197,7 @@ const CreateScreen = ({ navigation }) => {
                 </ListItem.Content>
               </ListItem>
             ))}
-            <View style={tw`bg-white justify-center p-4`}>
-              <TextButton
-                label="Cancel"
-                buttonContainerStyle={tw`rounded-lg p-3 w-80`}
-                onPress={closeSheet}
-              />
-            </View>
+            <View style={tw`bg-white justify-center p-4`}></View>
           </BottomSheet>
         </View>
       </Fragment>
@@ -468,49 +466,38 @@ const CreateScreen = ({ navigation }) => {
   }, []);
 
   return (
-    <SafeAreaView style={tw`h-full bg-white`}>
+    <SafeAreaView style={tw`flex-1 bg-white`}>
       {/*Header*/}
-      <View style={tw`overflow-hidden pb-1 mt-1`}>
-        <View
-          style={[
-            tw`flex-row w-full h-16 items-center justify-between px-3 shadow `,
-            // {backgroundColor: '#fff',
-            //   shadowColor: '#000',
-            //   shadowOffset: { width: 1, height: 1 },
-            //   shadowOpacity: 0.1,
-            //   shadowRadius: 2,
-            //   elevation: 1,}
-          ]}
-        >
-          <TouchableOpacity
-            style={tw`justify-center ml-2`}
-            onPress={() => navigation.goBack()}
-          >
-            <Icon type="feather" name="x" size={20} color="#151618" />
-          </TouchableOpacity>
-        </View>
+      <View
+        style={tw`flex-row w-full h-16 items-center justify-between border-b border-gray-200 px-4 `}
+      >
+        <TouchableOpacity style={tw`p-1`} onPress={() => navigation.goBack()}>
+          <Icon type="feather" name="x" size={20} color="#151618" />
+        </TouchableOpacity>
+        <Text style={tw`text-gray-700 text-lg font-bold`}>Create Event</Text>
+        <TouchableOpacity style={tw`p-1`}></TouchableOpacity>
       </View>
 
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView style={tw`flex-1 bg-white`}>
         {/**Stepper */}
-        <StepHeader steps={steps} currentStep={currentStep} />
-        <View style={tw`mb-5 w-full`}>
+        <View style={tw`flex-1`}>
+          <StepHeader steps={steps} currentStep={currentStep} />
           {currentStep == 0 && (
-            <View style={tw`h-80 self-center justify-center p-2 mt-4`}>
-              {renderBanner()}
+            <View style={tw`p-2`}>
               {renderTitle()}
               {renderCat()}
+              {renderBanner()}
             </View>
           )}
           {currentStep == 1 && (
-            <View style={tw`h-80 self-center justify-center p-2 mt-4`}>
+            <View style={tw`p-2`}>
               {renderDateAndTime()}
               {renderVenue()}
               {renderDescription()}
             </View>
           )}
           {currentStep == 2 && (
-            <View style={tw`h-80 p-2`}>
+            <View style={tw`p-2`}>
               {/**Type */}
               <RadioButton
                 data={["Private", "Public"]}
