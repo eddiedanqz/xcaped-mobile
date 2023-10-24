@@ -52,8 +52,10 @@ function UserProfileScreen({ navigation, route }) {
   async function getValueFor(key) {
     let result = await SecureStore.getItemAsync(key);
     if (result) {
-      setAuth(JSON.parse(result.user));
-      //   console.log(result)
+      let parsed = JSON.parse(result);
+
+      setAuth(parsed.user);
+      console.log(parsed);
     } else {
       alert("No values stored under that key.");
     }
@@ -71,7 +73,7 @@ function UserProfileScreen({ navigation, route }) {
       axios
         .get(`${BASEURL}/api/profile/${id}`, config)
         .then((res) => {
-          console.log("User Profile");
+          // console.log(res.data);
           setUser(res.data.user);
           setEvents(res.data.events);
           setSaved(res.data.eventCount);
@@ -124,7 +126,9 @@ function UserProfileScreen({ navigation, route }) {
         >
           <Icon type="feather" name="arrow-left" size={20} color="black" />
         </TouchableOpacity>
-
+        {/* <Text style={tw`text-black text-gray-700 text-lg font-bold`}>
+          {user.username}
+        </Text> */}
         <TouchableOpacity
           style={tw`justify-center`}
           //onPress={() => setShowMore(true)}

@@ -3,11 +3,10 @@ import {
   View,
   TouchableOpacity,
   Animated,
-  ScrollView,
+  Dimensions,
   Text,
   Image,
   FlatList,
-  FR,
 } from "react-native";
 import { Icon, TabView, Tab } from "@rneui/themed";
 import tw from "twrnc";
@@ -21,6 +20,9 @@ const SearchModal = ({ isVisible, onClose, results, showIcon, navigation }) => {
   const [showFilterIcon, setShowFilterIcon] = useState(false);
   const [index, setIndex] = useState(0);
   const [data, setData] = useState([]);
+  const [indicatorX, setIndicatorX] = useState(0);
+  const windowWidth = Dimensions.get("window").width;
+  const tabWidth = windowWidth / 2; // Specify your tabs amount
 
   const renderEvents = () => {
     //
@@ -158,6 +160,7 @@ const SearchModal = ({ isVisible, onClose, results, showIcon, navigation }) => {
 
   useEffect(() => {
     //console.log(results);
+    setIndex(index);
   }, [results]);
 
   return (
@@ -177,10 +180,14 @@ const SearchModal = ({ isVisible, onClose, results, showIcon, navigation }) => {
           <Fragment>
             <Tab
               value={index}
-              onChange={(e) => setIndex(e)}
+              onChange={(e) => {
+                setIndex(e);
+                setIndicatorX(e * tabWidth);
+              }}
               indicatorStyle={{
                 backgroundColor: "black",
                 height: 2,
+                transform: [{ translateX: indicatorX }],
               }}
               dense
             >

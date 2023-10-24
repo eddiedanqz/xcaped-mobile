@@ -7,6 +7,7 @@ import {
   FlatList,
   TextInput,
   SafeAreaView,
+  Dimensions,
 } from "react-native";
 import { Icon, TabView, Tab } from "@rneui/themed";
 import tw from "twrnc";
@@ -20,6 +21,9 @@ import { noImage } from "../../utils/helpers";
 const FansScreen = ({ navigation, route }) => {
   const [users, setUsers] = useState([]);
   const [index, setIndex] = useState(0);
+  const [indicatorX, setIndicatorX] = useState(0);
+  const windowWidth = Dimensions.get("window").width;
+  const tabWidth = windowWidth / 2; // Specify your tabs amount
 
   function renderSearch() {
     return (
@@ -189,26 +193,19 @@ const FansScreen = ({ navigation, route }) => {
         >
           <Icon name="arrow-left" type="feather" size={20} />
         </TouchableOpacity>
-        {/* <TextInput
-            style={tw`flex-1 text-base bg-gray-300 p-1.5 rounded-lg items-center`}
-            placeholderTextColor="black"
-            defaultValue={query}
-            placeholder="Search..."
-            onChangeText={(val) => setQuery(val)}
-            returnKeyType="search"
-            //onChange={handleSubmit}
-            onSubmitEditing={handleSubmit}
-            onFocus={() => setShowModal(true)}
-          /> */}
 
         <TouchableOpacity></TouchableOpacity>
       </View>
       <Tab
         value={index}
-        onChange={(e) => setIndex(e)}
+        onChange={(e) => {
+          setIndex(e); // Whatever you do here
+          setIndicatorX(e * tabWidth); // Setting the right translateX value
+        }}
         indicatorStyle={{
           backgroundColor: "black",
           height: 2,
+          transform: [{ translateX: indicatorX }], // Overriding the buggy string from the source
         }}
         dense
       >
